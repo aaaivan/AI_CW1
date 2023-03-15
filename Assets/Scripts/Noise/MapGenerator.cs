@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-	public enum DrawMode {NoiseMap, Colourmap};
+	public enum DrawMode {NoiseMap, Colourmap, Mesh};
 	[SerializeField]
 	DrawMode drawMode = DrawMode.NoiseMap;
 
@@ -15,8 +15,13 @@ public class MapGenerator : MonoBehaviour
 	[Range(1, 1000)]
 	int mapHeight = 1;
 	[SerializeField]
-	[Range(0.0f, 1000.0f)]
+	[Range(0.0f, 200.0f)]
 	float noiseScale = 0.5f;
+	[SerializeField]
+	[Range(0.0f, 500.0f)]
+	float noiseHeightMultiplier = 100.0f;
+	[SerializeField]
+	AnimationCurve meshHeightMultiplier;
 	[SerializeField]
 	[Range(1, 3)]
 	int octaves = 2;
@@ -59,21 +64,26 @@ public class MapGenerator : MonoBehaviour
 		{
 			display.DrawTexture(TextureGenerator.TextureFromHeightMap(noiseMap));
 		}
-		else
+		else if(drawMode == DrawMode.Colourmap) 
 		{
 			display.DrawTexture(TextureGenerator.TextureFromColourMap(colorMap, mapWidth, mapHeight));
+		}
+		else if(drawMode == DrawMode.Mesh)
+		{
+			display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, meshHeightMultiplier, noiseHeightMultiplier),
+				TextureGenerator.TextureFromColourMap(colorMap, mapWidth, mapHeight));
 		}
 	}
 
 	void OnValidate()
 	{
-		if(mapWidth < 1)
+		if(mapWidth < 2)
 		{
-			mapWidth = 1;
+			mapWidth = 2;
 		}
-		if(mapHeight < 1)
+		if(mapHeight < 2)
 		{
-			mapHeight = 1;
+			mapHeight = 2;
 		}
 		if(lacunarity < 1)
 		{
