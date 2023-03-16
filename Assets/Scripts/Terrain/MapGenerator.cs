@@ -27,9 +27,7 @@ public class MapGenerator : MonoBehaviour
 
 	MapData GenerateMapData()
 	{
-		float[,] noiseMap = PerlinNoise.GenerateNoiseMap(noiseData.mapSize, noiseData.mapSize, noiseData.noiseScale,
-														noiseData.octaves, noiseData.persistance, noiseData.lacunarity,
-														noiseData.seed, noiseData.offset);
+		float[,] noiseMap = noiseData.noiseMap.Clone() as float[,];
 
 		Color[] colorMap = new Color[noiseData.mapSize * noiseData.mapSize];
 		for(int i = 0; i < noiseData.mapSize * noiseData.mapSize; ++i)
@@ -59,14 +57,15 @@ public class MapGenerator : MonoBehaviour
 
 	public void DrawMap()
 	{
-		MapData mapData = GenerateMapData();
 		if (drawMode == DrawMode.NoiseMap)
 		{
-			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, noiseData.mapScale, noiseData.noiseHeightMultiplier),
-				TextureGenerator.TextureFromHeightMap(mapData.heightMap), meshFilter, meshRenderer, meshCollider);
+			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseData.noiseMap, noiseData.mapScale, noiseData.noiseHeightMultiplier),
+				TextureGenerator.TextureFromHeightMap(noiseData.noiseMap), meshFilter, meshRenderer, meshCollider);
 		}
 		else if (drawMode == DrawMode.Colourmap)
 		{
+			MapData mapData = GenerateMapData();
+
 			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, noiseData.mapScale, noiseData.noiseHeightMultiplier),
 				TextureGenerator.TextureFromColourMap(mapData.colorMap, noiseData.mapSize, noiseData.mapSize), meshFilter, meshRenderer, meshCollider);
 		}
