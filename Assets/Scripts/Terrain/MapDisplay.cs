@@ -9,7 +9,6 @@ public static class MapDisplay
 	{
 		Mesh mesh = meshData.CreateMesh();
 		meshFilter.sharedMesh = mesh;
-		meshRenderer.sharedMaterial.mainTexture = texture;
 		meshCollider.sharedMesh = mesh;
 	}
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-	public enum DrawMode {NoiseMap, Colourmap, FallOffMap};
+	public enum DrawMode {NoiseMap, Mesh, FallOffMap};
 
 	public DrawMode drawMode = DrawMode.NoiseMap;
 	public TerrainData terrainData;
@@ -24,7 +24,7 @@ public class MapGenerator : MonoBehaviour
 		meshRenderer = GetComponent<MeshRenderer>();
 		meshCollider = GetComponent<MeshCollider>();
 
-		drawMode = DrawMode.Colourmap;
+		drawMode = DrawMode.Mesh;
 		terrainData.seed = (int)DateTime.Now.Ticks;
 		DrawMap();
 	}
@@ -73,7 +73,7 @@ public class MapGenerator : MonoBehaviour
 			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(terrainData.noiseMap, terrainData.mapScale, terrainData.noiseHeightMultiplier),
 				TextureGenerator.TextureFromHeightMap(terrainData.noiseMap), meshFilter, meshRenderer, meshCollider);
 		}
-		else if (drawMode == DrawMode.Colourmap)
+		else if (drawMode == DrawMode.Mesh)
 		{
 			MapData mapData = GenerateMapData();
 

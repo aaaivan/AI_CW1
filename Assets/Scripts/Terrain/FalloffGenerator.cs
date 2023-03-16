@@ -11,8 +11,8 @@ public static class FalloffGenerator
 		{
 			for (int j = 0; j < size; ++j)
 			{
-				float x = i / (float)size * 2 - 1;
-				float y = j / (float)size * 2 - 1;
+				float x = i / (float)(size - 1) * 2 - 1;
+				float y = j / (float)(size - 1) * 2 - 1;
 
 				float value = Mathf.Max(Mathf.Abs(x), Mathf.Abs(y));
 				map[i, j] = Mathf.Clamp01(1 - Evaluate(value, falloffSlope, falloffDistance));
