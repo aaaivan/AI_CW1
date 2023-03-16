@@ -18,7 +18,7 @@ public class MapGeneratorEditor : Editor
 			{
 				return;
 			}
-			mapGen.DrawMap();
+			mapGen.OnNoiseValuesUpdated();
 		}
 		if (GUILayout.Button("Generate"))
 		{
@@ -28,7 +28,7 @@ public class MapGeneratorEditor : Editor
 			{
 				return;
 			}
-			mapGen.DrawMap();
+			mapGen.OnNoiseValuesUpdated();
 		}
 	}
 }

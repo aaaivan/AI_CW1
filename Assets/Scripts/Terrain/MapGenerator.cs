@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,13 +8,15 @@ public class MapGenerator : MonoBehaviour
 	public enum DrawMode {NoiseMap, Colourmap, FallOffMap};
 
 	public DrawMode drawMode = DrawMode.NoiseMap;
-	public NoiseData noiseData;
+	public TerrainData terrainData;
+	public TextureData textureData;
 
 	public TerrainType[] regions;
 
 	public MeshFilter meshFilter;
 	public MeshRenderer meshRenderer;
 	public MeshCollider meshCollider;
+	public Material terrainMaterial;
 
 	private void Awake()
 	{
@@ -22,26 +25,32 @@ public class MapGenerator : MonoBehaviour
 		meshCollider = GetComponent<MeshCollider>();
 
 		drawMode = DrawMode.Colourmap;
+		terrainData.seed = (int)DateTime.Now.Ticks;
 		DrawMap();
 	}
 
 	MapData GenerateMapData()
 	{
-		float[,] noiseMap = noiseData.noiseMap.Clone() as float[,];
+		float[,] noiseMap = terrainData.noiseMap.Clone() as float[,];
+		float minHeight = float.MaxValue;
+		float maxHeight = float.MinValue;
 
-		Color[] colorMap = new Color[noiseData.mapSize * noiseData.mapSize];
-		for(int i = 0; i < noiseData.mapSize * noiseData.mapSize; ++i)
+		Color[] colorMap = new Color[terrainData.mapSize * terrainData.mapSize];
+		for(int i = 0; i < terrainData.mapSize * terrainData.mapSize; ++i)
 		{
-			int x = i % noiseData.mapSize;
-			int y = i / noiseData.mapSize;
-			if(noiseData.useFalloffMap)
+			int x = i % terrainData.mapSize;
+			int y = i / terrainData.mapSize;
+			if(terrainData.useFalloffMap)
 			{
-				noiseMap[x, y] = noiseMap[x, y] * noiseData.falloffMap[x, y];
+				noiseMap[x, y] = noiseMap[x, y] * terrainData.falloffMap[x, y];
 			}
-			if (noiseData.useCurveMultiplier)
+			if (terrainData.useCurveMultiplier)
 			{
-				noiseMap[x, y] *= noiseData.meshHeightMultiplier.Evaluate(noiseMap[x, y]);
+				noiseMap[x, y] *= terrainData.meshHeightCurveMultiplier.Evaluate(noiseMap[x, y]);
 			}
+			minHeight = Mathf.Min(noiseMap[x, y], minHeight);
+			maxHeight = Mathf.Max(noiseMap[x, y], maxHeight);
+
 			foreach (TerrainType terrainType in regions)
 			{
 				if (noiseMap[x, y] <= terrainType.height)
@@ -51,7 +60,9 @@ public class MapGenerator : MonoBehaviour
 				}
 			}
 		}
-
+		textureData.UpdateMeshHeight(terrainMaterial,
+			minHeight * terrainData.mapScale * terrainData.noiseHeightMultiplier,
+			maxHeight * terrainData.mapScale * terrainData.noiseHeightMultiplier);
 		return new MapData(noiseMap, colorMap);
 	}
 
@@ -59,29 +70,54 @@ public class MapGenerator : MonoBehaviour
 	{
 		if (drawMode == DrawMode.NoiseMap)
 		{
-			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseData.noiseMap, noiseData.mapScale, noiseData.noiseHeightMultiplier),
-				TextureGenerator.TextureFromHeightMap(noiseData.noiseMap), meshFilter, meshRenderer, meshCollider);
+			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(terrainData.noiseMap, terrainData.mapScale, terrainData.noiseHeightMultiplier),
+				TextureGenerator.TextureFromHeightMap(terrainData.noiseMap), meshFilter, meshRenderer, meshCollider);
 		}
 		else if (drawMode == DrawMode.Colourmap)
 		{
 			MapData mapData = GenerateMapData();
 
-			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, noiseData.mapScale, noiseData.noiseHeightMultiplier),
-				TextureGenerator.TextureFromColourMap(mapData.colorMap, noiseData.mapSize, noiseData.mapSize), meshFilter, meshRenderer, meshCollider);
+			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.mapScale, terrainData.noiseHeightMultiplier),
+				TextureGenerator.TextureFromColourMap(mapData.colorMap, terrainData.mapSize, terrainData.mapSize), meshFilter, meshRenderer, meshCollider);
 		}
 		else if(drawMode == DrawMode.FallOffMap)
 		{
-			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseData.falloffMap, noiseData.mapScale, noiseData.noiseHeightMultiplier),
-				TextureGenerator.TextureFromHeightMap(noiseData.falloffMap), meshFilter, meshRenderer, meshCollider);
+			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(terrainData.falloffMap, terrainData.mapScale, terrainData.noiseHeightMultiplier),
+				TextureGenerator.TextureFromHeightMap(terrainData.falloffMap), meshFilter, meshRenderer, meshCollider);
 		}
+	}
+
+	public void OnNoiseValuesUpdated()
+	{
+		if (meshFilter == null ||
+			meshRenderer == null ||
+			meshCollider == null ||
+			terrainMaterial == null)
+		{
+			return;
+		}
+		if (!Application.isPlaying)
+		{
+			DrawMap();
+		}
+	}
+
+	void OnTextureValuesUpdated()
+	{
+		OnNoiseValuesUpdated();
 	}
 
 	void OnValidate()
 	{
-		if(noiseData != null && !Application.isPlaying)
+		if(terrainData != null)
 		{
-			noiseData.OnValuesUpdated -= DrawMap;
-			noiseData.OnValuesUpdated += DrawMap;
+			terrainData.OnValuesUpdated -= OnNoiseValuesUpdated;
+			terrainData.OnValuesUpdated += OnNoiseValuesUpdated;
+		}
+		if (textureData != null)
+		{
+			textureData.OnValuesUpdated -= OnTextureValuesUpdated;
+			textureData.OnValuesUpdated += OnTextureValuesUpdated;
 		}
 	}
 }
