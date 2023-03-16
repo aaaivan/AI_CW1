@@ -9,13 +9,26 @@ public class MapGeneratorEditor : Editor
 	public override void OnInspectorGUI()
 	{
 		MapGenerator mapGen = (MapGenerator)target;
+
 		if(DrawDefaultInspector())
 		{
-			mapGen.DrawMapInEditor();
+			if (mapGen.meshFilter == null ||
+				mapGen.meshRenderer == null ||
+				mapGen.meshCollider == null)
+			{
+				return;
+			}
+			mapGen.DrawMap();
 		}
 		if (GUILayout.Button("Generate"))
 		{
-			mapGen.DrawMapInEditor();
+			if (mapGen.meshFilter == null ||
+				mapGen.meshRenderer == null ||
+				mapGen.meshCollider == null)
+			{
+				return;
+			}
+			mapGen.DrawMap();
 		}
 	}
 }

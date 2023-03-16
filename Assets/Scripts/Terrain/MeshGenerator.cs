@@ -6,24 +6,22 @@ using UnityEngine;
 
 public static class MeshGenerator
 {
-    public static MeshData GenerateTerrainMesh(float[,] heightMap, float scaleFactor, AnimationCurve meshHeightCurve, float heightMultiplier, int levelOfDetal)
+    public static MeshData GenerateTerrainMesh(float[,] heightMap, float scaleFactor, float heightMultiplier)
 	{
 		int width = heightMap.GetLength(0);
 		int height = heightMap.GetLength(1);
-		int step = Math.Max(1, levelOfDetal * 2);
-		int verticesPerLine = (width - 1) / step + 1;
 
 		Vector2 offset = new Vector2((1 - width)/2.0f, (1 - height)/2.0f);
 
-		MeshData meshData = new MeshData(verticesPerLine, verticesPerLine);
+		MeshData meshData = new MeshData(width, height);
 		int vertexIndex = 0;
 		int uvsIndex = 0;
-		for (int y = 0; y < height; y += step)
+		for (int y = 0; y < height; ++y)
 		{
-			for (int x = 0; x < width; x += step)
+			for (int x = 0; x < width; ++x)
 			{
 				float xCoord = (x + offset.x) * scaleFactor;
-				float yCoord = (heightMap[x, y] * meshHeightCurve.Evaluate(heightMap[x, y]) * heightMultiplier) * scaleFactor;
+				float yCoord = heightMap[x, y] * heightMultiplier * scaleFactor;
 				float zCoord = (y + offset.y) * scaleFactor;
 				meshData.AddVertex(ref vertexIndex, new Vector3(xCoord, yCoord, zCoord));
 				meshData.AddUV(ref uvsIndex, new Vector2((float)x/width, (float)y/height));
@@ -31,12 +29,12 @@ public static class MeshGenerator
 		}
 
 		int trisIndex = 0;
-		for (int y = 0; y < verticesPerLine - 1; y++)
+		for (int y = 0; y < height - 1; y++)
 		{
-			for (int x = 0; x < verticesPerLine - 1; x++)
+			for (int x = 0; x < width - 1; x++)
 			{
-				int a0 = y * verticesPerLine + x;
-				int a1 = a0 + verticesPerLine;
+				int a0 = y * width + x;
+				int a1 = a0 + width;
 				int a2 = a1 + 1;
 				int a3 = a0 + 1;
 				meshData.AddTriangle(ref trisIndex, a0, a1, a3);

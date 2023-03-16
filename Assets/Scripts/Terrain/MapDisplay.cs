@@ -2,24 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapDisplay : MonoBehaviour
+public static class MapDisplay
 {
-	[SerializeField]
-	Renderer textureRenderer;
-	[SerializeField]
-	MeshFilter meshFilter;
-	[SerializeField]
-	MeshRenderer meshRenderer;
-
-	public void DrawTexture(Texture2D texture)
+	public static void DrawMesh(MeshData meshData, Texture2D texture, MeshFilter meshFilter,
+		MeshRenderer meshRenderer, MeshCollider meshCollider)
 	{
-		textureRenderer.sharedMaterial.mainTexture = texture;
-		textureRenderer.transform.localScale = new Vector3(texture.width, 1, texture.height);
-	}
-
-	public void DrawMesh(MeshData meshData, Texture2D texture)
-	{
-		meshFilter.sharedMesh = meshData.CreateMesh();
+		Mesh mesh = meshData.CreateMesh();
+		meshFilter.sharedMesh = mesh;
 		meshRenderer.sharedMaterial.mainTexture = texture;
+		meshCollider.sharedMesh = mesh;
 	}
 }

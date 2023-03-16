@@ -34,8 +34,8 @@ public static class PerlinNoise
 				{
 					float scaledX = ((width - 1) / 2.0f - x) / scale;
 					float scaledY = ((height - 1) / 2.0f - y) / scale;
-					float sampleX = octaveOffsets[o].x + frequency * (offset.x * width / 10000 - scaledX);
-					float sampleY = octaveOffsets[o].y + frequency * (offset.y * height / 10000 - scaledY);
+					float sampleX = octaveOffsets[o].x + frequency * (offset.x * width / 1000 - scaledX);
+					float sampleY = octaveOffsets[o].y + frequency * (offset.y * height / 1000 - scaledY);
 					float perlinValue = Mathf.PerlinNoise(sampleX, sampleY);
 					perlinValue *= amplitude;
 					noise += perlinValue;
