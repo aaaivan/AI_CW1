@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-	public enum DrawMode {NoiseMap, Colourmap, Mesh};
+	public enum DrawMode {NoiseMap, Colourmap, Mesh, FallOffMap};
 	[SerializeField]
 	DrawMode drawMode = DrawMode.NoiseMap;
-	[HideInInspector]
-	public const int mapChunckSize = 241;
 	[SerializeField]
 	[Range(0, 1.0f)]
 	float mapScale = 1.0f;
@@ -16,7 +14,7 @@ public class MapGenerator : MonoBehaviour
 	[Range(0, 6)]
 	int levelOfDetail = 0;
 	[SerializeField]
-	[Range(0.0f, 200.0f)]
+	[Range(2.0f, 200.0f)]
 	float noiseScale = 0.5f;
 	[SerializeField]
 	[Range(0.0f, 500.0f)]
@@ -30,14 +28,29 @@ public class MapGenerator : MonoBehaviour
 	[Range(0.0f, 1.0f)]
 	float persistance = 0.5f;
 	[SerializeField]
-	[Range(1.0f, 10.0f)]
+	[Range(1.0f, 9.99f)]
 	float lacunarity = 2f;
 	[SerializeField]
 	int seed = 1;
 	[SerializeField]
 	Vector2 offset = Vector2.zero;
 	[SerializeField]
+	bool useFalloffMap = true;
+	[SerializeField]
+	float falloffSlope = 3;
+	[SerializeField]
+	float falloffDistance = 3;
+	[SerializeField]
 	TerrainType[] regions;
+
+	[HideInInspector]
+	public const int mapChunckSize = 241;
+	float[,] falloffMap;
+
+	private void Awake()
+	{
+		falloffMap = FalloffGenerator.GenerateFalloutMap(mapChunckSize, falloffSlope, falloffDistance);
+	}
 
 	MapData GenerateMapData()
 	{
@@ -50,7 +63,11 @@ public class MapGenerator : MonoBehaviour
 		{
 			int x = i % mapChunckSize;
 			int y = i / mapChunckSize;
-			foreach(TerrainType terrainType in regions)
+			if(useFalloffMap)
+			{
+				noiseMap[x, y] = Mathf.Clamp01(noiseMap[x, y] - falloffMap[x, y]);
+			}
+			foreach (TerrainType terrainType in regions)
 			{
 				if (noiseMap[x, y] <= terrainType.height)
 				{
@@ -85,11 +102,17 @@ public class MapGenerator : MonoBehaviour
 			display.DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, mapScale, meshHeightMultiplier, noiseHeightMultiplier, levelOfDetail),
 				TextureGenerator.TextureFromColourMap(mapData.colorMap, mapChunckSize, mapChunckSize));
 		}
+		else if(drawMode == DrawMode.FallOffMap)
+		{
+			display.DrawTexture(TextureGenerator.TextureFromHeightMap(falloffMap));
+		}
 	}
 
 	void OnValidate()
 	{
-		if(levelOfDetail < 0)
+		falloffMap = FalloffGenerator.GenerateFalloutMap(mapChunckSize, falloffSlope, falloffDistance);
+
+		if (levelOfDetail < 0)
 		{
 			levelOfDetail = 0;
 		}
