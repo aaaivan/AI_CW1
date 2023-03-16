@@ -38,6 +38,10 @@ public class MapGenerator : MonoBehaviour
 			{
 				noiseMap[x, y] = noiseMap[x, y] * noiseData.falloffMap[x, y];
 			}
+			if (noiseData.useCurveMultiplier)
+			{
+				noiseMap[x, y] *= noiseData.meshHeightMultiplier.Evaluate(noiseMap[x, y]);
+			}
 			foreach (TerrainType terrainType in regions)
 			{
 				if (noiseMap[x, y] <= terrainType.height)
@@ -45,10 +49,6 @@ public class MapGenerator : MonoBehaviour
 					colorMap[i] = terrainType.color;
 					break;
 				}
-			}
-			if (noiseData.useCurveMultiplier)
-			{
-				noiseMap[x, y] *= noiseData.meshHeightMultiplier.Evaluate(noiseMap[x, y]);
 			}
 		}
 

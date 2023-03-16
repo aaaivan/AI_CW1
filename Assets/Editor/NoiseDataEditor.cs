@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(NoiseData))]
-public class UpdatableDataEditor : Editor
+public class NoiseDataEditor : Editor
 {
 	public override void OnInspectorGUI()
 	{
