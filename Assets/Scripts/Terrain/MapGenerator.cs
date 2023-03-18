@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-	public enum DrawMode {NoiseMap, Mesh, FallOffMap};
-
-	public DrawMode drawMode = DrawMode.NoiseMap;
 	public TerrainData terrainData;
 	public TextureData textureData;
 
@@ -19,14 +16,30 @@ public class MapGenerator : MonoBehaviour
 	[HideInInspector] public Vector3[] points;
 	[HideInInspector] public Rect mapRect;
 
+	static MapGenerator instance;
+	public static MapGenerator Instance { get { return instance; } }
+
 	private void Awake()
 	{
-		meshFilter = GetComponent<MeshFilter>();
-		meshCollider = GetComponent<MeshCollider>();
+		if(instance == null)
+		{
+			instance = this;
+			meshFilter = GetComponent<MeshFilter>();
+			meshCollider = GetComponent<MeshCollider>();
+			terrainData.seed = (int)DateTime.Now.Ticks;
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
+	}
 
-		drawMode = DrawMode.Mesh;
-		terrainData.seed = (int)DateTime.Now.Ticks;
-		DrawMapAtPosition(transform.position);
+	private void OnDestroy()
+	{
+		if(instance == this)
+		{
+			instance = null;
+		}
 	}
 
 	#region MAP_GENERATION
@@ -61,12 +74,6 @@ public class MapGenerator : MonoBehaviour
 
 	public void DrawMapAtPosition(Vector3 pos)
 	{
-		if (drawMode == DrawMode.NoiseMap)
-		{
-			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(terrainData.noiseMap, terrainData.uniformScale, terrainData.noiseHeightMultiplier, transform.position), meshFilter, meshCollider);
-		}
-		else if (drawMode == DrawMode.Mesh)
-		{
 			MapData mapData = GenerateMapData();
 			MeshData meshData = MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.uniformScale, terrainData.noiseHeightMultiplier, pos);
 			points = meshData.vertices;
@@ -80,11 +87,6 @@ public class MapGenerator : MonoBehaviour
 				topRight.z - btmLeft.z);
 
 			MapDisplay.DrawMesh(meshData, meshFilter, meshCollider);
-		}
-		else if(drawMode == DrawMode.FallOffMap)
-		{
-			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(terrainData.falloffMap, terrainData.uniformScale, terrainData.noiseHeightMultiplier, transform.position), meshFilter, meshCollider);
-		}
 	}
 
 	public void OnNoiseValuesUpdated()

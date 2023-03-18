@@ -1,29 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AStarPathfinder : MonoBehaviour
+public static class AStarPathfinder
 {
-	//public GameObject seeker;
-	//public GameObject target;
-
-	AStarGrid grid;
-
-	private void Awake()
+	public static List<AStarNode> FindPath(AStarNode startNode, AStarNode targetNode, int totalNodes)
 	{
-		grid = GetComponent<AStarGrid>();
-	}
-
-	private void Update()
-	{
-		//grid.path = FindPath(seeker.transform.position, target.transform.position);
-	}
-
-	public List<AStarNode> FindPath(Vector3 from, Vector3 to)
-	{
-		AStarNode startNode = grid.NodeFromWorldPos(from);
-		AStarNode targetNode = grid.NodeFromWorldPos(to);
-
-		Heap<AStarNode> openList = new Heap<AStarNode>(grid.TotalNodes);
+		Heap<AStarNode> openList = new Heap<AStarNode>(totalNodes);
 		HashSet<AStarNode> closedList = new HashSet<AStarNode>();
 
 		startNode.gCost = 0;
@@ -47,7 +29,7 @@ public class AStarPathfinder : MonoBehaviour
 				{
 					if (!node.walkable || closedList.Contains(node)) continue;
 					
-					float newCost = currentNode.gCost + GetDistance(currentNode, node);
+					int newCost = currentNode.gCost + GetDistance(currentNode, node);
 					if(newCost < node.gCost || !openList.Contains(node))
 					{
 						node.gCost = newCost;
@@ -69,7 +51,7 @@ public class AStarPathfinder : MonoBehaviour
 		return new List<AStarNode>();
 	}
 
-	List<AStarNode> RetracePath(AStarNode startNode, AStarNode targetNode)
+	static List<AStarNode> RetracePath(AStarNode startNode, AStarNode targetNode)
 	{
 		List <AStarNode> path =  new List<AStarNode>();
 		AStarNode node = targetNode;
@@ -82,16 +64,14 @@ public class AStarPathfinder : MonoBehaviour
 		return path;
 	}
 
-	float GetDistance(AStarNode fromNode, AStarNode toNode)
+	static int GetDistance(AStarNode fromNode, AStarNode toNode)
 	{
-		float dx = Mathf.Abs(fromNode.x - toNode.x);
-		float dy = Mathf.Abs(fromNode.y - toNode.y);
-		float min = Mathf.Min(dx, dy);
-		float max = Mathf.Max(dx, dy);
+		int dx = Mathf.Abs(fromNode.x - toNode.x);
+		int dy = Mathf.Abs(fromNode.y - toNode.y);
+		int min = Mathf.Min(dx, dy);
+		int max = Mathf.Max(dx, dy);
 
-		float dist = 1.4f * min + 1.0f * (max - min);
-		//dist += grid.pathfinderData.GetCostForSlope(Vector3.Angle(Vector3.forward, (to - from)));
-
+		int dist = 14 * min + 10 * (max - min);
 		return dist;
 	}
 }

@@ -4,37 +4,35 @@ using UnityEngine;
 
 public class AStarGrid : MonoBehaviour
 {
-	public MapGenerator mapGenerator;
 	public PathfinderData pathfinderData;
-	public GameObject agent;
+	public bool drawMapNodes;
 
-	public AStarNode[,] gridNodes;
+	AStarNode[,] gridNodes;
 	int width;
 	int height;
 	float nodeDist;
 
 	public int TotalNodes { get { return gridNodes.Length; } }
 
-	private void Start()
+	private void Awake()
 	{
-		agent = gameObject;
 		CreateNodes();
 	}
 
 	void CreateNodes()
 	{
-		nodeDist = mapGenerator.terrainData.uniformScale;
-		width = mapGenerator.heightMap.GetLength(0);
-		height = mapGenerator.heightMap.GetLength(1);
+		nodeDist = MapGenerator.Instance.terrainData.uniformScale;
+		width = MapGenerator.Instance.heightMap.GetLength(0);
+		height = MapGenerator.Instance.heightMap.GetLength(1);
 
 		gridNodes = new AStarNode[width, height];
 		for (int y = 0; y < height; y++)
 		{
 			for (int x = 0; x < width; x++)
 			{
-				Vector3 pos = mapGenerator.GetCoordinateOfNode(x, y);
+				Vector3 pos = MapGenerator.Instance.GetCoordinateOfNode(x, y);
 				bool walkable = !(Physics.CheckSphere(pos, nodeDist/2, pathfinderData.unwalkableLayers));
-				float unscaledHeight = (pos.y - mapGenerator.transform.position.y) / nodeDist;
+				float unscaledHeight = (pos.y - MapGenerator.Instance.transform.position.y) / nodeDist;
 				walkable &= unscaledHeight <= pathfinderData.maxWalkableHeight;
 				if(x == 0 || y == 0 || x == width -1  || y == height -1)
 				{
@@ -116,11 +114,16 @@ public class AStarGrid : MonoBehaviour
 
 	public AStarNode NodeFromWorldPos(Vector3 pos)
 	{
+		return NodeFromWorldPos(new Vector2(pos.x, pos.z));
+	}
+
+	public AStarNode NodeFromWorldPos(Vector2 pos)
+	{
 		Vector3 lowerLeftCorner = gridNodes[0, 0].position;
 
 		int x = Mathf.RoundToInt((pos.x - lowerLeftCorner.x) / nodeDist);
 		x = Math.Clamp(x, 0, width - 1);
-		int y = Mathf.RoundToInt((pos.z - lowerLeftCorner.z) / nodeDist);
+		int y = Mathf.RoundToInt((pos.y - lowerLeftCorner.y) / nodeDist);
 		y = Math.Clamp(y, 0, height - 1);
 
 		return gridNodes[x, y];
@@ -128,7 +131,7 @@ public class AStarGrid : MonoBehaviour
 
 	void OnTerrainDataUpdated()
 	{
-		if(mapGenerator != null)
+		if(MapGenerator.Instance != null)
 		{
 			CreateNodes();
 		}
@@ -143,19 +146,13 @@ public class AStarGrid : MonoBehaviour
 		}
 	}
 
-	public List<AStarNode> path = new List<AStarNode>();
 	private void OnDrawGizmos()
 	{
-		if (gridNodes != null)
+		if (gridNodes != null && drawMapNodes)
 		{
-			AStarNode playerNode = NodeFromWorldPos(agent.transform.position);
 			foreach (var n in gridNodes)
 			{
 				Gizmos.color = n.walkable ? Color.white : Color.red;
-				if (path.Contains(n))
-				{
-					Gizmos.color = Color.blue;
-				}
 				Gizmos.DrawSphere(n.position, nodeDist / 4);
 			}
 		}

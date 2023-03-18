@@ -11,8 +11,8 @@ public class AStarNode : IHeapItem<AStarNode>
 	public Vector3 position;
 
 	public AStarNode parent = null;
-	public float hCost = 0;
-	public float gCost = 0;
+	public int hCost = 0;
+	public int gCost = 0;
 	int heapIndex;
 
 	public int HeapIndex
@@ -39,7 +39,7 @@ public class AStarNode : IHeapItem<AStarNode>
 		this.position = position;
 	}
 
-	public float fCost
+	public int fCost
 	{
 		get { return hCost + gCost; }
 	}
