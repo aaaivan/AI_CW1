@@ -57,6 +57,10 @@ public class AStarPathfinder : MonoBehaviour
 						{
 							openList.Add(node);
 						}
+						else
+						{
+							openList.UpdateItem(node);
+						}
 					}
 				}
 			}
