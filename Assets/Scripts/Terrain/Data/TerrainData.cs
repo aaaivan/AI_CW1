@@ -14,8 +14,8 @@ public class TerrainData : ScriptableObject
 	public Vector2 offset = Vector2.zero;
 	public float[,] noiseMap;
 
-	[Range(0, 1.0f)] public float mapScale = 1.0f;
-	[Range(0.0f, 500.0f)] public float noiseHeightMultiplier = 100.0f;
+	[Range(0, 5.0f)] public float uniformScale = 1.0f;
+	[Range(0.0f, 50.0f)] public float noiseHeightMultiplier = 100.0f;
 	public bool useCurveMultiplier = true;
 	public AnimationCurve meshHeightCurveMultiplier;
 	public bool useFalloffMap = true;
@@ -28,6 +28,10 @@ public class TerrainData : ScriptableObject
 	public TerrainData()
 	{
 		falloffMap = FalloffGenerator.GenerateFalloutMap(mapSize, falloffSlope, falloffDistance);
+	}
+
+	public void GenerateNoiseMap()
+	{
 		noiseMap = PerlinNoise.GenerateNoiseMap(mapSize, mapSize, noiseScale,
 												octaves, persistance, lacunarity,
 												seed, offset);
@@ -44,10 +48,6 @@ public class TerrainData : ScriptableObject
 	void OnValidate()
 	{
 		falloffMap = FalloffGenerator.GenerateFalloutMap(mapSize, falloffSlope, falloffDistance);
-		noiseMap = PerlinNoise.GenerateNoiseMap(mapSize, mapSize, noiseScale,
-										octaves, persistance, lacunarity,
-										seed, offset);
-
 		if (mapSize < 2)
 		{
 			mapSize = 2;
@@ -67,6 +67,10 @@ public class TerrainData : ScriptableObject
 		if (noiseScale < 0)
 		{
 			noiseScale = 0;
+		}
+		if(uniformScale <= 0)
+		{
+			uniformScale = 0.01f;
 		}
 	}
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static class MeshGenerator
 {
-    public static MeshData GenerateTerrainMesh(float[,] heightMap, float scaleFactor, float heightMultiplier)
+    public static MeshData GenerateTerrainMesh(float[,] heightMap, float scaleFactor, float heightMultiplier, Vector3 worldPosition)
 	{
 		int width = heightMap.GetLength(0);
 		int height = heightMap.GetLength(1);
@@ -20,9 +20,9 @@ public static class MeshGenerator
 		{
 			for (int x = 0; x < width; ++x)
 			{
-				float xCoord = (x + offset.x) * scaleFactor;
-				float yCoord = heightMap[x, y] * heightMultiplier * scaleFactor;
-				float zCoord = (y + offset.y) * scaleFactor;
+				float xCoord = (x + offset.x) * scaleFactor + worldPosition.x;
+				float yCoord = heightMap[x, y] * heightMultiplier * scaleFactor + worldPosition.y;
+				float zCoord = (y + offset.y) * scaleFactor + worldPosition.z;
 				meshData.AddVertex(ref vertexIndex, new Vector3(xCoord, yCoord, zCoord));
 				meshData.AddUV(ref uvsIndex, new Vector2((float)x/width, (float)y/height));
 			}

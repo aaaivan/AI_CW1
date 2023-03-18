@@ -12,22 +12,10 @@ public class MapGeneratorEditor : Editor
 
 		if(DrawDefaultInspector())
 		{
-			if (mapGen.meshFilter == null ||
-				mapGen.meshRenderer == null ||
-				mapGen.meshCollider == null)
-			{
-				return;
-			}
 			mapGen.OnNoiseValuesUpdated();
 		}
 		if (GUILayout.Button("Generate"))
 		{
-			if (mapGen.meshFilter == null ||
-				mapGen.meshRenderer == null ||
-				mapGen.meshCollider == null)
-			{
-				return;
-			}
 			mapGen.OnNoiseValuesUpdated();
 		}
 	}

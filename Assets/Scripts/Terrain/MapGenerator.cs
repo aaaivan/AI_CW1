@@ -11,86 +11,75 @@ public class MapGenerator : MonoBehaviour
 	public TerrainData terrainData;
 	public TextureData textureData;
 
-	public TerrainType[] regions;
-
 	public MeshFilter meshFilter;
-	public MeshRenderer meshRenderer;
 	public MeshCollider meshCollider;
 	public Material terrainMaterial;
+
+	[HideInInspector] public float[,] heightMap;
+	[HideInInspector] public Vector3[] points;
 
 	private void Awake()
 	{
 		meshFilter = GetComponent<MeshFilter>();
-		meshRenderer = GetComponent<MeshRenderer>();
 		meshCollider = GetComponent<MeshCollider>();
 
 		drawMode = DrawMode.Mesh;
 		terrainData.seed = (int)DateTime.Now.Ticks;
-		DrawMap();
+		DrawMapAtPosition(transform.position);
 	}
 
+	#region MAP_GENERATION
 	MapData GenerateMapData()
 	{
-		float[,] noiseMap = terrainData.noiseMap.Clone() as float[,];
+		terrainData.GenerateNoiseMap();
+
+		heightMap = terrainData.noiseMap.Clone() as float[,];
 		float minHeight = float.MaxValue;
 		float maxHeight = float.MinValue;
 
-		Color[] colorMap = new Color[terrainData.mapSize * terrainData.mapSize];
 		for(int i = 0; i < terrainData.mapSize * terrainData.mapSize; ++i)
 		{
 			int x = i % terrainData.mapSize;
 			int y = i / terrainData.mapSize;
 			if(terrainData.useFalloffMap)
 			{
-				noiseMap[x, y] = noiseMap[x, y] * terrainData.falloffMap[x, y];
+				heightMap[x, y] = heightMap[x, y] * terrainData.falloffMap[x, y];
 			}
 			if (terrainData.useCurveMultiplier)
 			{
-				noiseMap[x, y] *= terrainData.meshHeightCurveMultiplier.Evaluate(noiseMap[x, y]);
+				heightMap[x, y] *= terrainData.meshHeightCurveMultiplier.Evaluate(heightMap[x, y]);
 			}
-			minHeight = Mathf.Min(noiseMap[x, y], minHeight);
-			maxHeight = Mathf.Max(noiseMap[x, y], maxHeight);
-
-			foreach (TerrainType terrainType in regions)
-			{
-				if (noiseMap[x, y] <= terrainType.height)
-				{
-					colorMap[i] = terrainType.color;
-					break;
-				}
-			}
+			minHeight = Mathf.Min(heightMap[x, y], minHeight);
+			maxHeight = Mathf.Max(heightMap[x, y], maxHeight);
 		}
 		textureData.UpdateMeshHeight(terrainMaterial,
-			minHeight * terrainData.mapScale * terrainData.noiseHeightMultiplier,
-			maxHeight * terrainData.mapScale * terrainData.noiseHeightMultiplier);
-		return new MapData(noiseMap, colorMap);
+			minHeight * terrainData.uniformScale * terrainData.noiseHeightMultiplier,
+			maxHeight * terrainData.uniformScale * terrainData.noiseHeightMultiplier);
+		return new MapData(heightMap);
 	}
 
-	public void DrawMap()
+	public void DrawMapAtPosition(Vector3 pos)
 	{
 		if (drawMode == DrawMode.NoiseMap)
 		{
-			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(terrainData.noiseMap, terrainData.mapScale, terrainData.noiseHeightMultiplier),
-				TextureGenerator.TextureFromHeightMap(terrainData.noiseMap), meshFilter, meshRenderer, meshCollider);
+			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(terrainData.noiseMap, terrainData.uniformScale, terrainData.noiseHeightMultiplier, transform.position), meshFilter, meshCollider);
 		}
 		else if (drawMode == DrawMode.Mesh)
 		{
 			MapData mapData = GenerateMapData();
-
-			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.mapScale, terrainData.noiseHeightMultiplier),
-				TextureGenerator.TextureFromColourMap(mapData.colorMap, terrainData.mapSize, terrainData.mapSize), meshFilter, meshRenderer, meshCollider);
+			MeshData meshData = MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.uniformScale, terrainData.noiseHeightMultiplier, pos);
+			points = meshData.vertices;
+			MapDisplay.DrawMesh(meshData, meshFilter, meshCollider);
 		}
 		else if(drawMode == DrawMode.FallOffMap)
 		{
-			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(terrainData.falloffMap, terrainData.mapScale, terrainData.noiseHeightMultiplier),
-				TextureGenerator.TextureFromHeightMap(terrainData.falloffMap), meshFilter, meshRenderer, meshCollider);
+			MapDisplay.DrawMesh(MeshGenerator.GenerateTerrainMesh(terrainData.falloffMap, terrainData.uniformScale, terrainData.noiseHeightMultiplier, transform.position), meshFilter, meshCollider);
 		}
 	}
 
 	public void OnNoiseValuesUpdated()
 	{
 		if (meshFilter == null ||
-			meshRenderer == null ||
 			meshCollider == null ||
 			terrainMaterial == null)
 		{
@@ -98,7 +87,7 @@ public class MapGenerator : MonoBehaviour
 		}
 		if (!Application.isPlaying)
 		{
-			DrawMap();
+			DrawMapAtPosition(Vector3.zero);
 		}
 	}
 
@@ -120,24 +109,22 @@ public class MapGenerator : MonoBehaviour
 			textureData.OnValuesUpdated += OnTextureValuesUpdated;
 		}
 	}
-}
+	#endregion
 
-[System.Serializable]
-public struct TerrainType
-{
-	public string name;
-	public float height;
-	public Color color;
+	public Vector3 GetCoordinateOfNode(int x, int y)
+	{
+		int index = x + y * heightMap.GetLength(0);
+		return points[index];
+	}
+
 }
 
 public struct MapData
 {
 	public readonly float[,] heightMap;
-	public readonly Color[] colorMap;
 
-	public MapData(float[,] heightMap, Color[] colorMap)
+	public MapData(float[,] heightMap)
 	{
 		this.heightMap = heightMap;
-		this.colorMap = colorMap;
 	}
 }
