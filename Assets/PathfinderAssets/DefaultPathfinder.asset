@@ -15,6 +15,5 @@ MonoBehaviour:
   unwalkableLayers:
     serializedVersion: 2
     m_Bits: 64
-  maxWalkableHeight: 2
-  maxWalkableSlope: 45
-  slopeAvoidanceFactor: 0
+  maxWalkableHeight: 9.73
+  maxWalkableSlope: 0.816

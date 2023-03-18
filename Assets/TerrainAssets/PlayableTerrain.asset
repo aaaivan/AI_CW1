@@ -17,10 +17,10 @@ MonoBehaviour:
   octaves: 3
   persistance: 0.2
   lacunarity: 2
-  seed: -347919263
+  seed: 1463396487
   offset: {x: 0, y: 0}
   uniformScale: 2
-  noiseHeightMultiplier: 5
+  noiseHeightMultiplier: 6
   useCurveMultiplier: 1
   meshHeightCurveMultiplier:
     serializedVersion: 2

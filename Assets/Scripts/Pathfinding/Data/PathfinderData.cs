@@ -6,18 +6,17 @@ using UnityEngine;
 public class PathfinderData : ScriptableObject
 {
 	public LayerMask unwalkableLayers;
-	[Range(0, 50)] public int maxWalkableHeight;
-	[Range(0.0f, 90.0f)] public float maxWalkableSlope;
-	[Range(0.0f, 50.0f)] public float slopeAvoidanceFactor;
+	[Range(0, 10)] public float maxWalkableHeight;
+	[Range(0.0f, 2.0f)] public float maxWalkableSlope;
 
-	public float GetCostForSlope(float angle)
+	public event System.Action OnValuesUpdated;
+
+	public void NotifyValueUpdated()
 	{
-		angle = Mathf.Abs(angle);
-
-		if(angle >= maxWalkableSlope)
-			return float.MaxValue;
-
-		return (slopeAvoidanceFactor * angle) / (maxWalkableSlope - angle);
+		if (OnValuesUpdated != null)
+		{
+			OnValuesUpdated();
+		}
 	}
 
 	private void OnValidate()
@@ -30,9 +29,6 @@ public class PathfinderData : ScriptableObject
 		{
 			maxWalkableSlope = 90;
 		}
-		if(slopeAvoidanceFactor < 0)
-		{
-			slopeAvoidanceFactor = 0;
-		}
+		NotifyValueUpdated();
 	}
 }
