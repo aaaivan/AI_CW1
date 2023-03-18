@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class AStarPathfinder : MonoBehaviour
 {
-	public GameObject seeker;
-	public GameObject target;
+	//public GameObject seeker;
+	//public GameObject target;
 
 	AStarGrid grid;
 
@@ -15,7 +15,7 @@ public class AStarPathfinder : MonoBehaviour
 
 	private void Update()
 	{
-		grid.path = FindPath(seeker.transform.position, target.transform.position);
+		//grid.path = FindPath(seeker.transform.position, target.transform.position);
 	}
 
 	public List<AStarNode> FindPath(Vector3 from, Vector3 to)

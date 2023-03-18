@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3690eae8dbb1555419ecf74433724a1d, type: 3}
   m_Name: PlayableTerrain
   m_EditorClassIdentifier: 
-  mapSize: 50
-  noiseScale: 8
+  mapSize: 100
+  noiseScale: 12
   octaves: 3
   persistance: 0.2
   lacunarity: 2
-  seed: 1463396487
+  seed: 1131096964
   offset: {x: 0, y: 0}
-  uniformScale: 2
-  noiseHeightMultiplier: 6
+  uniformScale: 1
+  noiseHeightMultiplier: 10
   useCurveMultiplier: 1
   meshHeightCurveMultiplier:
     serializedVersion: 2
@@ -35,8 +35,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.10007763
-      value: 0.06757502
+      time: 0.11002788
+      value: 0.04634861
       inSlope: -0.033852294
       outSlope: -0.033852294
       tangentMode: 0
@@ -44,8 +44,8 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.1360637
     - serializedVersion: 3
-      time: 0.45789576
-      value: 0.22418994
+      time: 0.5064032
+      value: 0.20060503
       inSlope: 1.3778878
       outSlope: 1.3778878
       tangentMode: 0

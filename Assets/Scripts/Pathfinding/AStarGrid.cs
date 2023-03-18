@@ -8,7 +8,7 @@ public class AStarGrid : MonoBehaviour
 	public PathfinderData pathfinderData;
 	public GameObject agent;
 
-	AStarNode[,] gridNodes;
+	public AStarNode[,] gridNodes;
 	int width;
 	int height;
 	float nodeDist;
@@ -152,7 +152,7 @@ public class AStarGrid : MonoBehaviour
 			foreach (var n in gridNodes)
 			{
 				Gizmos.color = n.walkable ? Color.white : Color.red;
-				if(path.Contains(n))
+				if (path.Contains(n))
 				{
 					Gizmos.color = Color.blue;
 				}

@@ -17,6 +17,7 @@ public class MapGenerator : MonoBehaviour
 
 	[HideInInspector] public float[,] heightMap;
 	[HideInInspector] public Vector3[] points;
+	[HideInInspector] public Rect mapRect;
 
 	private void Awake()
 	{
@@ -69,6 +70,15 @@ public class MapGenerator : MonoBehaviour
 			MapData mapData = GenerateMapData();
 			MeshData meshData = MeshGenerator.GenerateTerrainMesh(mapData.heightMap, terrainData.uniformScale, terrainData.noiseHeightMultiplier, pos);
 			points = meshData.vertices;
+
+			Vector3 btmLeft = GetCoordinateOfNode(0, 0);
+			Vector3 topRight = GetCoordinateOfNode(heightMap.GetLength(0) - 1, heightMap.GetLength(1) - 1);
+			mapRect = new Rect(
+				btmLeft.x,
+				btmLeft.z,
+				topRight.x - btmLeft.x,
+				topRight.z - btmLeft.z);
+
 			MapDisplay.DrawMesh(meshData, meshFilter, meshCollider);
 		}
 		else if(drawMode == DrawMode.FallOffMap)
