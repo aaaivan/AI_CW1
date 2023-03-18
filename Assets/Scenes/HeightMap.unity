@@ -283,8 +283,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91c31762ddba84d48954c8ca5d5bb44f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seeker: {fileID: 725576569}
-  target: {fileID: 1279389839}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -10749,6 +10747,12 @@ MonoBehaviour:
   - {x: 47.5, y: 0, z: 49.5}
   - {x: 48.5, y: 0, z: 49.5}
   - {x: 49.5, y: 0, z: 49.5}
+  mapRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
 --- !u!1 &1772898742
 GameObject:
   m_ObjectHideFlags: 0
