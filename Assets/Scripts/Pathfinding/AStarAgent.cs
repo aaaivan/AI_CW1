@@ -38,7 +38,7 @@ public class AStarAgent : MonoBehaviour
 				{
 					walkable = false;
 				}
-				gridNodes[x, y] = new AStarNode(x, y, walkable, pos);
+				gridNodes[x, y] = new AStarNode(x, y, walkable, pos, y * width + x);
 			}
 		}
 		for (int y = 0; y < height; y++)
@@ -46,6 +46,18 @@ public class AStarAgent : MonoBehaviour
 			for (int x = 0; x < width; x++)
 			{
 				gridNodes[x, y].neighbours = FindNeighbours(gridNodes[x, y]);
+			}
+		}
+		bool[] accessibleNodes = BFS.FindConnectedNodes(NodeFromWorldPos(transform.position), gridNodes.Length);
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				int index = y * width + x;
+				if (!accessibleNodes[index])
+				{
+					gridNodes[x, y].accessible = false;
+				}
 			}
 		}
 	}
@@ -152,7 +164,7 @@ public class AStarAgent : MonoBehaviour
 		{
 			foreach (var n in gridNodes)
 			{
-				Gizmos.color = n.walkable ? Color.white : Color.red;
+				Gizmos.color = n.walkable ? (n.accessible ? Color.white : Color.yellow) : Color.red;
 				Gizmos.DrawSphere(n.position, nodeDist / 4);
 			}
 		}

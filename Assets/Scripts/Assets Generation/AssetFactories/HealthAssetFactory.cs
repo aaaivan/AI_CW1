@@ -13,7 +13,7 @@ public class HealthAssetFactory : MonoBehaviour , IAssetFactory
 	public float GetProbabilityAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
 	{
 		AStarNode node = playerAgent.NodeFromWorldPos(pos);
-		return node.walkable ? accessibleNodeProbability : unaccessibleNodeProbability;
+		return node.accessible ? accessibleNodeProbability : unaccessibleNodeProbability;
 	}
 
 	public void SpawnAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
