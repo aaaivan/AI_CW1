@@ -16,5 +16,6 @@ public class GameManager : MonoBehaviour
 		Instantiate(player, playerPos, Quaternion.identity, MapGenerator.Instance.transform);
 
 		// Spawn Items
+		AssetsGeneratorManager.Instance.GenerateAssets(player.GetComponent<AStarAgent>(), MapGenerator.Instance);
 	}
 }

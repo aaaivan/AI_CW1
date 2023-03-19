@@ -4,20 +4,21 @@ using UnityEngine;
 
 public static class PoissonDiscSampling
 {
-	public static List<Vector2> GenerateDistribution(float radius, Rect sampleRegion, AStarGrid pathfinderGrid, int maxItemCount, int numSamplesBeforeRejection)
+	public static List<Vector2> GenerateDistribution(Vector2 sampleRegion, int maxItemCount, int numSamplesBeforeRejection)
 	{
+		float radius = Mathf.Sqrt(sampleRegion.x * sampleRegion.y / (maxItemCount * Mathf.PI));
 		float cellSize = radius / Mathf.Sqrt(2);
-		int width = Mathf.CeilToInt(sampleRegion.width/cellSize);
-		int height = Mathf.CeilToInt(sampleRegion.height/cellSize);
+		int width = Mathf.CeilToInt(sampleRegion.x/cellSize);
+		int height = Mathf.CeilToInt(sampleRegion.y /cellSize);
 		int itemCount = 0;
 
 		int[,] grid = new int[width, height];
 		List<Vector2> points = new List<Vector2>();
 		List<Vector2> spawnPoints = new List<Vector2>();
 
-		spawnPoints.Add(new Vector2(Random.value * sampleRegion.width,
-									Random.value * sampleRegion.height));
-		while (spawnPoints.Count > 0 && itemCount < maxItemCount)
+		spawnPoints.Add(new Vector2(Random.value * sampleRegion.x,
+									Random.value * sampleRegion.y));
+		while (spawnPoints.Count > 0)
 		{
 			int spawnIndex = Random.Range(0, spawnPoints.Count);
 			Vector2 spawnCenter = spawnPoints[spawnIndex];
@@ -48,10 +49,10 @@ public static class PoissonDiscSampling
 		return points;
 	}
 
-	static bool IsValid(Vector2 item, Rect sampleRegion, float cellSize, float radius, List<Vector2> points, int[,] grid)
+	static bool IsValid(Vector2 item, Vector2 sampleRegion, float cellSize, float radius, List<Vector2> points, int[,] grid)
 	{
-		if(item.x > 0 && item.x < sampleRegion.width &&
-			item.y > 0 && item.y < sampleRegion.height)
+		if(item.x > 0 && item.x < sampleRegion.x &&
+			item.y > 0 && item.y < sampleRegion.y)
 		{
 			int cellX = (int)(item.x / cellSize);
 			int cellY = (int)(item.y / cellSize);

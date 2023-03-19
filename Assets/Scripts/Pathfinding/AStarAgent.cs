@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AStarGrid : MonoBehaviour
+public class AStarAgent : MonoBehaviour
 {
 	public PathfinderData pathfinderData;
 	public bool drawMapNodes;
@@ -22,8 +22,8 @@ public class AStarGrid : MonoBehaviour
 	void CreateNodes()
 	{
 		nodeDist = MapGenerator.Instance.terrainData.uniformScale;
-		width = MapGenerator.Instance.heightMap.GetLength(0);
-		height = MapGenerator.Instance.heightMap.GetLength(1);
+		width = MapGenerator.Instance.Width;
+		height = MapGenerator.Instance.Height;
 
 		gridNodes = new AStarNode[width, height];
 		for (int y = 0; y < height; y++)

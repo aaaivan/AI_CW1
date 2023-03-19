@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ItemsGeneratorTest : MonoBehaviour
 {
-	public AStarGrid grid;
+	public AStarAgent grid;
 	public float radius = 1;
 	public int rejectionSamples = 30;
 	public int itemsCount = 100;
