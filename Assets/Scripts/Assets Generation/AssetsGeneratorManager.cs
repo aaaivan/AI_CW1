@@ -6,13 +6,14 @@ using UnityEngine;
 public class AssetsGeneratorManager : MonoBehaviour
 {
 	public List<GameObject> assetFactoriyGameObjects;
-	public float minDistanceBetweenItems = 20;
-	public int iterationsBeforeRejection = 50;
+	public float minDistanceBetweenItems = 10;
+	public int iterationsBeforeRejection = 100;
 
 	List<IAssetFactory> assetFactories = new List<IAssetFactory>();
 
+	static AStarAgent lastAgentUsed = null;
 	static AssetsGeneratorManager instance;
-	public static AssetsGeneratorManager Instance { get { return instance; } }
+	public static AssetsGeneratorManager Instance { get { return instance; }}
 
 	private void Awake()
 	{
@@ -24,6 +25,7 @@ public class AssetsGeneratorManager : MonoBehaviour
 				IAssetFactory f = go.GetComponent<IAssetFactory>();
 				if (f != null)
 				{
+					f.ID = assetFactories.Count;
 					assetFactories.Add(f);
 				}
 			}
@@ -42,19 +44,34 @@ public class AssetsGeneratorManager : MonoBehaviour
 		}
 	}
 
-	public void GenerateAssets(AStarAgent playerAgent, MapGenerator terrain)
+	public void GenerateAssets()
 	{
-		List<Vector2> points = PoissonDiscSampling.GenerateDistribution(terrain.MapRect.size, minDistanceBetweenItems, iterationsBeforeRejection);
+		GenerateAssets(lastAgentUsed);
+	}
+
+	public void GenerateAssets(AStarAgent agent)
+	{
+		if (agent == null)
+			return;
+
+		lastAgentUsed = agent;
+		MapGenerator terrain = MapGenerator.Instance;
+
+		// clear existing items
+		AssetsManager.Instance.ClearItems();
+
+		// generate items
+		List<Vector2> points = PoissonDiscSampling.GenerateDistribution(terrain.MapInnerRect.size, minDistanceBetweenItems, iterationsBeforeRejection);
 		foreach(var point in points)
 		{
-			Vector3? pos = terrain.GetPointAtCoordinates(point + terrain.MapRect.position);
+			Vector3? pos = terrain.GetPointAtCoordinates(point + terrain.MapInnerRect.position);
 			if (pos == null) continue;
 
 			float probabilityScaleFactor = 0;
 			List<float> cumulativeProbability = new List<float>();
 			foreach (var f in assetFactories)
 			{
-				float p = f.GetProbabilityAtLocation(pos.Value, playerAgent, terrain);
+				float p = f.GetProbabilityAtLocation(pos.Value, agent, terrain);
 				probabilityScaleFactor += p;
 				cumulativeProbability.Add(probabilityScaleFactor);
 			}
@@ -65,10 +82,21 @@ public class AssetsGeneratorManager : MonoBehaviour
 			{
 				if (cumulativeProbability[i] > r)
 				{
-					assetFactories[i].SpawnAtLocation(pos.Value, playerAgent, terrain);
+					assetFactories[i].SpawnAtLocation(pos.Value, agent, terrain);
 					break;
 				}
 			}
+		}
+
+		// Calculate clusters
+		AssetsManager.Instance.CalculateClusters();
+	}
+
+	private void OnValidate()
+	{
+		if(minDistanceBetweenItems < 1)
+		{
+			minDistanceBetweenItems = 1;
 		}
 	}
 

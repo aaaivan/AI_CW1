@@ -16,4 +16,4 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   maxWalkableHeight: 6
-  maxWalkableSlope: 0.5
+  maxWalkableSlope: 0.6

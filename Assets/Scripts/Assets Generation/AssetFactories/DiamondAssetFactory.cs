@@ -7,17 +7,19 @@ public class DiamondAssetFactory : MonoBehaviour, IAssetFactory
 	public GameObject healthPrefab;
 	[Range(0, 1.0f)]
 	public float accessibleNodeProbability;
-	[Range(0, 1.0f)]
-	public float unaccessibleNodeProbability;
+
+	int id;
+	public int ID { get { return id; } set { id = value; } }
 
 	public float GetProbabilityAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
 	{
 		AStarNode node = playerAgent.NodeFromWorldPos(pos);
-		return node.accessible ? accessibleNodeProbability : unaccessibleNodeProbability;
+		return node.accessible ? accessibleNodeProbability : 0;
 	}
 
 	public void SpawnAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
 	{
-		Instantiate(healthPrefab, pos, Quaternion.identity, terrain.transform);
+		GameObject go = Instantiate(healthPrefab, pos, Quaternion.identity, terrain.transform);
+		AssetsManager.Instance.AddItem(go);
 	}
 }

@@ -21,6 +21,16 @@ public class MapGenerator : MonoBehaviour
 	public int Width { get { return mapData.heightMap.GetLength(0); } }
 	public int Height { get { return mapData.heightMap.GetLength(1); } }
 	public Rect MapRect { get { return mapRect; } }
+	public Rect MapInnerRect // map rectangle excluding the outer border
+	{
+		get
+		{
+			return new Rect(mapRect.x + terrainData.uniformScale,
+				mapRect.y + terrainData.uniformScale,
+				mapRect.width - 2 * terrainData.uniformScale,
+				mapRect.height - 2 * terrainData.uniformScale);
+		}
+	}
 
 	private void Awake()
 	{

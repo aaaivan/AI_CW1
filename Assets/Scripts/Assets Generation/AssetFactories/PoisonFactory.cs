@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthAssetFactory : MonoBehaviour , IAssetFactory
+public class PoisonFactory : MonoBehaviour, IAssetFactory
 {
-	public GameObject healthPrefab;
+	public GameObject poisonPrefab;
 	[Range(0, 1.0f)]
 	public float accessibleNodeProbability;
 
@@ -19,7 +19,7 @@ public class HealthAssetFactory : MonoBehaviour , IAssetFactory
 
 	public void SpawnAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
 	{
-		GameObject go = Instantiate(healthPrefab, pos, Quaternion.identity, terrain.transform);
+		GameObject go = Instantiate(poisonPrefab, pos, Quaternion.identity, terrain.transform);
 		AssetsManager.Instance.AddItem(go);
 	}
 }
