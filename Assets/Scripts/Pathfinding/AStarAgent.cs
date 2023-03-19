@@ -114,19 +114,19 @@ public class AStarAgent : MonoBehaviour
 
 	public AStarNode NodeFromWorldPos(Vector3 pos)
 	{
-		return NodeFromWorldPos(new Vector2(pos.x, pos.z));
-	}
-
-	public AStarNode NodeFromWorldPos(Vector2 pos)
-	{
 		Vector3 lowerLeftCorner = gridNodes[0, 0].position;
 
 		int x = Mathf.RoundToInt((pos.x - lowerLeftCorner.x) / nodeDist);
 		x = Math.Clamp(x, 0, width - 1);
-		int y = Mathf.RoundToInt((pos.y - lowerLeftCorner.y) / nodeDist);
+		int y = Mathf.RoundToInt((pos.z - lowerLeftCorner.z) / nodeDist);
 		y = Math.Clamp(y, 0, height - 1);
 
 		return gridNodes[x, y];
+	}
+
+	public AStarNode NodeFromWorldPos(Vector2 pos)
+	{
+		return NodeFromWorldPos(new Vector3(pos.x, 0, pos.y));
 	}
 
 	void OnTerrainDataUpdated()

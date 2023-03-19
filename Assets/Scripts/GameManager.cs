@@ -13,9 +13,9 @@ public class GameManager : MonoBehaviour
 
 		// Spawn Player
 		Vector3 playerPos = MapGenerator.Instance.GetCoordinateOfNode(1, 1);
-		Instantiate(player, playerPos, Quaternion.identity, MapGenerator.Instance.transform);
+		GameObject go = Instantiate(player, playerPos, Quaternion.identity, MapGenerator.Instance.transform);
 
 		// Spawn Items
-		AssetsGeneratorManager.Instance.GenerateAssets(player.GetComponent<AStarAgent>(), MapGenerator.Instance);
+		AssetsGeneratorManager.Instance.GenerateAssets(go.GetComponent<AStarAgent>(), MapGenerator.Instance);
 	}
 }

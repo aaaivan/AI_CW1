@@ -4,9 +4,8 @@ using UnityEngine;
 
 public static class PoissonDiscSampling
 {
-	public static List<Vector2> GenerateDistribution(Vector2 sampleRegion, int maxItemCount, int numSamplesBeforeRejection)
+	public static List<Vector2> GenerateDistribution(Vector2 sampleRegion, float radius, int numSamplesBeforeRejection)
 	{
-		float radius = Mathf.Sqrt(sampleRegion.x * sampleRegion.y / (maxItemCount * Mathf.PI));
 		float cellSize = radius / Mathf.Sqrt(2);
 		int width = Mathf.CeilToInt(sampleRegion.x/cellSize);
 		int height = Mathf.CeilToInt(sampleRegion.y /cellSize);

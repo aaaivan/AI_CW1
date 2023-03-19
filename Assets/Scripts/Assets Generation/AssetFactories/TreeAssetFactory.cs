@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthAssetFactory : MonoBehaviour , IAssetFactory
+public class TreeAssetFactory : MonoBehaviour, IAssetFactory
 {
 	public GameObject healthPrefab;
 	[Range(0, 1.0f)]
