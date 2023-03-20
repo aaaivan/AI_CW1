@@ -9,9 +9,6 @@ public class PowerupAssetFactory : MonoBehaviour, IAssetFactory
 	public float accessibleNodeProbability;
 	public AnimationCurve yAxesDistribution;
 
-	int id;
-	public int ID { get { return id; } set { id = value; } }
-
 	public float GetProbabilityAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
 	{
 		AStarNode node = playerAgent.NodeFromWorldPos(pos);

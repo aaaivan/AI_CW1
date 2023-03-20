@@ -25,7 +25,6 @@ public class AssetsGeneratorManager : MonoBehaviour
 				IAssetFactory f = go.GetComponent<IAssetFactory>();
 				if (f != null)
 				{
-					f.ID = assetFactories.Count;
 					assetFactories.Add(f);
 				}
 			}

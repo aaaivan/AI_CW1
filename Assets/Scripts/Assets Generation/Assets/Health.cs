@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static ICollectableItem;
 
 public class Health : MonoBehaviour, ICollectableItem
 {
-	public string itemName;
-	public string Name { get { return itemName; } }
+	public ItemType type;
+	public ItemType Type { get { return type; } }
 	public Vector3 Position { get { return transform.position; } }
 
 	public void OnObjectCollected()
 	{
-		Debug.Log(Name);
+		Debug.Log(AssetsManager.Instance.ItemNameFromEnum(type));
 	}
 }

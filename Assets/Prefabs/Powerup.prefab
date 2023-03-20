@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Power Up
+  type: 3
 --- !u!1 &4931358210454875522
 GameObject:
   m_ObjectHideFlags: 0

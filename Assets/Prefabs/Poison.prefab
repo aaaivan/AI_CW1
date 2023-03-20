@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Poison
+  type: 5
 --- !u!1 &4576767748010989228
 GameObject:
   m_ObjectHideFlags: 0

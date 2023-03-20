@@ -57,6 +57,53 @@ public class AssetsManager : MonoBehaviour
 	public void CalculateClusters()
 	{
 		clusterData = KMeans.FindClusters(positions, numberOfCentroids);
+		CountClusters();
+	}
+
+	public void CountClusters()
+	{
+		int[,] itemCountsInClusters = new int[clusterData.centroids.Length, (int)ICollectableItem.ItemType.MAX_ITEM_TYPES];
+		for( int i = 0; i < items.Count; i++)
+		{
+			ICollectableItem collectableItem = items[i].GetComponent<ICollectableItem>();
+			if(collectableItem != null)
+			{
+				itemCountsInClusters[clusterData.clusters[i], (int)collectableItem.Type] += 1;
+			}
+		}
+
+		string message = "";
+		for (int centroid = 0; centroid < itemCountsInClusters.GetLength(0); centroid++)
+		{
+			message += "\nCluster " + centroid.ToString() + ": ";
+			for(int itemType = 0;  itemType < itemCountsInClusters.GetLength(1); itemType++)
+			{
+				int count = itemCountsInClusters[centroid, itemType];
+				string s = string.Format("{0} ({1}) - ", ItemNameFromEnum((ICollectableItem.ItemType)itemType), count.ToString());
+				message += s;
+			}
+		}
+		Debug.Log(message);
+	}
+
+	public string ItemNameFromEnum(ICollectableItem.ItemType item)
+	{
+		switch(item)
+		{
+			case ICollectableItem.ItemType.Health:
+				return "Health";
+			case ICollectableItem.ItemType.Diamond:
+				return "Diamond";
+			case ICollectableItem.ItemType.Tree:
+				return "Tree";
+			case ICollectableItem.ItemType.Powerup:
+				return "Powerup";
+			case ICollectableItem.ItemType.Coin:
+				return "Coin";
+			case ICollectableItem.ItemType.Poison:
+				return "Poison";
+		}
+		return "";
 	}
 
 	private void OnDrawGizmos()

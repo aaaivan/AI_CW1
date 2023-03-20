@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemName: Tree
+  type: 2
 --- !u!1 &3634307271821256821
 GameObject:
   m_ObjectHideFlags: 0

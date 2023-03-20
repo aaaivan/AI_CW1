@@ -8,9 +8,6 @@ public class PoisonFactory : MonoBehaviour, IAssetFactory
 	[Range(0, 1.0f)]
 	public float accessibleNodeProbability;
 
-	int id;
-	public int ID { get { return id; } set { id = value; } }
-
 	public float GetProbabilityAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
 	{
 		AStarNode node = playerAgent.NodeFromWorldPos(pos);

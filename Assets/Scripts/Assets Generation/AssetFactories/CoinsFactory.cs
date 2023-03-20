@@ -11,9 +11,6 @@ public class CoinsFactory : MonoBehaviour, IAssetFactory
 	public float minDistanceBetweenItems;
 	public int iterationsBeforeRejection = 50;
 
-	int id;
-	public int ID { get { return id; } set { id = value; } }
-
 	public float GetProbabilityAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
 	{
 		AStarNode node = playerAgent.NodeFromWorldPos(pos);
