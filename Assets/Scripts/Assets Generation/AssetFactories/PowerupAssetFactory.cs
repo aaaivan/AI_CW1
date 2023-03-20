@@ -17,7 +17,6 @@ public class PowerupAssetFactory : MonoBehaviour, IAssetFactory
 
 	public void SpawnAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
 	{
-		GameObject go = Instantiate(powerupPrefab, pos, Quaternion.identity, terrain.transform);
-		AssetsManager.Instance.AddItem(go);
+		Instantiate(powerupPrefab, pos, Quaternion.identity, terrain.transform);
 	}
 }

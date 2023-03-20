@@ -16,7 +16,6 @@ public class PoisonFactory : MonoBehaviour, IAssetFactory
 
 	public void SpawnAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
 	{
-		GameObject go = Instantiate(poisonPrefab, pos, Quaternion.identity, terrain.transform);
-		AssetsManager.Instance.AddItem(go);
+		Instantiate(poisonPrefab, pos, Quaternion.identity, terrain.transform);
 	}
 }

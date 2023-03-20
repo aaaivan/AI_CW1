@@ -16,7 +16,6 @@ public class HealthAssetFactory : MonoBehaviour , IAssetFactory
 
 	public void SpawnAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
 	{
-		GameObject go = Instantiate(healthPrefab, pos, Quaternion.identity, terrain.transform);
-		AssetsManager.Instance.AddItem(go);
+		Instantiate(healthPrefab, pos, Quaternion.identity, terrain.transform);
 	}
 }

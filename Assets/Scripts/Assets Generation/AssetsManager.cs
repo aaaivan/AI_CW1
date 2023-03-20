@@ -10,7 +10,7 @@ public class AssetsManager : MonoBehaviour
 	public int numberOfCentroids = 2;
 	public bool drawClusters = false;
 
-	List<Transform> items = new List<Transform>();
+	List<CollectibleItem> items = new List<CollectibleItem>();
 	List<Vector3> positions = new List<Vector3>();
 	KMeansData clusterData = new KMeansData();
 
@@ -37,15 +37,15 @@ public class AssetsManager : MonoBehaviour
 		}
 	}
 
-	public void AddItem(GameObject item)
+	public void AddItem(CollectibleItem item)
 	{
-		items.Add(item.transform);
+		items.Add(item);
 		positions.Add(item.transform.position);
 	}
 
 	public void ClearItems()
 	{
-		foreach (Transform item in items)
+		foreach (CollectibleItem item in items)
 		{
 			Destroy(item.gameObject);
 		}
@@ -62,13 +62,13 @@ public class AssetsManager : MonoBehaviour
 
 	public void CountClusters()
 	{
-		int[,] itemCountsInClusters = new int[clusterData.centroids.Length, (int)ICollectableItem.ItemType.MAX_ITEM_TYPES];
+		int[,] itemCountsInClusters = new int[clusterData.centroids.Length, (int)CollectibleItem.ItemType.MAX_ITEM_TYPES];
 		for( int i = 0; i < items.Count; i++)
 		{
-			ICollectableItem collectableItem = items[i].GetComponent<ICollectableItem>();
+			CollectibleItem collectableItem = items[i];
 			if(collectableItem != null)
 			{
-				itemCountsInClusters[clusterData.clusters[i], (int)collectableItem.Type] += 1;
+				itemCountsInClusters[clusterData.clusters[i], (int)collectableItem.itemType] += 1;
 			}
 		}
 
@@ -79,31 +79,11 @@ public class AssetsManager : MonoBehaviour
 			for(int itemType = 0;  itemType < itemCountsInClusters.GetLength(1); itemType++)
 			{
 				int count = itemCountsInClusters[centroid, itemType];
-				string s = string.Format("{0} ({1}) - ", ItemNameFromEnum((ICollectableItem.ItemType)itemType), count.ToString());
+				string s = string.Format("{0} ({1}) - ", CollectibleItem.ItemNameFromEnum((CollectibleItem.ItemType)itemType), count.ToString());
 				message += s;
 			}
 		}
 		Debug.Log(message);
-	}
-
-	public string ItemNameFromEnum(ICollectableItem.ItemType item)
-	{
-		switch(item)
-		{
-			case ICollectableItem.ItemType.Health:
-				return "Health";
-			case ICollectableItem.ItemType.Diamond:
-				return "Diamond";
-			case ICollectableItem.ItemType.Tree:
-				return "Tree";
-			case ICollectableItem.ItemType.Powerup:
-				return "Powerup";
-			case ICollectableItem.ItemType.Coin:
-				return "Coin";
-			case ICollectableItem.ItemType.Poison:
-				return "Poison";
-		}
-		return "";
 	}
 
 	private void OnDrawGizmos()

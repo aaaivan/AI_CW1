@@ -27,8 +27,7 @@ public class CoinsFactory : MonoBehaviour, IAssetFactory
 			if (pos == null) continue;
 			if (playerAgent.NodeFromWorldPos(coinPos.Value).accessible)
 			{
-				GameObject go = Instantiate(coinPrefab, coinPos.Value, Quaternion.identity, terrain.transform);
-				AssetsManager.Instance.AddItem(go);
+				Instantiate(coinPrefab, coinPos.Value, Quaternion.identity, terrain.transform);
 			}
 		}
 	}

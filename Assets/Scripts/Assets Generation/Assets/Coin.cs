@@ -1,16 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static ICollectableItem;
 
-public class Coin : MonoBehaviour, ICollectableItem
+public class Coin : CollectibleItem
 {
-	public ItemType type;
-	public ItemType Type { get { return type; } }
-	public Vector3 Position { get { return transform.position; } }
-
-	public void OnObjectCollected()
+	public override void Awake()
 	{
-		Debug.Log(AssetsManager.Instance.ItemNameFromEnum(type));
+		itemType = ItemType.Coin;
+		base.Awake();
 	}
 }
