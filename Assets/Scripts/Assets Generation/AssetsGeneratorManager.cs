@@ -9,9 +9,8 @@ public class AssetsGeneratorManager : MonoBehaviour
 	public float minDistanceBetweenItems = 10;
 	public int iterationsBeforeRejection = 100;
 
-	List<IAssetFactory> assetFactories = new List<IAssetFactory>();
+	List<AssetFactory> assetFactories = new List<AssetFactory>();
 
-	static AStarAgent lastAgentUsed = null;
 	static AssetsGeneratorManager instance;
 	public static AssetsGeneratorManager Instance { get { return instance; }}
 
@@ -22,7 +21,7 @@ public class AssetsGeneratorManager : MonoBehaviour
 			instance = this;
 			foreach(var go in assetFactoriyGameObjects)
 			{
-				IAssetFactory f = go.GetComponent<IAssetFactory>();
+				AssetFactory f = go.GetComponent<AssetFactory>();
 				if (f != null)
 				{
 					assetFactories.Add(f);
@@ -45,7 +44,7 @@ public class AssetsGeneratorManager : MonoBehaviour
 
 	public void GenerateAssets()
 	{
-		GenerateAssets(lastAgentUsed);
+		GenerateAssets(GameManager.Instance.Player.GetComponent<AStarAgent>());
 	}
 
 	public void GenerateAssets(AStarAgent agent)
@@ -53,7 +52,6 @@ public class AssetsGeneratorManager : MonoBehaviour
 		if (agent == null)
 			return;
 
-		lastAgentUsed = agent;
 		MapGenerator terrain = MapGenerator.Instance;
 
 		// clear existing items

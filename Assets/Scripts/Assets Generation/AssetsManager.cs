@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using UnityEngine;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class AssetsManager : MonoBehaviour
 {
 	public int numberOfCentroids = 2;
 	public bool drawClusters = false;
+	public CollectableItemType highlightItem = CollectableItemType.MAX_ITEM_TYPES;
 
-	List<CollectibleItem> items = new List<CollectibleItem>();
-	List<Vector3> positions = new List<Vector3>();
+	[HideInInspector] public List<CollectableItem> collectableItems = new List<CollectableItem>();
+	[HideInInspector] public List<Vector3> positions = new List<Vector3>();
+	[HideInInspector] public Dictionary<CollectableItemType, List<int>> itemsByType = new Dictionary<CollectableItemType, List<int>>();
+
 	KMeansData clusterData = new KMeansData();
 
 	static AssetsManager instance;
@@ -22,6 +24,11 @@ public class AssetsManager : MonoBehaviour
 		if (instance == null)
 		{
 			instance = this;
+
+			for(int i = 0; i < (int)CollectableItemType.MAX_ITEM_TYPES; ++i)
+			{
+				itemsByType.Add((CollectableItemType)i, new List<int>());
+			}
 		}
 		else
 		{
@@ -37,20 +44,28 @@ public class AssetsManager : MonoBehaviour
 		}
 	}
 
-	public void AddItem(CollectibleItem item)
+	public void AddItem(CollectableItem item)
 	{
-		items.Add(item);
+		itemsByType[item.itemType].Add(collectableItems.Count);
+		collectableItems.Add(item);
 		positions.Add(item.transform.position);
 	}
 
 	public void ClearItems()
 	{
-		foreach (CollectibleItem item in items)
+		foreach (CollectableItem item in collectableItems)
 		{
-			Destroy(item.gameObject);
+			if(item != null)
+			{
+				Destroy(item.gameObject);
+			}
 		}
-		items.Clear();
+		collectableItems.Clear();
 		positions.Clear();
+		foreach(var listOfType in itemsByType)
+		{
+			listOfType.Value.Clear();
+		}
 		clusterData = new KMeansData();
 	}
 
@@ -62,24 +77,32 @@ public class AssetsManager : MonoBehaviour
 
 	public void CountClusters()
 	{
-		int[,] itemCountsInClusters = new int[clusterData.centroids.Length, (int)CollectibleItem.ItemType.MAX_ITEM_TYPES];
-		for( int i = 0; i < items.Count; i++)
+		int[] itemCountsPerType = new int[(int)CollectableItemType.MAX_ITEM_TYPES];
+		int[,] itemCountsInClusters = new int[clusterData.centroids.Length, (int)CollectableItemType.MAX_ITEM_TYPES];
+		for ( int i = 0; i < collectableItems.Count; i++)
 		{
-			CollectibleItem collectableItem = items[i];
+			CollectableItem collectableItem = collectableItems[i];
 			if(collectableItem != null)
 			{
 				itemCountsInClusters[clusterData.clusters[i], (int)collectableItem.itemType] += 1;
+				itemCountsPerType[(int)collectableItem.itemType] += 1;
 			}
 		}
 
-		string message = "";
+		string message = "\nTotal counts: ";
+		for (int itemType = 0; itemType < itemCountsPerType.Length; itemType++)
+		{
+			int count = itemCountsPerType[itemType];
+			string s = string.Format("{0} ({1}) - ", CollectableItemData.ItemNameFromEnum((CollectableItemType)itemType), count.ToString());
+			message += s;
+		}
 		for (int centroid = 0; centroid < itemCountsInClusters.GetLength(0); centroid++)
 		{
 			message += "\nCluster " + centroid.ToString() + ": ";
 			for(int itemType = 0;  itemType < itemCountsInClusters.GetLength(1); itemType++)
 			{
 				int count = itemCountsInClusters[centroid, itemType];
-				string s = string.Format("{0} ({1}) - ", CollectibleItem.ItemNameFromEnum((CollectibleItem.ItemType)itemType), count.ToString());
+				string s = string.Format("{0} ({1}) - ", CollectableItemData.ItemNameFromEnum((CollectableItemType)itemType), count.ToString());
 				message += s;
 			}
 		}
@@ -94,8 +117,16 @@ public class AssetsManager : MonoBehaviour
 			{
 				int cluster = clusterData.clusters[i];
 				Gizmos.color = GetColorForCluster(cluster);
-				Gizmos.DrawSphere(positions[i], 1);
+				Gizmos.DrawSphere(positions[i], MapGenerator.Instance.terrainData.uniformScale/2);
 				Gizmos.DrawLine(clusterData.centroids[cluster], positions[i]);
+			}
+		}
+		else if(highlightItem != CollectableItemType.MAX_ITEM_TYPES)
+		{
+			foreach(int i in itemsByType[highlightItem])
+			{
+				Gizmos.color = Color.black;
+				Gizmos.DrawSphere(positions[i], MapGenerator.Instance.terrainData.uniformScale);
 			}
 		}
 	}

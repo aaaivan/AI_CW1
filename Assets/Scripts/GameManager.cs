@@ -46,7 +46,6 @@ public class GameManager : MonoBehaviour
 		player = Instantiate(playerPrefab, playerPos, Quaternion.identity, MapGenerator.Instance.transform);
 		cinemachine.Follow = player.transform.Find("CameraLookAt");
 		cinemachine.LookAt = player.transform.Find("CameraLookAt");
-		player.GetComponent<PlayerMovement>().thirdPersonCamera = mainCamera.transform;
 
 		// Spawn Items
 		AssetsGeneratorManager.Instance.GenerateAssets(player.GetComponent<AStarAgent>());
