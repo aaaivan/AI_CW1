@@ -8,6 +8,12 @@ public class CollectableItem : MonoBehaviour
 	[HideInInspector] public CollectableItemType itemType;
 	[HideInInspector] public bool spin;
 	float spinVelocity = 25f;
+	AStarAgent playerAgent;
+
+	private void Awake()
+	{
+		playerAgent = GameManager.Instance.Player.GetComponent<AStarAgent>();
+	}
 
 	public void Init(CollectableItemType itemType, bool spins)
 	{
@@ -29,6 +35,16 @@ public class CollectableItem : MonoBehaviour
 		if(other.gameObject == GameManager.Instance.Player)
 		{
 			OnObjectCollected();
+		}
+	}
+
+	private void OnDrawGizmosSelected()
+	{
+		List<AStarNode> path = playerAgent.FindPathToLocation(transform.position);
+		Gizmos.color = Color.blue;
+		foreach (var n in path)
+		{
+			Gizmos.DrawSphere(n.position, MapGenerator.Instance.terrainData.uniformScale / 2);
 		}
 	}
 

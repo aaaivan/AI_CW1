@@ -136,6 +136,13 @@ public class AStarAgent : MonoBehaviour
 		return gridNodes[x, y];
 	}
 
+	public List<AStarNode> FindPathToLocation(Vector3 destination)
+	{
+		AStarNode from = NodeFromWorldPos(transform.position);
+		AStarNode to = NodeFromWorldPos(destination);
+		return AStarPathfinder.FindPath(from, to, TotalNodes);
+	}
+
 	public AStarNode NodeFromWorldPos(Vector2 pos)
 	{
 		return NodeFromWorldPos(new Vector3(pos.x, 0, pos.y));
