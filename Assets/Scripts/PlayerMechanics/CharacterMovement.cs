@@ -19,7 +19,7 @@ public class CharacterMovement : MonoBehaviour
 	private void Awake()
 	{
 		characterController = GetComponent<CharacterController>();
-		characterController.slopeLimit = Mathf.Atan(GetComponent<AStarAgent>().pathfinderData.maxWalkableSlope) * Mathf.Rad2Deg;
+		characterController.slopeLimit = Mathf.Atan(GetComponent<PathfinderAgent>().pathfinderData.maxWalkableSlope) * Mathf.Rad2Deg;
 	}
 
     void Update()

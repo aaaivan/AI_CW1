@@ -5,13 +5,13 @@ using UnityEngine;
 public class AssetFactory : MonoBehaviour
 {
 	public CollectableItemData itemData;
-	public void SpawnAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
+	public void SpawnAtLocation(Vector3 pos, PathfinderAgent playerAgent, MapGenerator terrain)
 	{
 		GameObject go = Instantiate(itemData.itemPrefab, pos, Quaternion.identity, terrain.transform);
 		go.GetComponent<CollectableItem>().Init(itemData.type, itemData.spins);
 	}
 
-	public float GetProbabilityAtLocation(Vector3 pos, AStarAgent playerAgent, MapGenerator terrain)
+	public float GetProbabilityAtLocation(Vector3 pos, PathfinderAgent playerAgent, MapGenerator terrain)
 	{
 		float radius = Mathf.Max(itemData.Collider.bounds.extents.x, itemData.Collider.bounds.extents.z);
 		bool collidesCharacter = Physics.CheckSphere(pos, radius, LayerMask.NameToLayer("Character"));

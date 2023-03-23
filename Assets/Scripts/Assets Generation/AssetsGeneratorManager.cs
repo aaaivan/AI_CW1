@@ -44,10 +44,10 @@ public class AssetsGeneratorManager : MonoBehaviour
 
 	public void GenerateAssets()
 	{
-		GenerateAssets(GameManager.Instance.Player.GetComponent<AStarAgent>());
+		GenerateAssets(GameManager.Instance.Player.GetComponent<PathfinderAgent>());
 	}
 
-	public void GenerateAssets(AStarAgent agent)
+	public void GenerateAssets(PathfinderAgent agent)
 	{
 		if (agent == null)
 			return;

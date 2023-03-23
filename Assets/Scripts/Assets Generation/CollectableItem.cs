@@ -8,11 +8,11 @@ public class CollectableItem : MonoBehaviour
 	[HideInInspector] public CollectableItemType itemType;
 	[HideInInspector] public bool spin;
 	float spinVelocity = 25f;
-	AStarAgent playerAgent;
+	PathfinderAgent playerAgent;
 
 	private void Awake()
 	{
-		playerAgent = GameManager.Instance.Player.GetComponent<AStarAgent>();
+		playerAgent = GameManager.Instance.Player.GetComponent<PathfinderAgent>();
 	}
 
 	public void Init(CollectableItemType itemType, bool spins)

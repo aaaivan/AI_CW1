@@ -48,6 +48,6 @@ public class GameManager : MonoBehaviour
 		cinemachine.LookAt = player.transform.Find("CameraLookAt");
 
 		// Spawn Items
-		AssetsGeneratorManager.Instance.GenerateAssets(player.GetComponent<AStarAgent>());
+		AssetsGeneratorManager.Instance.GenerateAssets(player.GetComponent<PathfinderAgent>());
 	}
 }
