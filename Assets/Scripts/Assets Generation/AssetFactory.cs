@@ -17,7 +17,7 @@ public class AssetFactory : MonoBehaviour
 		bool collidesCharacter = Physics.CheckSphere(pos, radius, LayerMask.NameToLayer("Character"));
 		if (collidesCharacter) { return 0; }
 
-		AStarNode node = playerAgent.NodeFromWorldPos(pos);
+		PathfinderNode node = playerAgent.NodeFromWorldPos(pos);
 		if ((node.accessible && !itemData.canGoOnAcessibleNodes) ||
 			(!node.accessible && !itemData.canGoOnUnacessibleNodes)) { return 0; }
 

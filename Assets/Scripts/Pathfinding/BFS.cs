@@ -5,9 +5,9 @@ using UnityEngine;
 
 public static class BFS
 {
-	public static bool[] FindConnectedNodes(AStarNode entryNode, int totalNodes)
+	public static bool[] FindConnectedNodes(PathfinderNode entryNode, int totalNodes)
 	{
-		Queue<AStarNode> queue = new Queue<AStarNode>();
+		Queue<PathfinderNode> queue = new Queue<PathfinderNode>();
 		bool[] visited = new bool[totalNodes];
 
 		visited[entryNode.id] = true;
@@ -15,8 +15,8 @@ public static class BFS
 
 		while (queue.Count > 0)
 		{
-			AStarNode node = queue.Dequeue();
-			foreach(AStarNode n in node.neighbours)
+			PathfinderNode node = queue.Dequeue();
+			foreach(PathfinderNode n in node.neighbours)
 			{
 				if (!visited[n.id] && node.walkable == n.walkable)
 				{

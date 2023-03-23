@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1557137515019588384}
   - component: {fileID: 1557137515018261250}
   - component: {fileID: 1557137515017163202}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Stump
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 1557137515019588392}
   - component: {fileID: 1557137515018261254}
   - component: {fileID: 1557137515017163206}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tree
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +175,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1557137515019588394}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: TreeModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -210,7 +210,7 @@ GameObject:
   - component: {fileID: 527554782938739057}
   - component: {fileID: 1265664325966809340}
   - component: {fileID: 2926556719291482209}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tree
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -231,7 +231,7 @@ Transform:
   m_Children:
   - {fileID: 1557137515019588394}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &1265664325966809340
 CapsuleCollider:

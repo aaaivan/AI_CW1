@@ -40,11 +40,14 @@ public class CollectableItem : MonoBehaviour
 
 	private void OnDrawGizmosSelected()
 	{
-		List<AStarNode> path = playerAgent.FindPathToLocation(transform.position);
-		Gizmos.color = Color.blue;
-		foreach (var n in path)
+		if(playerAgent != null)
 		{
-			Gizmos.DrawSphere(n.position, MapGenerator.Instance.terrainData.uniformScale / 2);
+			List<PathfinderNode> path = playerAgent.FindPathToLocation(transform.position);
+			Gizmos.color = Color.blue;
+			foreach (var n in path)
+			{
+				Gizmos.DrawSphere(n.position, MapGenerator.Instance.terrainData.uniformScale / 2);
+			}
 		}
 	}
 

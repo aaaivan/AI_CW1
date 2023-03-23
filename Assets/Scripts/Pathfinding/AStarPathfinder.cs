@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class AStarPathfinder
 {
-	public static List<AStarNode> FindPath(AStarNode startNode, AStarNode targetNode, int totalNodes)
+	public static List<PathfinderNode> FindPath(AStarNode startNode, AStarNode targetNode, int totalNodes)
 	{
 		Heap<AStarNode> openList = new Heap<AStarNode>(totalNodes);
 		HashSet<AStarNode> closedList = new HashSet<AStarNode>();
@@ -48,13 +48,13 @@ public static class AStarPathfinder
 			}
 		}
 
-		return new List<AStarNode>();
+		return new List<PathfinderNode>();
 	}
 
-	static List<AStarNode> RetracePath(AStarNode startNode, AStarNode targetNode)
+	static List<PathfinderNode> RetracePath(AStarNode startNode, AStarNode targetNode)
 	{
-		List <AStarNode> path =  new List<AStarNode>();
-		AStarNode node = targetNode;
+		List <PathfinderNode> path =  new List<PathfinderNode>();
+		PathfinderNode node = targetNode;
 		while(node != startNode && node != null)
 		{
 			path.Add(node);
