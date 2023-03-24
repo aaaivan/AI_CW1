@@ -5,11 +5,17 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class DamagingObject : MonoBehaviour
 {
-	protected Rigidbody rb;
+	[SerializeField] int minDamage;
+	[SerializeField] int maxDamage;
+	[SerializeField] int criticalDamage;
+	int damage;
 
-	protected virtual void Awake()
+
+	public int Damage { get { return damage; } }
+
+	protected void Awake()
 	{
-		rb = GetComponent<Rigidbody>();
+		damage = minDamage; // TODO: more interesting function for damage
 	}
 
 	private void OnCollisionEnter(Collision collision)
