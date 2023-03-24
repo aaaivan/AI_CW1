@@ -25,9 +25,17 @@ public class PathfinderAgent : MonoBehaviour
 		return new PathfinderNode(x, y, walkable, position, id);
 	}
 
-	public virtual List<PathfinderNode> FindPathToLocation(Vector3 destination)
+	/// <summary>
+	/// This should only be used to draw gizmos and not in the actual game
+	/// as it recalculates the path at every frame and is therefore inefficient
+	/// </summary>
+	public virtual List<Vector3> FindPathToLocation(Vector3 destination)
 	{
-		return new List<PathfinderNode>();
+		return new List<Vector3>();
+	}
+
+	public virtual void FindSimplifiedPathToLocationAsync(Vector3 destination)
+	{
 	}
 
 	private void Awake()

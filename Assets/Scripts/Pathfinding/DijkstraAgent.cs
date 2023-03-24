@@ -14,10 +14,25 @@ public class DijkstraAgent : PathfinderAgent
 		return new DijkstraNode(x, y, walkable, position, id);
 	}
 
-	public override List<PathfinderNode> FindPathToLocation(Vector3 destination)
+	public override List<Vector3> FindPathToLocation(Vector3 destination)
 	{
 		DijkstraNode from = (DijkstraNode)NodeFromWorldPos(transform.position);
 		DijkstraNode to = (DijkstraNode)NodeFromWorldPos(destination);
 		return DijkstraPathfinder.FindPath(from, to, TotalNodes);
+	}
+
+	public override void FindSimplifiedPathToLocationAsync(Vector3 destination)
+	{
+		DijkstraNode from = (DijkstraNode)NodeFromWorldPos(transform.position);
+		DijkstraNode to = (DijkstraNode)NodeFromWorldPos(destination);
+		StartCoroutine(FindPathCoroutine(from, to));
+	}
+
+	IEnumerator FindPathCoroutine(DijkstraNode from, DijkstraNode to)
+	{
+		List<Vector3> path = DijkstraPathfinder.FindPath(from, to, TotalNodes, true);
+		yield return null;
+
+		PathRequestManager.Instance.FinishedProcessingPath(path);
 	}
 }

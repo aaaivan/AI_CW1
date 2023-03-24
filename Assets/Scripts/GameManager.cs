@@ -7,7 +7,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 	public GameObject playerPrefab;
-	public CinemachineFreeLook cinemachine;
+	public CinemachineVirtualCamera cinemachine;
 	public Camera mainCamera;
 
 	GameObject player;
@@ -44,10 +44,12 @@ public class GameManager : MonoBehaviour
 		// Spawn Player
 		Vector3 playerPos = MapGenerator.Instance.GetCoordinateOfNode(1, 1);
 		player = Instantiate(playerPrefab, playerPos, Quaternion.identity, MapGenerator.Instance.transform);
-		cinemachine.Follow = player.transform.Find("CameraLookAt");
-		cinemachine.LookAt = player.transform.Find("CameraLookAt");
+		cinemachine.Follow = player.transform.Find("CameraFollow");
 
 		// Spawn Items
 		AssetsGeneratorManager.Instance.GenerateAssets(player.GetComponent<PathfinderAgent>());
+
+		// Spawn Enemies
+		EnemiesManager.Instance.SpawnEnemies();
 	}
 }

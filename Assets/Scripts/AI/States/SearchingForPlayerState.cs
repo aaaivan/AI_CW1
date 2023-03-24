@@ -18,4 +18,9 @@ public class SearchingForPlayerState : AIState
 		}
 		return null;
 	}
+
+	private void Update()
+	{
+		
+	}
 }

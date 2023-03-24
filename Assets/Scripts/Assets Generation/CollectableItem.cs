@@ -42,11 +42,11 @@ public class CollectableItem : MonoBehaviour
 	{
 		if(playerAgent != null)
 		{
-			List<PathfinderNode> path = playerAgent.FindPathToLocation(transform.position);
+			List<Vector3> path = playerAgent.FindPathToLocation(transform.position);
 			Gizmos.color = Color.blue;
 			foreach (var n in path)
 			{
-				Gizmos.DrawSphere(n.position, MapGenerator.Instance.terrainData.uniformScale / 2);
+				Gizmos.DrawSphere(n, MapGenerator.Instance.terrainData.uniformScale / 2);
 			}
 		}
 	}

@@ -15,7 +15,7 @@ public class Shooting : MonoBehaviour
 		if (Time.time < lastShootTime + shootingCooldownTime) return;
 
 		lastShootTime = Time.time;
-		GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPosition.position, Quaternion.LookRotation(shootDirection));
+		GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPosition.position, Quaternion.LookRotation(shootDirection.normalized));
 		Collider bulletColl = bullet.GetComponent<Collider>();
 		if(bulletColl != null )
 		{

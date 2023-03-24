@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class DijkstraPathfinder
 {
-	public static List<PathfinderNode> FindPath(DijkstraNode startNode, DijkstraNode targetNode, int totalNodes)
+	public static List<Vector3> FindPath(DijkstraNode startNode, DijkstraNode targetNode, int totalNodes, bool simplifyPath = false)
 	{
 		Heap<DijkstraNode> openList = new Heap<DijkstraNode>(totalNodes);
 		HashSet<DijkstraNode> closedList = new HashSet<DijkstraNode>();
@@ -12,66 +12,54 @@ public static class DijkstraPathfinder
 		startNode.distance = 0;
 		openList.Add(startNode);
 
-		while (openList.Count > 0)
+		bool success = false;
+		if(startNode.walkable && targetNode.walkable)
 		{
-			// find node with lowest distance
-			DijkstraNode currentNode = openList.Pop();
-			// move node to closed list
-			closedList.Add(currentNode);
+			while (openList.Count > 0)
+			{
+				// find node with lowest distance
+				DijkstraNode currentNode = openList.Pop();
+				// move node to closed list
+				closedList.Add(currentNode);
 
-			if (currentNode == targetNode)
-			{
-				return RetracePath(startNode, targetNode);
-			}
-			else
-			{
-				// Update the distances of the neighbours
-				foreach (DijkstraNode node in currentNode.neighbours)
+				if (currentNode == targetNode)
 				{
-					if (!node.walkable || closedList.Contains(node)) continue;
-
-					int newCost = currentNode.distance + GetDistance(currentNode, node);
-					if (newCost < node.distance || !openList.Contains(node))
+					success = true;
+					break;
+				}
+				else
+				{
+					// Update the distances of the neighbours
+					foreach (DijkstraNode node in currentNode.neighbours)
 					{
-						node.distance = newCost;
-						node.parent = currentNode;
-						if (!openList.Contains(node))
+						if (!node.walkable || closedList.Contains(node)) continue;
+
+						int newCost = currentNode.distance + PathfinderUtils.GetDistance(currentNode, node);
+						if (newCost < node.distance || !openList.Contains(node))
 						{
-							openList.Add(node);
-						}
-						else
-						{
-							openList.UpdateItem(node);
+							node.distance = newCost;
+							node.parent = currentNode;
+							if (!openList.Contains(node))
+							{
+								openList.Add(node);
+							}
+							else
+							{
+								openList.UpdateItem(node);
+							}
 						}
 					}
 				}
 			}
 		}
 
-		return new List<PathfinderNode>();
-	}
-
-	static List<PathfinderNode> RetracePath(DijkstraNode startNode, DijkstraNode targetNode)
-	{
-		List<PathfinderNode> path = new List<PathfinderNode>();
-		PathfinderNode node = targetNode;
-		while (node != startNode && node != null)
+		if(success)
 		{
-			path.Add(node);
-			node = node.parent;
+			return PathfinderUtils.RetracePath(startNode, targetNode, simplifyPath);
 		}
-		path.Reverse();
-		return path;
-	}
-
-	static int GetDistance(DijkstraNode fromNode, DijkstraNode toNode)
-	{
-		int dx = Mathf.Abs(fromNode.x - toNode.x);
-		int dy = Mathf.Abs(fromNode.y - toNode.y);
-		int min = Mathf.Min(dx, dy);
-		int max = Mathf.Max(dx, dy);
-
-		int dist = 14 * min + 10 * (max - min);
-		return dist;
+		else
+		{
+			return new List<Vector3>();
+		}
 	}
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class CharacterMovement : MonoBehaviour
 {
 	public float movementSpeed = 6.0f;
-	public float rotationSpeed = 10.0f;
+	public float maxRotationSpeed = 10.0f;
 	public float gravity = -9.81f;
 	public float groundCheckRadius = 0.4f;
 	public LayerMask groundMask;
@@ -33,10 +33,16 @@ public class CharacterMovement : MonoBehaviour
 	{
 		if (deltaPosition.magnitude > 0)
 		{
-			Quaternion targetRot = Quaternion.LookRotation(deltaPosition);
-			Quaternion rot = Quaternion.Lerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
-			transform.rotation = rot;
 			characterController.Move(deltaPosition * movementSpeed * Time.deltaTime);
+		}
+	}
+
+	public void Rotate(float deltaRot)
+	{
+		if (deltaRot != 0)
+		{
+			deltaRot = Mathf.Clamp(deltaRot, -maxRotationSpeed * Time.deltaTime, maxRotationSpeed * Time.deltaTime);
+			transform.Rotate(Vector3.up, deltaRot);
 		}
 	}
 
