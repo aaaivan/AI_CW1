@@ -23,6 +23,10 @@ public class PlayerControls : MonoBehaviour
 		projectileSpawnLocation = transform.Find("BulletSpawnPos");
 		movement = GetComponent<CharacterMovement>();
 		shooting = GetComponent<Shooting>();
+
+		// set the slow limit so that it matches the one specified in the pathfinder
+		CharacterController characterController = GetComponent<CharacterController>();
+		characterController.slopeLimit = Mathf.Atan(GetComponent<PathfinderAgent>().pathfinderData.maxWalkableSlope) * Mathf.Rad2Deg;
 	}
 
 	void Update()

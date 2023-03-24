@@ -11,6 +11,7 @@ public class PathfinderNode
 	public List<PathfinderNode> neighbours;
 	public PathfinderNode parent = null;
 	public Vector3 position;
+	public Vector2 gradient;
 
 	public PathfinderNode(int x, int y, bool walkable, Vector3 position, int id)
 	{

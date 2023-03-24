@@ -22,9 +22,9 @@ public class AStarAgent : PathfinderAgent
 		return AStarPathfinder.FindPath(from, to, TotalNodes);
 	}
 
-	public override void FindSimplifiedPathToLocationAsync(Vector3 destination)
+	public override void FindSimplifiedPathAsync(Vector3 start, Vector3 destination)
 	{
-		AStarNode from = (AStarNode)NodeFromWorldPos(transform.position);
+		AStarNode from = (AStarNode)NodeFromWorldPos(start);
 		AStarNode to = (AStarNode)NodeFromWorldPos(destination);
 		StartCoroutine(FindPathCoroutine(from, to));
 	}

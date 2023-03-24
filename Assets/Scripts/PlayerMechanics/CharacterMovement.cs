@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -19,7 +20,6 @@ public class CharacterMovement : MonoBehaviour
 	private void Awake()
 	{
 		characterController = GetComponent<CharacterController>();
-		characterController.slopeLimit = Mathf.Atan(GetComponent<PathfinderAgent>().pathfinderData.maxWalkableSlope) * Mathf.Rad2Deg;
 	}
 
     void Update()
@@ -29,11 +29,36 @@ public class CharacterMovement : MonoBehaviour
 		GroundedCheck();
 	}
 
-	public void Move(Vector3 deltaPosition)
+	public void Move(Vector3 moveDirection)
 	{
-		if (deltaPosition.magnitude > 0)
+		if (moveDirection.magnitude > 0)
 		{
-			characterController.Move(deltaPosition * movementSpeed * Time.deltaTime);
+			characterController.Move(moveDirection * movementSpeed * Time.deltaTime);
+		}
+	}
+
+	public void MoveTowards(Vector3 targetPoint)
+	{
+		Vector3 pos = transform.position;
+		MoveAndRotate((targetPoint - transform.position).normalized);
+		if(Mathf.Sign(transform.position.x - targetPoint.x) != Mathf.Sign(pos.x - targetPoint.x))
+		{
+			transform.position = new Vector3(targetPoint.x, transform.position.y, transform.position.z);
+		}
+		if (Mathf.Sign(transform.position.z - targetPoint.z) != Mathf.Sign(pos.z - targetPoint.z))
+		{
+			transform.position = new Vector3(transform.position.x, transform.position.y, targetPoint.z);
+		}
+	}
+
+	public void MoveAndRotate(Vector3 moveDirection)
+	{
+		if (moveDirection.magnitude > 0)
+		{
+			Quaternion targetRot = Quaternion.LookRotation(moveDirection);
+			Quaternion rot = Quaternion.Lerp(transform.rotation, targetRot, maxRotationSpeed * Time.deltaTime);
+			transform.rotation = rot;
+			characterController.Move(moveDirection * movementSpeed * Time.deltaTime);
 		}
 	}
 

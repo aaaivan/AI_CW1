@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +13,7 @@ public class PathfinderAgent : MonoBehaviour
 	float nodeDist;
 
 	protected int TotalNodes { get { return gridNodes.Length; } }
+	public float NodeDist { get { return nodeDist; } }
 
 	protected virtual PathfinderNode[,] NewMap(int width, int height)
 	{
@@ -34,7 +34,7 @@ public class PathfinderAgent : MonoBehaviour
 		return new List<Vector3>();
 	}
 
-	public virtual void FindSimplifiedPathToLocationAsync(Vector3 destination)
+	public virtual void FindSimplifiedPathAsync(Vector3 start, Vector3 destination)
 	{
 	}
 
@@ -72,7 +72,7 @@ public class PathfinderAgent : MonoBehaviour
 				gridNodes[x, y].neighbours = FindNeighbours(gridNodes[x, y]);
 			}
 		}
-		bool[] accessibleNodes = BFS.FindConnectedNodes(NodeFromWorldPos(transform.position), gridNodes.Length);
+		bool[] accessibleNodes = BFS.FindConnectedNodes(ClosestAccessibleNode(transform.position), gridNodes.Length);
 		for (int y = 0; y < height; y++)
 		{
 			for (int x = 0; x < width; x++)
@@ -140,6 +140,7 @@ public class PathfinderAgent : MonoBehaviour
 		}
 
 		Vector2 gradient = new Vector2((float)slopeX, (float)slopeY);
+		node.gradient = gradient.normalized;
 		if (gradient.magnitude > pathfinderData.maxWalkableSlope)
 		{
 			node.walkable = false;
@@ -153,11 +154,24 @@ public class PathfinderAgent : MonoBehaviour
 		Vector3 lowerLeftCorner = gridNodes[0, 0].position;
 
 		int x = Mathf.RoundToInt((pos.x - lowerLeftCorner.x) / nodeDist);
-		x = Math.Clamp(x, 0, width - 1);
+		x = Mathf.Clamp(x, 0, width - 1);
 		int y = Mathf.RoundToInt((pos.z - lowerLeftCorner.z) / nodeDist);
-		y = Math.Clamp(y, 0, height - 1);
+		y = Mathf.Clamp(y, 0, height - 1);
 
 		return gridNodes[x, y];
+	}
+
+	public Vector3 ClosestAccessibleLocation(Vector3 location)
+	{
+		PathfinderNode node = NodeFromWorldPos(location);
+		node = BFS.FindClosestAccessibleNode(node, TotalNodes);
+		return node.position;
+	}
+
+	public PathfinderNode ClosestAccessibleNode(Vector3 location)
+	{
+		PathfinderNode node = NodeFromWorldPos(location);
+		return BFS.FindClosestAccessibleNode(node, TotalNodes);
 	}
 
 	void OnTerrainDataUpdated()

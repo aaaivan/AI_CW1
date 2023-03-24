@@ -21,9 +21,9 @@ public class DijkstraAgent : PathfinderAgent
 		return DijkstraPathfinder.FindPath(from, to, TotalNodes);
 	}
 
-	public override void FindSimplifiedPathToLocationAsync(Vector3 destination)
+	public override void FindSimplifiedPathAsync(Vector3 start, Vector3 destination)
 	{
-		DijkstraNode from = (DijkstraNode)NodeFromWorldPos(transform.position);
+		DijkstraNode from = (DijkstraNode)NodeFromWorldPos(start);
 		DijkstraNode to = (DijkstraNode)NodeFromWorldPos(destination);
 		StartCoroutine(FindPathCoroutine(from, to));
 	}

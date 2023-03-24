@@ -63,7 +63,7 @@ public class PathRequestManager : MonoBehaviour
 			currentPathRequets = pathRequestsQueue.Dequeue();
 			isProcessing = true;
 
-			// find path
+			currentPathRequets.agent.FindSimplifiedPathAsync(currentPathRequets.pathStart, currentPathRequets.pathEnd);
 		}
 	}
 

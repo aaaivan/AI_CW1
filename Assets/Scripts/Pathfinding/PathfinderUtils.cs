@@ -42,7 +42,6 @@ public static class PathfinderUtils
 				currentDir = dir;
 			}
 		}
-		simplifiedPath.Add(nodes[nodes.Count - 1].position);
 		return simplifiedPath;
 	}
 

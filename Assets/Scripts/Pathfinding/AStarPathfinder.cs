@@ -61,6 +61,4 @@ public static class AStarPathfinder
 			return new List<Vector3>();
 		}
 	}
-
-
 }
