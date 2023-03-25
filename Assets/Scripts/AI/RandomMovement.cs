@@ -83,12 +83,13 @@ public class RandomMovement : MonoBehaviour
 			deltaPos.x = -deltaPos.x;
 			newPosition = pivot + deltaPos;
 		}
-		if (newPosition.y < mapRect.y ||
-			newPosition.y > mapRect.y + mapRect.height)
+		if (newPosition.z < mapRect.y ||
+			newPosition.z > mapRect.y + mapRect.height)
 		{
-			deltaPos.y = -deltaPos.y;
+			deltaPos.z = -deltaPos.z;
 			newPosition = pivot + deltaPos;
 		}
+
 		return pathfinderAgent.ClosestAccessibleLocation(newPosition);
 	}
 
