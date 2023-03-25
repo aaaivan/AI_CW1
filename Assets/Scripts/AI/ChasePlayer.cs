@@ -66,7 +66,7 @@ public class ChasePlayer : MonoBehaviour
 	{
 		lastPathUpdateTime = Time.time;
 		waitingForPath = true;
-		PathRequestManager.Instance.RequestPath(transform.position, player.transform.position, OnNewPathReceived, pathfinderAgent, true);
+		PathRequestManager.Instance.RequestPath(transform.position, pathfinderAgent.ClosestAccessibleLocation(player.transform.position), OnNewPathReceived, pathfinderAgent, true);
 	}
 
 	void OnNewPathReceived(List<Vector3> path)
