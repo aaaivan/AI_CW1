@@ -8,6 +8,8 @@ public class DamageableObject : MonoBehaviour
 	int currentHealth;
 
 	public int CurrentHealth { get { return currentHealth; } }
+	public int MaxHealth { get { return maxHealth; } }
+	public float LifeLeftPercent { get { return (float)currentHealth / maxHealth; } }
 
 	private void Awake()
 	{

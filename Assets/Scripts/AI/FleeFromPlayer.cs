@@ -1,22 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
-public class RandomMovement : MonoBehaviour
+public class FleeFromPlayer : MonoBehaviour
 {
-	float stoppingDistance;
+	List<Vector3> currentPath;
+	int currentWaypointIndex;
+	bool waitingForPath = false;
 
 	CharacterMovement characterMovement;
 	PathfinderAgent pathfinderAgent;
-
-	List<Vector3> currentPath;
-	int currentWaypointIndex;
-	List<Vector3> nextPath;
-	bool waitingForPath = false;
+	Transform player;
+	float stoppingDistance;
 
 	private void Awake()
 	{
+		player = GameManager.Instance.Player.transform;
 		characterMovement = GetComponent<CharacterMovement>();
 		pathfinderAgent = GetComponent<PathfinderAgent>();
 		stoppingDistance = MapGenerator.Instance.terrainData.uniformScale;
@@ -24,42 +23,23 @@ public class RandomMovement : MonoBehaviour
 
 	private void Update()
 	{
-		if (nextPath == null && !waitingForPath)
+		if (currentPath == null && !waitingForPath)
 		{
 			SubmitNewPathRequest();
-		}
-		if (currentPath == null && nextPath != null)
-		{
-			currentPath = nextPath;
-			nextPath = null;
-			StopAllCoroutines();
-			StartCoroutine(MovementCoroutine());
 		}
 	}
 
 	void SubmitNewPathRequest()
 	{
-		Vector3 pivot;
-		Vector3 forward;
 		waitingForPath = true;
-		if (currentPath != null && currentPath.Count > 0)
-		{
-			pivot = currentPath[currentPath.Count - 1];
-			if (currentPath.Count > 1)
-			{
-				forward = currentPath[currentPath.Count - 1] - currentPath[currentPath.Count - 2];
-			}
-			else
-			{
-				forward = currentPath[currentPath.Count - 1] - transform.position;
-			}
-		}
-		else
-		{
-			pivot = transform.position;
-			forward = transform.forward;
-		}
-		PathRequestManager.Instance.RequestPath(pivot, RandomLocation(pivot, forward), OnNewPathReceived, pathfinderAgent, true);
+
+		Vector3 fleeDirection = transform.position - player.transform.position;
+		float blending = fleeDirection.magnitude / Mathf.Min(MapGenerator.Instance.MapInnerRect.width, MapGenerator.Instance.MapInnerRect.height);
+		Mathf.Clamp01(blending);
+		fleeDirection.Normalize();
+		fleeDirection = fleeDirection * (1 - blending) + transform.forward * blending;
+		fleeDirection.Normalize();
+		PathRequestManager.Instance.RequestPath(transform.position, RandomLocation(transform.position, fleeDirection), OnNewPathReceived, pathfinderAgent, true);
 	}
 
 	Vector3 RandomLocation(Vector3 pivot, Vector3 forward)
@@ -67,14 +47,14 @@ public class RandomMovement : MonoBehaviour
 		forward.y = 0;
 		Rect mapRect = MapGenerator.Instance.MapInnerRect;
 		float angle = 120 * (Random.value - 0.5f);
-		float dist = Mathf.Min(mapRect.width, mapRect.height) * (Random.value/4 + 0.25f);
+		float dist = Mathf.Min(mapRect.width, mapRect.height) * (Random.value / 4 + 0.25f);
 
 		Vector3 deltaPos = Quaternion.Euler(0, angle, 0) * forward.normalized;
 		deltaPos *= dist;
 
 		Vector3 newPosition = pivot + deltaPos;
 
-		for(int i = 0; i < 2; ++i)
+		for (int i = 0; i < 2; ++i)
 		{
 			// make sure new point is within the map bounds
 			if (newPosition.x < mapRect.x)
@@ -109,7 +89,7 @@ public class RandomMovement : MonoBehaviour
 					v2 = Quaternion.Euler(0, -90, 0) * v2;
 				}
 				newPosition = pivot + v1 + v2;
-				deltaPos = newPosition - pivot;;
+				deltaPos = newPosition - pivot;
 			}
 
 			if (newPosition.z < mapRect.y)
@@ -154,9 +134,11 @@ public class RandomMovement : MonoBehaviour
 	void OnNewPathReceived(List<Vector3> path)
 	{
 		waitingForPath = false;
-		if(path.Count > 0)
+		if (path.Count > 0)
 		{
-			nextPath = path;
+			BlendToNewPath(path);
+			StopAllCoroutines();
+			StartCoroutine(MovementCoroutine());
 		}
 		else
 		{
@@ -167,24 +149,47 @@ public class RandomMovement : MonoBehaviour
 		}
 	}
 
+	void BlendToNewPath(List<Vector3> newPath)
+	{
+		float minDist = float.MaxValue;
+		int minDistIndex = 0;
+		// find waypoint closest to player
+		for (int i = 0; i < newPath.Count; i++)
+		{
+			float dist = Vector3.Distance(transform.position, newPath[i]);
+			if (dist < minDist)
+			{
+				minDist = dist;
+				minDistIndex = i;
+			}
+		}
+		if (minDistIndex < newPath.Count - 1)
+		{
+			Vector3 d1 = newPath[minDistIndex] - transform.position;
+			Vector3 d2 = newPath[minDistIndex + 1] - newPath[minDistIndex];
+			float angle = Vector3.Angle(d1, d2);
+			if (angle < 90)
+			{
+				minDistIndex += 1;
+			}
+		}
+		// join out current location and the closest point in the new path
+		currentPath = pathfinderAgent.FindPathToLocation(newPath[minDistIndex], true);
+		newPath.RemoveRange(0, minDistIndex + 1);
+		currentPath.AddRange(newPath);
+	}
+
 	IEnumerator MovementCoroutine()
 	{
 		currentWaypointIndex = 0;
-		while(currentWaypointIndex < currentPath.Count)
+		while (currentWaypointIndex < currentPath.Count)
 		{
 			characterMovement.MoveTowards(currentPath[currentWaypointIndex]);
 			yield return null;
 			if (Vector3.Distance(transform.position, currentPath[currentWaypointIndex]) < stoppingDistance)
 			{
 				currentWaypointIndex++;
-				if(currentWaypointIndex >= currentPath.Count && nextPath != null)
-				{
-					currentPath = nextPath;
-					currentWaypointIndex = 0;
-					nextPath = null;
-				}
-				else if(currentWaypointIndex == currentPath.Count - 1
-					&& nextPath == null && !waitingForPath) // last waypoint
+				if (currentWaypointIndex == currentPath.Count - 1 && !waitingForPath) // last waypoint
 				{
 					SubmitNewPathRequest();
 				}
@@ -197,14 +202,12 @@ public class RandomMovement : MonoBehaviour
 	{
 		StopAllCoroutines();
 		currentPath = null;
-		nextPath = null;
 	}
 
 	private void OnEnable()
 	{
 		StopAllCoroutines();
 		currentPath = null;
-		nextPath = null;
 	}
 
 	private void OnDrawGizmosSelected()

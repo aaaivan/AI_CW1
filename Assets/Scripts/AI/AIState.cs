@@ -5,7 +5,6 @@ using UnityEngine;
 public class AIState : MonoBehaviour
 {
 	[SerializeField] protected string stateName;
-	[SerializeField] protected float movementSpeed;
 	[SerializeField] protected LayerMask layersBlockingView;
 	[SerializeField] protected float sightDistance;
 	[SerializeField][Range(0, 90.0f)] protected float fieldOfViewDeg;
@@ -13,16 +12,50 @@ public class AIState : MonoBehaviour
 	protected Transform bulletOrigin;
 	protected Dictionary<string, AIState> adjacentStates = new Dictionary<string, AIState> ();
 	protected Transform player;
+	protected bool isActive;
+
+	protected float nodeDist;
 
 	protected virtual void Awake()
 	{
 		bulletOrigin = transform.Find("BulletSpawnPos");
 		player = GameManager.Instance.Player.transform;
+		nodeDist = MapGenerator.Instance.terrainData.uniformScale;
 	}
 
 	public virtual AIState CheckConditions()
 	{
 		return null;
+	}
+
+	protected virtual void StateDidBecomeActive()
+	{
+		return;
+	}
+
+	protected virtual void StateDidBecomeInactive()
+	{
+		return;
+	}
+
+
+	public bool IsActive
+	{
+		set
+		{
+			if (isActive != value)
+			{
+				isActive = value;
+				if (isActive)
+				{
+					StateDidBecomeActive();
+				}
+				else
+				{
+					StateDidBecomeInactive();
+				}
+			}
+		}
 	}
 
 	public string StateName { get { return stateName; } }

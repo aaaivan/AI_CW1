@@ -36,10 +36,7 @@ public class ChasePlayer : MonoBehaviour
 		characterMovement = GetComponent<CharacterMovement>();
 		shootingController = GetComponent<Shooting>();
 		pathfinderAgent = GetComponent<PathfinderAgent>();
-	}
-	private void Start()
-	{
-		stoppingDistance = pathfinderAgent.NodeDist;
+		stoppingDistance = MapGenerator.Instance.terrainData.uniformScale;
 	}
 
 	private void Update()
