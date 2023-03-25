@@ -6,24 +6,35 @@ public class ChasePlayer : MonoBehaviour
 {
 	[SerializeField] float stoppingDistanceFromPlayer = 10;
 	[SerializeField] LayerMask layersBlockingView;
-	float stoppingDistance;
-	Transform bulletOrigin;
-	Transform player;
-	const float pathUpdateTimeInterval = 0.5f;
-	float lastPathUpdateTime = 0f;
-
-	CharacterMovement characterMovement;
-	PathfinderAgent pathfinderAgent;
-	bool waitingForPath = false;
 
 	List<Vector3> currentPath;
 	int currentWaypointIndex;
+	bool waitingForPath = false;
+	const float pathUpdateTimeInterval = 0.5f;
+	float lastPathUpdateTime = 0f;
+	float stoppingDistance;
+	bool shootWhileChasing = true;
+
+	CharacterMovement characterMovement;
+	Shooting shootingController;
+	PathfinderAgent pathfinderAgent;
+	Transform bulletOrigin;
+	Transform player;
+	float playerHeight;
+
+	public bool ShootWhileChasing
+	{
+		get {  return shootWhileChasing; }
+		set {  shootWhileChasing = value; }
+	}
 
 	private void Awake()
 	{
 		bulletOrigin = transform.Find("BulletSpawnPos");
 		player = GameManager.Instance.Player.transform;
+		playerHeight = player.GetComponent<CharacterController>().height;
 		characterMovement = GetComponent<CharacterMovement>();
+		shootingController = GetComponent<Shooting>();
 		pathfinderAgent = GetComponent<PathfinderAgent>();
 	}
 	private void Start()
@@ -40,6 +51,14 @@ public class ChasePlayer : MonoBehaviour
 		else if(!waitingForPath && Time.time >= lastPathUpdateTime + pathUpdateTimeInterval)
 		{
 			SubmitNewPathRequest();
+		}
+
+		if(shootWhileChasing)
+		{
+			Vector3 shootDir = player.transform.position
+				+ Vector3.up * playerHeight/2
+				- bulletOrigin.position;
+			shootingController.Shoot(shootDir.normalized);
 		}
 	}
 
