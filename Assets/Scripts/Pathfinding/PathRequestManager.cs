@@ -32,7 +32,7 @@ public class PathRequestManager : MonoBehaviour
 		}
 	}
 
-	public void RequestPath(Vector3 pathStart, Vector3 pathEnd, Action<List<Vector3>> callback, PathfinderAgent agent)
+	public void RequestPath(Vector3 pathStart, Vector3 pathEnd, Action<List<Vector3>> callback, PathfinderAgent agent, bool simplifyPath)
 	{
 		// if the agent is already in the queue,
 		// just update its request instead of creating a new one
@@ -44,13 +44,14 @@ public class PathRequestManager : MonoBehaviour
 				path.pathStart = pathStart;
 				path.pathEnd = pathEnd;
 				path.callback = callback;
+				path.simplifyPath = simplifyPath;
 				found = true;
 				break;
 			}
 		}
 		if(!found)
 		{
-			PathRequest pathRequest = new PathRequest(pathStart, pathEnd, callback, agent);
+			PathRequest pathRequest = new PathRequest(pathStart, pathEnd, callback, agent, simplifyPath);
 			pathRequestsQueue.Enqueue(pathRequest);
 			TryProcessNext();
 		}
@@ -63,7 +64,7 @@ public class PathRequestManager : MonoBehaviour
 			currentPathRequets = pathRequestsQueue.Dequeue();
 			isProcessing = true;
 
-			currentPathRequets.agent.FindSimplifiedPathAsync(currentPathRequets.pathStart, currentPathRequets.pathEnd);
+			currentPathRequets.agent.FindPathAsync(currentPathRequets.pathStart, currentPathRequets.pathEnd, currentPathRequets.simplifyPath);
 		}
 	}
 
@@ -80,13 +81,15 @@ public class PathRequestManager : MonoBehaviour
 		public Vector3 pathEnd;
 		public Action<List<Vector3>> callback;
 		public PathfinderAgent agent;
+		public bool simplifyPath;
 
-		public PathRequest(Vector3 pathStart, Vector3 pathEnd, Action<List<Vector3>> callback, PathfinderAgent agent)
+		public PathRequest(Vector3 pathStart, Vector3 pathEnd, Action<List<Vector3>> callback, PathfinderAgent agent, bool simplifyPath)
 		{
 			this.pathStart = pathStart;
 			this.pathEnd = pathEnd;
 			this.callback = callback;
 			this.agent = agent;
+			this.simplifyPath = simplifyPath;
 		}
 	}
 }

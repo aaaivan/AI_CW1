@@ -7,7 +7,7 @@ public class ChasePlayer : MonoBehaviour
 	[SerializeField] float stoppingDistanceFromPlayer = 10;
 	[SerializeField] LayerMask layersBlockingView;
 	float stoppingDistance;
-	Transform sightOrigin;
+	Transform bulletOrigin;
 	Transform player;
 	const float pathUpdateTimeInterval = 0.5f;
 	float lastPathUpdateTime = 0f;
@@ -18,11 +18,10 @@ public class ChasePlayer : MonoBehaviour
 
 	List<Vector3> currentPath;
 	int currentWaypointIndex;
-	List<Vector3> nextPath;
 
 	private void Awake()
 	{
-		sightOrigin = transform.Find("Sight");
+		bulletOrigin = transform.Find("BulletSpawnPos");
 		player = GameManager.Instance.Player.transform;
 		characterMovement = GetComponent<CharacterMovement>();
 		pathfinderAgent = GetComponent<PathfinderAgent>();
@@ -48,12 +47,7 @@ public class ChasePlayer : MonoBehaviour
 	{
 		lastPathUpdateTime = Time.time;
 		waitingForPath = true;
-		Vector3 start = transform.position;
-		if (currentPath != null && currentWaypointIndex < currentPath.Count)
-		{
-			start = currentPath[currentWaypointIndex];
-		}
-		PathRequestManager.Instance.RequestPath(start, player.transform.position, OnNewPathReceived, pathfinderAgent);
+		PathRequestManager.Instance.RequestPath(transform.position, player.transform.position, OnNewPathReceived, pathfinderAgent, true);
 	}
 
 	void OnNewPathReceived(List<Vector3> path)
@@ -61,7 +55,7 @@ public class ChasePlayer : MonoBehaviour
 		waitingForPath = false;
 		if (path.Count > 0)
 		{
-			nextPath = path;
+			BlendToNewPath(path);
 			StopAllCoroutines();
 			StartCoroutine(MovementCoroutine());
 		}
@@ -74,6 +68,36 @@ public class ChasePlayer : MonoBehaviour
 		}
 	}
 
+	void BlendToNewPath(List<Vector3> newPath)
+	{
+		float minDist = float.MaxValue;
+		int minDistIndex = 0;
+		// find waypoint closest to player
+		for(int i = 0; i < newPath.Count; i++)
+		{
+			float dist = Vector3.Distance(transform.position, newPath[i]);
+			if (dist < minDist)
+			{
+				minDist = dist;
+				minDistIndex = i;
+			}
+		}
+		if (minDistIndex < newPath.Count - 1)
+		{
+			Vector3 d1 = newPath[minDistIndex] - transform.position;
+			Vector3 d2 = newPath[minDistIndex + 1] - newPath[minDistIndex];
+			float angle = Vector3.Angle(d1, d2);
+			if (angle < 90)
+			{
+				minDistIndex += 1;
+			}
+		}
+		// join out current location and the closest point in the new path
+		currentPath = pathfinderAgent.FindPathToLocation(newPath[minDistIndex], true);
+		newPath.RemoveRange(0, minDistIndex + 1);
+		currentPath.AddRange(newPath);
+	}
+
 	IEnumerator MovementCoroutine()
 	{
 		currentWaypointIndex = 0;
@@ -83,9 +107,17 @@ public class ChasePlayer : MonoBehaviour
 			bool canMove = Vector3.Distance(transform.position, player.transform.position) > scaledStoppingDist;
 			if(!canMove)
 			{
-				// if we are closer than the stopping distance but the player is hidden behind the terrain
-				// chase it anyway
-				canMove = Physics.Raycast(sightOrigin.position, transform.forward, scaledStoppingDist, layersBlockingView.value);
+				// if we are closer than the stopping distance but the player
+				// is hidden behind the terrain chase it anyway
+				RaycastHit hit;
+				Vector3 rayDirection = player.position - bulletOrigin.position;
+				if(Physics.Raycast(bulletOrigin.position, rayDirection.normalized, out hit, rayDirection.magnitude, layersBlockingView, QueryTriggerInteraction.Ignore))
+				{
+					if(hit.collider.gameObject.tag != "Player")
+					{
+						canMove = true;
+					}
+				}
 			}
 			if(canMove)
 			{

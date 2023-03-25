@@ -55,10 +55,8 @@ public class CharacterMovement : MonoBehaviour
 	{
 		if (moveDirection.magnitude > 0)
 		{
-			Quaternion targetRot = Quaternion.LookRotation(moveDirection);
-			Quaternion rot = Quaternion.Lerp(transform.rotation, targetRot, maxRotationSpeed * Time.deltaTime);
-			transform.rotation = rot;
 			characterController.Move(moveDirection * movementSpeed * Time.deltaTime);
+			SetLookDirection(moveDirection);
 		}
 	}
 
@@ -74,8 +72,15 @@ public class CharacterMovement : MonoBehaviour
 	public void RotateTowards(Vector3 point)
 	{
 		Vector3 direction = point - transform.position;
-		float deltaRot = Vector3.SignedAngle(transform.forward, direction, transform.up);
-		Rotate(deltaRot);
+		SetLookDirection(direction);
+	}
+
+	public void SetLookDirection(Vector3 direction)
+	{
+		Vector3 fwd = new Vector3(transform.forward.x, 0, transform.forward.z);
+		Vector3 targetLookDir = new Vector3(direction.x, 0, direction.z);
+		float angle = Vector3.SignedAngle(fwd, targetLookDir, Vector3.up);
+		Rotate(angle);
 	}
 
 	private void GroundedCheck()

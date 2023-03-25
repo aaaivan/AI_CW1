@@ -12,7 +12,7 @@ public class SearchingForPlayerState : AIState
 
 	public override AIState CheckConditions()
 	{
-		if(CanSeePoint(player.position))
+		if(CanSeePoint(player.position, MapGenerator.Instance.terrainData.uniformScale))
 		{
 			return adjacentStates["attack"];
 		}

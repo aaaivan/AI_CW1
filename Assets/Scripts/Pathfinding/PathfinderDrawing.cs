@@ -16,7 +16,7 @@ public class PathfinderDrawing : MonoBehaviour
 		if (agent != null && GameManager.Instance != null)
 		{
 			Vector3 target = GameManager.Instance.Player.transform.position; // TODO: replace with current target
-			List<Vector3> path = agent.FindPathToLocation(target);
+			List<Vector3> path = agent.FindPathToLocation(target, false);
 			Gizmos.color = Color.blue;
 			foreach (var n in path)
 			{

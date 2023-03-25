@@ -10,13 +10,13 @@ public class AIState : MonoBehaviour
 	[SerializeField] protected float sightDistance;
 	[SerializeField][Range(0, 90.0f)] protected float fieldOfViewDeg;
 
-	protected Transform sightOrigin;
+	protected Transform bulletOrigin;
 	protected Dictionary<string, AIState> adjacentStates = new Dictionary<string, AIState> ();
 	protected Transform player;
 
 	protected virtual void Awake()
 	{
-		sightOrigin = transform.Find("Sight");
+		bulletOrigin = transform.Find("BulletSpawnPos");
 		player = GameManager.Instance.Player.transform;
 	}
 
@@ -27,21 +27,24 @@ public class AIState : MonoBehaviour
 
 	public string StateName { get { return stateName; } }
 
-	protected bool CanSeePoint(Vector3 point)
+	protected bool CanSeePoint(Vector3 point, float radius)
 	{
-		Vector3 enemyToPointDirection = point - transform.position;
+		Vector3 bulletToPointDirection = point - bulletOrigin.position;
 
 		// player is too far
 		if (Vector3.Distance(transform.position, point) > sightDistance)
 			return false;
 
 		// player is out of the field of view
-		if (Vector3.Angle(transform.forward, enemyToPointDirection) > fieldOfViewDeg)
+		if (Vector3.Angle(transform.forward, bulletToPointDirection) > fieldOfViewDeg)
 			return false;
 
 		// view blocked by terrain
-		if (Physics.Raycast(sightOrigin.position, enemyToPointDirection.normalized, sightDistance, layersBlockingView.value))
+		if (Physics.Raycast(bulletOrigin.position, bulletToPointDirection.normalized,
+			bulletToPointDirection.magnitude - radius, layersBlockingView, QueryTriggerInteraction.Ignore))
+		{
 			return false;
+		}
 
 		// good to go
 		return true;

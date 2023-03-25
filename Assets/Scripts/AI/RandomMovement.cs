@@ -63,7 +63,7 @@ public class RandomMovement : MonoBehaviour
 			pivot = transform.position;
 			forward = transform.forward;
 		}
-		PathRequestManager.Instance.RequestPath(pivot, RandomLocation(pivot, forward), OnNewPathReceived, pathfinderAgent);
+		PathRequestManager.Instance.RequestPath(pivot, RandomLocation(pivot, forward), OnNewPathReceived, pathfinderAgent, true);
 	}
 
 	Vector3 RandomLocation(Vector3 pivot, Vector3 forward)

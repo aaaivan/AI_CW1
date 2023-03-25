@@ -337,37 +337,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &7267533101601474018
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5330924646472916007}
-  m_Layer: 7
-  m_Name: Sight
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5330924646472916007
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7267533101601474018}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.639, z: 0.459}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8550924921819389754}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7480519172617255106
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,7 +570,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5330924646472916007}
   - {fileID: 6315415595582194005}
   - {fileID: 6579178155042299665}
   - {fileID: 5442211245295520475}
@@ -653,7 +621,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 6
-  maxRotationSpeed: 10
+  maxRotationSpeed: 100
   gravity: -20
   groundCheckRadius: 0.4
   groundMask:
@@ -729,7 +697,7 @@ MonoBehaviour:
   stoppingDistanceFromPlayer: 10
   layersBlockingView:
     serializedVersion: 2
-    m_Bits: 73
+    m_Bits: 200
 --- !u!1001 &9011724360913682012
 PrefabInstance:
   m_ObjectHideFlags: 0
