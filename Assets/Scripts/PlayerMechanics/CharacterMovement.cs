@@ -71,6 +71,13 @@ public class CharacterMovement : MonoBehaviour
 		}
 	}
 
+	public void RotateTowards(Vector3 point)
+	{
+		Vector3 direction = point - transform.position;
+		float deltaRot = Vector3.SignedAngle(transform.forward, direction, transform.up);
+		Rotate(deltaRot);
+	}
+
 	private void GroundedCheck()
 	{
 		grounded = Physics.CheckSphere(transform.position, groundCheckRadius, groundMask, QueryTriggerInteraction.Ignore);

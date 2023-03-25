@@ -40,7 +40,7 @@ public class AIState : MonoBehaviour
 			return false;
 
 		// view blocked by terrain
-		if (Physics.Raycast(sightOrigin.position, enemyToPointDirection, sightDistance, layersBlockingView.value))
+		if (Physics.Raycast(sightOrigin.position, enemyToPointDirection.normalized, sightDistance, layersBlockingView.value))
 			return false;
 
 		// good to go

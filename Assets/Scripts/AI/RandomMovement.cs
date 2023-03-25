@@ -45,16 +45,17 @@ public class RandomMovement : MonoBehaviour
 	{
 		Vector3 pivot;
 		Vector3 forward;
+		waitingForPath = true;
 		if (currentPath != null && currentPath.Count > 0)
 		{
 			pivot = currentPath[currentPath.Count - 1];
 			if (currentPath.Count > 1)
 			{
-				forward = currentPath[currentPath.Count - 1] - currentPath[currentPath.Count - 1];
+				forward = currentPath[currentPath.Count - 1] - currentPath[currentPath.Count - 2];
 			}
 			else
 			{
-				forward = transform.forward;
+				forward = currentPath[currentPath.Count - 1] - transform.position;
 			}
 		}
 		else
@@ -63,7 +64,6 @@ public class RandomMovement : MonoBehaviour
 			forward = transform.forward;
 		}
 		PathRequestManager.Instance.RequestPath(pivot, RandomLocation(pivot, forward), OnNewPathReceived, pathfinderAgent);
-		waitingForPath = true;
 	}
 
 	Vector3 RandomLocation(Vector3 pivot, Vector3 forward)
@@ -95,7 +95,17 @@ public class RandomMovement : MonoBehaviour
 	void OnNewPathReceived(List<Vector3> path)
 	{
 		waitingForPath = false;
-		nextPath = path;
+		if(path.Count > 0)
+		{
+			nextPath = path;
+		}
+		else
+		{
+			// we might have gotten stuck in a corner
+			// walk towards the closes accessible node
+			Vector3 pos = pathfinderAgent.ClosestAccessibleLocation(transform.position);
+			characterMovement.MoveTowards(pos);
+		}
 	}
 
 	IEnumerator MovementCoroutine()
@@ -104,7 +114,8 @@ public class RandomMovement : MonoBehaviour
 		while(currentWaypointIndex < currentPath.Count)
 		{
 			characterMovement.MoveTowards(currentPath[currentWaypointIndex]);
-			if(Vector3.Distance(transform.position, currentPath[currentWaypointIndex]) < stoppingDistance)
+			yield return null;
+			if (Vector3.Distance(transform.position, currentPath[currentWaypointIndex]) < stoppingDistance)
 			{
 				currentWaypointIndex++;
 				if(currentWaypointIndex >= currentPath.Count && nextPath != null)
@@ -119,7 +130,6 @@ public class RandomMovement : MonoBehaviour
 					SubmitNewPathRequest();
 				}
 			}
-			yield return null;
 		}
 		currentPath = null;
 	}
@@ -136,5 +146,22 @@ public class RandomMovement : MonoBehaviour
 		StopAllCoroutines();
 		currentPath = null;
 		nextPath = null;
+	}
+
+	private void OnDrawGizmosSelected()
+	{
+		if (currentPath != null)
+		{
+			Gizmos.color = Color.blue;
+			Gizmos.DrawLine(transform.position, currentPath[currentWaypointIndex]);
+			for (int i = currentWaypointIndex; i < currentPath.Count; ++i)
+			{
+				Gizmos.DrawSphere(currentPath[i], MapGenerator.Instance.terrainData.uniformScale / 2);
+				if(i < currentPath.Count - 1)
+				{
+					Gizmos.DrawLine(currentPath[i], currentPath[i + 1]);
+				}
+			}
+		}
 	}
 }

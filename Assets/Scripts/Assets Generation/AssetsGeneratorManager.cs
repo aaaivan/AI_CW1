@@ -58,10 +58,10 @@ public class AssetsGeneratorManager : MonoBehaviour
 		AssetsManager.Instance.ClearItems();
 
 		// generate items
-		List<Vector2> points = PoissonDiscSampling.GenerateDistribution(terrain.MapRect.size, minDistanceBetweenItems, iterationsBeforeRejection);
+		List<Vector2> points = PoissonDiscSampling.GenerateDistribution(terrain.MapInnerRect.size, minDistanceBetweenItems, iterationsBeforeRejection);
 		foreach(var point in points)
 		{
-			Vector3? pos = terrain.GetPointAtCoordinates(point + terrain.MapRect.position);
+			Vector3? pos = terrain.GetPointAtCoordinates(point + terrain.MapInnerRect.position);
 			if (pos == null) continue;
 
 			float probabilityScaleFactor = 0;
