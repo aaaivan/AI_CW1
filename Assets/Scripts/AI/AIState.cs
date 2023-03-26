@@ -5,9 +5,9 @@ using UnityEngine;
 public class AIState : MonoBehaviour
 {
 	[SerializeField] protected string stateName;
-	[SerializeField] protected LayerMask layersBlockingView;
-	[SerializeField] protected float sightDistance;
-	[SerializeField][Range(0, 90.0f)] protected float fieldOfViewDeg;
+
+	protected LayerMask layersBlockingView;
+	protected float sightDistance = 60;
 
 	protected Transform bulletOrigin;
 	protected Transform player;
@@ -18,6 +18,7 @@ public class AIState : MonoBehaviour
 
 	protected virtual void Awake()
 	{
+		layersBlockingView = LayerMask.GetMask(new string[] { "Default", "Terrain", "Unwalkable" });
 		bulletOrigin = transform.Find("BulletSpawnPos");
 		player = GameManager.Instance.Player.transform;
 		playerHeight = player.GetComponent<CharacterController>().height;
@@ -69,10 +70,6 @@ public class AIState : MonoBehaviour
 
 		// player is too far
 		if (Vector3.Distance(transform.position, point) > sightDistance)
-			return false;
-
-		// player is out of the field of view
-		if (Vector3.Angle(transform.forward, bulletToPointDirection) > fieldOfViewDeg)
 			return false;
 
 		// view blocked by terrain

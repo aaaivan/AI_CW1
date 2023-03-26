@@ -46,7 +46,7 @@ public class FleeingState_AI1 : AIState
 	{
 		if (fleeFromPlayer != null)
 		{
-			fleeFromPlayer.enabled = true;
+			fleeFromPlayer.enabled = false;
 		}
 	}
 }

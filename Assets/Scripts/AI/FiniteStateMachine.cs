@@ -54,7 +54,6 @@ public class FiniteStateMachine : MonoBehaviour
 			}
 			activeState = newState;
 			activeState.IsActive = true;
-			Debug.Log("New State: " + activeState.StateName);
 		}
 	}
 

@@ -552,6 +552,12 @@ GameObject:
   - component: {fileID: 2461939946818906642}
   - component: {fileID: -8030601874623032624}
   - component: {fileID: 4752098500354992478}
+  - component: {fileID: -8270662557005053369}
+  - component: {fileID: -1121851479166399089}
+  - component: {fileID: 5281424894365395167}
+  - component: {fileID: -8504345920165812714}
+  - component: {fileID: 4981238378089119748}
+  - component: {fileID: 7605214820844391515}
   m_Layer: 7
   m_Name: Enemy1
   m_TagString: Player
@@ -711,6 +717,89 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d12dbeea9fcb8ed4ab54285fc2494b8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-8270662557005053369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdfa0495b6bde944c927fbc3e4bcba86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: Attack
+  timeBeforePlayerIsLost: 5
+  lifeLeftPercentBeforeFleeing: 0.3
+--- !u!114 &-1121851479166399089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f755d8d94249bda4785b2a1392cf57de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: Flee
+  stopFleeingDelay: 5
+--- !u!114 &5281424894365395167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b284199dab93e24897156eb1385e5a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: Heal
+  healtPercentToStopHealing: 0.8
+--- !u!114 &-8504345920165812714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebba45dcf53ddc94882eaec0d74410a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: Sacrifice
+--- !u!114 &4981238378089119748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ac9466c157d654c910f13f1b8da1d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: SearchHealer
+  timeToTriggerSacrifice: 60
+--- !u!114 &7605214820844391515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed077dc1bf4c6e04cb48d24d231fbd91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: SearchPlayer
 --- !u!1001 &6569586436726623674
 PrefabInstance:
   m_ObjectHideFlags: 0

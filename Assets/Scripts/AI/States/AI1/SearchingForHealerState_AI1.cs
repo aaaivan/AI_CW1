@@ -6,6 +6,7 @@ public class SearchingForHealerState_AI1 : AIState
 {
 	[SerializeField] float timeToTriggerSacrifice = 60.0f;
 	float lastHealedTime = 0;
+	int healthWhenStartingSearch = 0;
 
 	RandomMovement randomMovement;
 	DamageableObject health;
@@ -25,11 +26,6 @@ public class SearchingForHealerState_AI1 : AIState
 		sacrificeState = GetComponent<SacrificeState_A1>();
 
 		base.Awake();
-	}
-
-	private void Start()
-	{
-		lastHealedTime = Time.time;
 	}
 
 	public override AIState CheckConditions()
@@ -55,7 +51,7 @@ public class SearchingForHealerState_AI1 : AIState
 		{
 			if (CanSeePoint(t.position + Vector3.up * t.GetComponent<CharacterController>().height, nodeDist))
 			{
-				lastHealedTime = Time.time;
+				healthWhenStartingSearch = 0;
 				return healingState;
 			}
 		}
@@ -67,6 +63,11 @@ public class SearchingForHealerState_AI1 : AIState
 		if(randomMovement != null)
 		{
 			randomMovement.enabled = true;
+			if(health.CurrentHealth > healthWhenStartingSearch)
+			{
+				lastHealedTime = Time.time;
+				healthWhenStartingSearch = health.CurrentHealth;
+			}
 		}
 	}
 
