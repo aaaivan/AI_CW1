@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class PoissonDiscSampling
 {
-	public static List<Vector2> GenerateDistribution(Vector2 sampleRegion, float radius, int numSamplesBeforeRejection)
+	public static List<Vector2> GenerateDistribution(Vector2 sampleRegion, float radius, int numSamplesBeforeRejection, Vector2? seed = null)
 	{
 		float cellSize = radius / Mathf.Sqrt(2);
 		int width = Mathf.CeilToInt(sampleRegion.x/cellSize);
@@ -14,9 +14,20 @@ public static class PoissonDiscSampling
 		int[,] grid = new int[width, height];
 		List<Vector2> points = new List<Vector2>();
 		List<Vector2> spawnPoints = new List<Vector2>();
+		
+		if(seed != null)
+		{
+			Vector2 point = new Vector2(
+				Mathf.Clamp(seed.Value.x, 0, sampleRegion.x),
+				Mathf.Clamp(seed.Value.y, 0, sampleRegion.y));
+			spawnPoints.Add(point);
+		}
+		else
+		{
+			spawnPoints.Add(new Vector2(Random.value * sampleRegion.x,
+							Random.value * sampleRegion.y));
+		}
 
-		spawnPoints.Add(new Vector2(Random.value * sampleRegion.x,
-									Random.value * sampleRegion.y));
 		while (spawnPoints.Count > 0)
 		{
 			int spawnIndex = Random.Range(0, spawnPoints.Count);

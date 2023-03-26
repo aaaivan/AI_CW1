@@ -589,7 +589,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e1a3433028754c4696c993b402c02ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathfinderData: {fileID: 11400000, guid: 49c9e47539c7b004fb71ed77b9f28e94, type: 2}
+  pathfinderData: {fileID: 11400000, guid: f06a1acd5ce90cd43bf637ed888cff60, type: 2}
   drawMapNodes: 0
 --- !u!143 &6515227195488673547
 CharacterController:

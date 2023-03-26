@@ -51,7 +51,8 @@ public class PathfinderAgent : MonoBehaviour
 			for (int x = 0; x < width; x++)
 			{
 				Vector3 pos = MapGenerator.Instance.GetCoordinateOfNode(x, y);
-				bool walkable = !(Physics.CheckSphere(pos, nodeDist / 2, pathfinderData.unwalkableLayers));
+				float characterRadius = GetComponent<CharacterController>().radius;
+				bool walkable = !(Physics.CheckSphere(pos, characterRadius, pathfinderData.unwalkableLayers));
 				float unscaledHeight = (pos.y - MapGenerator.Instance.transform.position.y) / nodeDist;
 				walkable &= unscaledHeight <= pathfinderData.maxWalkableHeight;
 				if (x == 0 || y == 0 || x == width - 1 || y == height - 1)

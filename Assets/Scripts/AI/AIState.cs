@@ -10,8 +10,8 @@ public class AIState : MonoBehaviour
 	[SerializeField][Range(0, 90.0f)] protected float fieldOfViewDeg;
 
 	protected Transform bulletOrigin;
-	protected Dictionary<string, AIState> adjacentStates = new Dictionary<string, AIState> ();
 	protected Transform player;
+	protected float playerHeight;
 	protected bool isActive;
 
 	protected float nodeDist;
@@ -20,6 +20,7 @@ public class AIState : MonoBehaviour
 	{
 		bulletOrigin = transform.Find("BulletSpawnPos");
 		player = GameManager.Instance.Player.transform;
+		playerHeight = player.GetComponent<CharacterController>().height;
 		nodeDist = MapGenerator.Instance.terrainData.uniformScale;
 	}
 
@@ -48,10 +49,12 @@ public class AIState : MonoBehaviour
 				isActive = value;
 				if (isActive)
 				{
+					this.enabled = true;
 					StateDidBecomeActive();
 				}
 				else
 				{
+					this.enabled = false;
 					StateDidBecomeInactive();
 				}
 			}

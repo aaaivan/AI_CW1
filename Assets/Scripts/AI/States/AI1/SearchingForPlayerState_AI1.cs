@@ -2,21 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SearchingForPlayerState : AIState
+public class SearchingForPlayerState_AI1 : AIState
 {
 	RandomMovement randomMovement;
+
+	// next possible states
+	AttackingState_AI1 attackingState;
+
 	protected override void Awake()
 	{
 		randomMovement = GetComponent<RandomMovement>();
-		adjacentStates.Add("attack", GetComponent<AttackingState>());
+		attackingState = GetComponent<AttackingState_AI1>();
 		base.Awake();
 	}
 
 	public override AIState CheckConditions()
 	{
-		if(CanSeePoint(player.position, nodeDist))
+		if(CanSeePoint(player.position + playerHeight * Vector3.up, nodeDist))
 		{
-			return adjacentStates["attack"];
+			return attackingState;
 		}
 		return null;
 	}

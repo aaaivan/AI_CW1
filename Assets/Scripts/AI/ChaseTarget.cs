@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChasePlayer : MonoBehaviour
+public class ChaseTarget : MonoBehaviour
 {
 	[SerializeField] float stoppingDistanceFromPlayer = 10;
 	[SerializeField] LayerMask layersBlockingView;
@@ -13,14 +13,14 @@ public class ChasePlayer : MonoBehaviour
 	const float pathUpdateTimeInterval = 0.5f;
 	float lastPathUpdateTime = 0f;
 	float stoppingDistance;
-	bool shootWhileChasing = true;
+	bool shootWhileChasing = false;
 
 	CharacterMovement characterMovement;
 	Shooting shootingController;
 	PathfinderAgent pathfinderAgent;
 	Transform bulletOrigin;
-	Transform player;
-	float playerHeight;
+	Transform chaseTarget;
+	float chaseTargetHeight;
 
 	public bool ShootWhileChasing
 	{
@@ -31,16 +31,24 @@ public class ChasePlayer : MonoBehaviour
 	private void Awake()
 	{
 		bulletOrigin = transform.Find("BulletSpawnPos");
-		player = GameManager.Instance.Player.transform;
-		playerHeight = player.GetComponent<CharacterController>().height;
 		characterMovement = GetComponent<CharacterMovement>();
 		shootingController = GetComponent<Shooting>();
 		pathfinderAgent = GetComponent<PathfinderAgent>();
-		stoppingDistance = MapGenerator.Instance.terrainData.uniformScale;
+		stoppingDistance = GetComponent<CharacterController>().radius;
+	}
+
+	public void Init(Transform _chaseTarget, float _chaseTargetHeight, bool shoot)
+	{
+		chaseTarget = _chaseTarget;
+		chaseTargetHeight = _chaseTargetHeight;
+		shootWhileChasing = shoot;
 	}
 
 	private void Update()
 	{
+		if (chaseTarget == null)
+			return;
+
 		if(currentPath == null && !waitingForPath)
 		{
 			SubmitNewPathRequest();
@@ -52,8 +60,8 @@ public class ChasePlayer : MonoBehaviour
 
 		if(shootWhileChasing)
 		{
-			Vector3 shootDir = player.transform.position
-				+ Vector3.up * playerHeight/2
+			Vector3 shootDir = chaseTarget.transform.position
+				+ Vector3.up * chaseTargetHeight/ 2
 				- bulletOrigin.position;
 			shootingController.Shoot(shootDir.normalized);
 		}
@@ -63,7 +71,7 @@ public class ChasePlayer : MonoBehaviour
 	{
 		lastPathUpdateTime = Time.time;
 		waitingForPath = true;
-		PathRequestManager.Instance.RequestPath(transform.position, pathfinderAgent.ClosestAccessibleLocation(player.transform.position), OnNewPathReceived, pathfinderAgent, true);
+		PathRequestManager.Instance.RequestPath(transform.position, pathfinderAgent.ClosestAccessibleLocation(chaseTarget.transform.position), OnNewPathReceived, pathfinderAgent, true);
 	}
 
 	void OnNewPathReceived(List<Vector3> path)
@@ -119,14 +127,17 @@ public class ChasePlayer : MonoBehaviour
 		currentWaypointIndex = 0;
 		while (currentWaypointIndex < currentPath.Count)
 		{
+			if (chaseTarget == null)
+				break;
+
 			float scaledStoppingDist = stoppingDistanceFromPlayer * pathfinderAgent.NodeDist;
-			bool canMove = Vector3.Distance(transform.position, player.transform.position) > scaledStoppingDist;
+			bool canMove = Vector3.Distance(transform.position, chaseTarget.transform.position) > scaledStoppingDist;
 			if(!canMove)
 			{
 				// if we are closer than the stopping distance but the player
 				// is hidden behind the terrain chase it anyway
 				RaycastHit hit;
-				Vector3 rayDirection = player.position - bulletOrigin.position;
+				Vector3 rayDirection = chaseTarget.position - bulletOrigin.position;
 				if(Physics.Raycast(bulletOrigin.position, rayDirection.normalized, out hit, rayDirection.magnitude, layersBlockingView, QueryTriggerInteraction.Ignore))
 				{
 					if(hit.collider.gameObject.tag != "Player")
@@ -139,7 +150,7 @@ public class ChasePlayer : MonoBehaviour
 			{
 				characterMovement.MoveTowards(currentPath[currentWaypointIndex]);
 			}
-			characterMovement.RotateTowards(player.transform.position);
+			characterMovement.RotateTowards(chaseTarget.transform.position);
 			yield return null;
 			if (Vector3.Distance(transform.position, currentPath[currentWaypointIndex]) < stoppingDistance)
 			{

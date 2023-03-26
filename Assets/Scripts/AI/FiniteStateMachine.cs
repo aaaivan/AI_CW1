@@ -23,6 +23,7 @@ public class FiniteStateMachine : MonoBehaviour
 		foreach (AIState state in states)
 		{
 			state.IsActive = false;
+			state.enabled = false;
 			if(entryState == state.StateName)
 			{
 				activeState = state;
@@ -53,6 +54,7 @@ public class FiniteStateMachine : MonoBehaviour
 			}
 			activeState = newState;
 			activeState.IsActive = true;
+			Debug.Log("New State: " + activeState.StateName);
 		}
 	}
 

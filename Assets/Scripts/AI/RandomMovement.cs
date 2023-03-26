@@ -19,7 +19,7 @@ public class RandomMovement : MonoBehaviour
 	{
 		characterMovement = GetComponent<CharacterMovement>();
 		pathfinderAgent = GetComponent<PathfinderAgent>();
-		stoppingDistance = MapGenerator.Instance.terrainData.uniformScale;
+		stoppingDistance = GetComponent<CharacterController>().radius;
 	}
 
 	private void Update()

@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
 
 		// Spawn Player
 		Vector3 playerPos = MapGenerator.Instance.GetCoordinateOfNode(1, 1);
-		player = Instantiate(playerPrefab, playerPos, Quaternion.identity, MapGenerator.Instance.transform);
+		player = Instantiate(playerPrefab, playerPos, Quaternion.identity);
 		cinemachine.Follow = player.transform.Find("CameraFollow");
 
 		// Spawn Items

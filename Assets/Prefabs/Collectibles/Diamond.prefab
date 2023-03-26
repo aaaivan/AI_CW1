@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2466135996922259344}
   - component: {fileID: 2466135996923553714}
   - component: {fileID: 2466135996924683634}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Gem1Purple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 4051201799460240879}
   - component: {fileID: 5460873364551571530}
   - component: {fileID: 6368951665651060435}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Diamond
   m_TagString: Untagged
   m_Icon: {fileID: 0}

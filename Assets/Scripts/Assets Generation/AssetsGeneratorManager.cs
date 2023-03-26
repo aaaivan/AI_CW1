@@ -7,7 +7,7 @@ public class AssetsGeneratorManager : MonoBehaviour
 {
 	public List<GameObject> assetFactoriyGameObjects;
 	public float minDistanceBetweenItems = 10;
-	public int iterationsBeforeRejection = 100;
+	int iterationsBeforeRejection = 30;
 
 	List<AssetFactory> assetFactories = new List<AssetFactory>();
 
