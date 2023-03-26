@@ -488,6 +488,7 @@ MonoBehaviour:
   aimLayerMask:
     serializedVersion: 2
     m_Bits: 201
+  debugTransform: {fileID: 0}
 --- !u!114 &6301205029521460528
 MonoBehaviour:
   m_ObjectHideFlags: 0

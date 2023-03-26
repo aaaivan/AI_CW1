@@ -54,9 +54,8 @@ public class PlayerControls : MonoBehaviour
 		float shoot = Input.GetAxis("Fire1");
 		if (canShoot && shoot == 1)
 		{
-			Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width, Screen.height) / 2);
-			RaycastHit hit;
-			if(Physics.Raycast(ray, out hit, 999f, aimLayerMask.value, QueryTriggerInteraction.Ignore))
+			Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width/2f, Screen.height/2f));
+			if(Physics.Raycast(ray, out RaycastHit hit, 999f, aimLayerMask, QueryTriggerInteraction.Ignore))
 			{
 				shooting.Shoot(hit.point - projectileSpawnLocation.position);
 			}

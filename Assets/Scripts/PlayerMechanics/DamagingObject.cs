@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class DamagingObject : MonoBehaviour
 {
 	[SerializeField] int minDamage;
@@ -18,12 +17,12 @@ public class DamagingObject : MonoBehaviour
 		damage = minDamage; // TODO: more interesting function for damage
 	}
 
-	private void OnCollisionEnter(Collision collision)
+	private void OnTriggerEnter(Collider other)
 	{
-		DamageableObject other = collision.gameObject.GetComponent<DamageableObject>();
-		if (other != null)
+		DamageableObject hitObj = other.gameObject.GetComponent<DamageableObject>();
+		if (hitObj != null)
 		{
-			other.TakeDamage(this);
+			hitObj.TakeDamage(this);
 		}
 		Destroy(gameObject);
 	}
