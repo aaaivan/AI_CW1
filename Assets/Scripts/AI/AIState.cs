@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,8 +14,9 @@ public class AIState : MonoBehaviour
 	protected Transform player;
 	protected float playerHeight;
 	protected bool isActive;
-
 	protected float nodeDist;
+
+	protected FiniteStateMachine fsm;
 
 	protected virtual void Awake()
 	{
@@ -23,6 +25,7 @@ public class AIState : MonoBehaviour
 		player = GameManager.Instance.Player.transform;
 		playerHeight = player.GetComponent<CharacterController>().height;
 		nodeDist = MapGenerator.Instance.terrainData.uniformScale;
+		fsm = GetComponent<FiniteStateMachine>();
 	}
 
 	public virtual AIState CheckConditions()
@@ -30,35 +33,33 @@ public class AIState : MonoBehaviour
 		return null;
 	}
 
-	protected virtual void StateDidBecomeActive()
+	protected virtual void StateDidBecomeActive(AIState prevState)
 	{
 		return;
 	}
 
-	protected virtual void StateDidBecomeInactive()
+	protected virtual void StateDidBecomeInactive(AIState nextState)
 	{
 		return;
 	}
 
-
-	public bool IsActive
+	public void SetActive(AIState prevState)
 	{
-		set
+		if (!isActive)
 		{
-			if (isActive != value)
-			{
-				isActive = value;
-				if (isActive)
-				{
-					this.enabled = true;
-					StateDidBecomeActive();
-				}
-				else
-				{
-					this.enabled = false;
-					StateDidBecomeInactive();
-				}
-			}
+			isActive = true;
+			this.enabled = true;
+			StateDidBecomeActive(prevState);
+		}
+	}
+
+	public void SetInactive(AIState nextState)
+	{ 
+		if (isActive)
+		{
+			isActive = false;
+			this.enabled = false;
+			StateDidBecomeInactive(nextState);
 		}
 	}
 

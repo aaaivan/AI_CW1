@@ -6,13 +6,15 @@ public class SearchingForPlayerState_AI1 : AIState
 {
 	RandomMovement randomMovement;
 
-	// next possible states
+	// Next possible states
 	AttackingState_AI1 attackingState;
 
 	protected override void Awake()
 	{
 		randomMovement = GetComponent<RandomMovement>();
+
 		attackingState = GetComponent<AttackingState_AI1>();
+
 		base.Awake();
 	}
 
@@ -25,7 +27,7 @@ public class SearchingForPlayerState_AI1 : AIState
 		return null;
 	}
 
-	protected override void StateDidBecomeActive()
+	protected override void StateDidBecomeActive(AIState prevState)
 	{
 		if (randomMovement != null)
 		{
@@ -33,7 +35,7 @@ public class SearchingForPlayerState_AI1 : AIState
 		}
 	}
 
-	protected override void StateDidBecomeInactive()
+	protected override void StateDidBecomeInactive(AIState nextState)
 	{
 		if (randomMovement != null)
 		{

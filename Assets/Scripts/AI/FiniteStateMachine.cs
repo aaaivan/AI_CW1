@@ -6,30 +6,35 @@ public class FiniteStateMachine : MonoBehaviour
 {
 	[SerializeField] string characterType;
 	[SerializeField] string entryState;
+
 	int id;
-	AIState activeState;
+	Dictionary<string, AIState> aiStates = new Dictionary<string, AIState>();
+	AIState activeState = null;
 
 	static int idCounter = 0;
 
 	public int ID { get { return id; } }
 	public string CharacterType { get { return characterType; } }
-	public string CurrentState { get { return activeState != null ? activeState.StateName : ""; } }
+	public string CurrentState { get { return activeState == null ? "" : activeState.StateName; } }
 
 	private void Awake()
 	{
 		id = GenerateId();
 		AIState[] states = GetComponents<AIState>();
-		AIState activeState = null;
 		foreach (AIState state in states)
 		{
-			state.IsActive = false;
+			state.SetInactive(null);
 			state.enabled = false;
-			if(entryState == state.StateName)
-			{
-				activeState = state;
-			}
+			aiStates.Add(state.StateName, state);
 		}
-		SetActiveState(activeState);
+		if(aiStates.ContainsKey(entryState))
+		{
+			SetActiveState(aiStates[entryState]);
+		}
+		else
+		{
+			Debug.LogError("Invalid fsm entry state: " + entryState);
+		}
 	}
 
 	void Update()
@@ -50,11 +55,20 @@ public class FiniteStateMachine : MonoBehaviour
 		{
 			if (activeState != null)
 			{
-				activeState.IsActive = false;
+				activeState.SetInactive(newState);
 			}
+			newState.SetActive(activeState);
 			activeState = newState;
-			activeState.IsActive = true;
 		}
+	}
+
+	public AIState GetStateByName(string name)
+	{
+		if(aiStates.ContainsKey(name))
+		{
+			return aiStates[name];
+		}
+		return null;
 	}
 
 	static int GenerateId()

@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class HealingState_A1 : AIState
 {
-	[SerializeField] float healtPercentToStopHealing = 0.8f;
+	[SerializeField] float healthPercentToStopHealing = 0.8f;
+	[SerializeField] float stopHealingAtMinHealthProbability = 0.5f;
+	[SerializeField] float tryStopHealingTimeInterval = 5.0f;
+	float lastStopHealingAttemptTime = 0;
 	float healthPercentRequiringHealing;
 
 	ChaseTarget followHealer;
 	Transform targetedHealer;
 	DamageableObject health;
+	CharacterController characterController;
 
 	// next possible states
 	SearchingForPlayerState_AI1 searchingForPlayerState;
@@ -17,10 +21,13 @@ public class HealingState_A1 : AIState
 	FleeingState_AI1 fleeingState;
 	SearchingForHealerState_AI1 searchingForHealerState;
 
+	public Transform TargetedHealer { set { targetedHealer = value; } }
+
 	protected override void Awake()
 	{
 		followHealer = GetComponent<ChaseTarget>();
 		health = GetComponent<DamageableObject>();
+		characterController = GetComponent<CharacterController>();
 
 		searchingForPlayerState = GetComponent<SearchingForPlayerState_AI1>();
 		attackingState = GetComponent<AttackingState_AI1>();
@@ -41,58 +48,62 @@ public class HealingState_A1 : AIState
 		{
 			return searchingForHealerState;
 		}
-		if(health.HealthLeftPercent > healtPercentToStopHealing)
+		HealingAllyState_A2 healer = targetedHealer.GetComponent<HealingAllyState_A2>();
+		if(!healer.IsHealingAlly(health) || !healer.enabled)
 		{
-			return searchingForPlayerState;
+			return searchingForHealerState;
+		}
+		if (health.CurrentHealthPercent > healthPercentToStopHealing &&
+			Time.time >= lastStopHealingAttemptTime + tryStopHealingTimeInterval)
+		{
+			lastStopHealingAttemptTime = Time.time;
+			float probDistr = health.CurrentHealthPercent - healthPercentToStopHealing;
+			probDistr /= (1 - healthPercentToStopHealing);
+			probDistr *= (1 - stopHealingAtMinHealthProbability);
+			probDistr += stopHealingAtMinHealthProbability;
+			if (Random.value < probDistr)
+			{
+				return searchingForPlayerState;
+			}
 		}
 		if(CanSeePoint(player.position + playerHeight * Vector3.up, nodeDist))
 		{
-			if(health.HealthLeftPercent < healthPercentRequiringHealing)
+			if(health.CurrentHealthPercent > healthPercentRequiringHealing)
 			{
-				return fleeingState;
+				float pDist = Mathf.Pow(health.CurrentHealthPercent, 2);
+				if (Random.value <= pDist)
+				{
+					return attackingState;
+				}
 			}
-
-			float pDist = Mathf.Pow(health.HealthLeftPercent, 2);
-			if(Random.value <= pDist)
-			{
-				return attackingState;
-			}
-			else
-			{
-				return fleeingState;
-			}
+			return fleeingState;
 		}
 		return null;
 	}
 
-	protected override void StateDidBecomeActive()
+	protected override void StateDidBecomeActive(AIState prevState)
 	{
 		if (followHealer != null)
 		{
-			Transform healer = null;
-			foreach (Transform t in EnemiesManager.Instance.GetEnemiesByFSM("Healer"))
+			if(targetedHealer != null)
 			{
-				if (CanSeePoint(t.position + Vector3.up * t.GetComponent<CharacterController>().height, nodeDist))
-				{
-					healer = t;
-					break;
-				}
-			}
-
-			if(healer != null)
-			{
-				targetedHealer = healer;
-				followHealer.Init(healer, healer.GetComponent<CharacterController>().height, false);
+				followHealer.Init(targetedHealer, targetedHealer.GetComponent<CharacterController>().height,
+					false, targetedHealer.GetComponent<HealingAllyState_A2>().HealingRadius - characterController.radius * 2);
 				followHealer.enabled = true;
+				targetedHealer.GetComponent<HealingAllyState_A2>().StartHealingAlly(health);
 			}
 		}
 	}
 
-	protected override void StateDidBecomeInactive()
+	protected override void StateDidBecomeInactive(AIState nextState)
 	{
+		if(targetedHealer != null)
+		{
+			targetedHealer.GetComponent<HealingAllyState_A2>().StopHealingAlly(health);
+			targetedHealer = null;
+		}
 		if (followHealer != null)
 		{
-			targetedHealer = null;
 			followHealer.enabled = false;
 		}
 	}

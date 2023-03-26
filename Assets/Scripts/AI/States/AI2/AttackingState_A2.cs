@@ -2,36 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackingState_AI1 : AIState
+public class AttackingState_A2 : AIState
 {
-	[SerializeField] float stoppingDistanceFromPlayer = 10.0f;
+	[SerializeField] float stoppingDistFromPlayer = 10.0f;
 	[SerializeField] float timeBeforePlayerIsLost = 3.0f;
-	[SerializeField] float lifeLeftPercentBeforeFleeing = 0.3f;
+	[SerializeField] float lifeLeftPercentBeforeFleeing = 0.5f;
 	float playerLastSeenTime;
 
 	ChaseTarget chasePlayer;
-	DamageableObject damageableObject;
+	DamageableObject health;
 
 	// Next possible states
-	SearchingForPlayerState_AI1 searchingForPlayerState;
-	FleeingState_AI1 fleeingState;
+	SearchingAllyState_A2 searchingForAlly;
+	FleeingState_A2 fleeingState;
+	HealingAllyState_A2 healingAlly;
 
 	public float LifeLeftPercentBeforeFleeing { get { return lifeLeftPercentBeforeFleeing; } }
 
 	protected override void Awake()
 	{
 		chasePlayer = GetComponent<ChaseTarget>();
-		damageableObject = GetComponent<DamageableObject>();
+		health = GetComponent<DamageableObject>();
 
-		searchingForPlayerState = GetComponent<SearchingForPlayerState_AI1>();
-		fleeingState = GetComponent<FleeingState_AI1>();
+		searchingForAlly = GetComponent<SearchingAllyState_A2>();
+		fleeingState = GetComponent<FleeingState_A2>();
+		healingAlly = GetComponent<HealingAllyState_A2>();
 
 		base.Awake();
 	}
 
 	public override AIState CheckConditions()
 	{
-		if(damageableObject.CurrentHealthPercent < lifeLeftPercentBeforeFleeing)
+		if (healingAlly.WantsToHealAllies())
+		{
+			return healingAlly;
+		}
+
+		if (health.CurrentHealthPercent < lifeLeftPercentBeforeFleeing)
 		{
 			return fleeingState;
 		}
@@ -40,9 +47,9 @@ public class AttackingState_AI1 : AIState
 		{
 			playerLastSeenTime = Time.time;
 		}
-		else if(Time.time >= playerLastSeenTime + timeBeforePlayerIsLost)
+		else if (Time.time >= playerLastSeenTime + timeBeforePlayerIsLost)
 		{
-			return searchingForPlayerState;
+			return searchingForAlly;
 		}
 
 		return null;
@@ -52,7 +59,7 @@ public class AttackingState_AI1 : AIState
 	{
 		if (chasePlayer != null)
 		{
-			chasePlayer.Init(player, playerHeight, true, stoppingDistanceFromPlayer);
+			chasePlayer.Init(player, playerHeight, true, stoppingDistFromPlayer);
 			chasePlayer.enabled = true;
 		}
 	}

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ChaseTarget : MonoBehaviour
 {
-	[SerializeField] float stoppingDistanceFromPlayer = 10;
 	[SerializeField] LayerMask layersBlockingView;
 
 	List<Vector3> currentPath;
@@ -12,7 +11,8 @@ public class ChaseTarget : MonoBehaviour
 	bool waitingForPath = false;
 	const float pathUpdateTimeInterval = 0.5f;
 	float lastPathUpdateTime = 0f;
-	float stoppingDistance;
+	float stoppingDistanceFromWaypoint;
+	float stoppingDistanceFromTarget = 10;
 	bool shootWhileChasing = false;
 
 	CharacterMovement characterMovement;
@@ -28,20 +28,23 @@ public class ChaseTarget : MonoBehaviour
 		set {  shootWhileChasing = value; }
 	}
 
+	public Transform Target { get { return chaseTarget; } }
+
 	private void Awake()
 	{
 		bulletOrigin = transform.Find("BulletSpawnPos");
 		characterMovement = GetComponent<CharacterMovement>();
 		shootingController = GetComponent<Shooting>();
 		pathfinderAgent = GetComponent<PathfinderAgent>();
-		stoppingDistance = GetComponent<CharacterController>().radius;
+		stoppingDistanceFromWaypoint = GetComponent<CharacterController>().radius;
 	}
 
-	public void Init(Transform _chaseTarget, float _chaseTargetHeight, bool shoot)
+	public void Init(Transform _chaseTarget, float _chaseTargetHeight, bool _shoot, float _stoppingDistanceFromTarget)
 	{
 		chaseTarget = _chaseTarget;
 		chaseTargetHeight = _chaseTargetHeight;
-		shootWhileChasing = shoot;
+		shootWhileChasing = _shoot;
+		stoppingDistanceFromTarget = _stoppingDistanceFromTarget;
 	}
 
 	private void Update()
@@ -130,7 +133,7 @@ public class ChaseTarget : MonoBehaviour
 			if (chaseTarget == null)
 				break;
 
-			float scaledStoppingDist = stoppingDistanceFromPlayer * pathfinderAgent.NodeDist;
+			float scaledStoppingDist = stoppingDistanceFromTarget * pathfinderAgent.NodeDist;
 			bool canMove = Vector3.Distance(transform.position, chaseTarget.transform.position) > scaledStoppingDist;
 			if(!canMove)
 			{
@@ -152,7 +155,7 @@ public class ChaseTarget : MonoBehaviour
 			}
 			characterMovement.RotateTowards(chaseTarget.transform.position);
 			yield return null;
-			if (Vector3.Distance(transform.position, currentPath[currentWaypointIndex]) < stoppingDistance)
+			if (Vector3.Distance(transform.position, currentPath[currentWaypointIndex]) < stoppingDistanceFromWaypoint)
 			{
 				currentWaypointIndex++;
 				if (currentWaypointIndex == currentPath.Count - 1 && !waitingForPath) // last waypoint

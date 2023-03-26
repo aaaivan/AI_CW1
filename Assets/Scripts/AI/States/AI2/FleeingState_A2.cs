@@ -2,22 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FleeingState_AI1 : AIState
+public class FleeingState_A2 : AIState
 {
-	[SerializeField] float stopFleeingDelay = 5.0f;
+	[SerializeField] float stopFleeingDelay = 3.0f;
 	[SerializeField] float firstSecrificeAttemptDelay = 60.0f;
 	[SerializeField] float sacrificeAttemptTimeInterval = 10.0f;
 	[SerializeField] float maxHealthPercentAllowingSacrifice = 0.2f;
+	[SerializeField] float healthPercentRequiringHealing = 0.7f;
 	float lastTimePlayerWasSeen = 0;
-	float timeSinceCriticalHealth = 0;
+	float timeFleeStarted = 0;
 	float timeSinceLastAttemptedSacrifice = 0;
 
 	FleeFromPlayer fleeFromPlayer;
 	DamageableObject health;
 
 	// Next possible states
-	SearchingForHealerState_AI1 searchingForHealerState;
-	SacrificeState_A1 sacrificeState;
+	HealingState_A2 healingState;
+	SearchingAllyState_A2 searchingAllyState;
+	SacrificeState_A2 sacrificeState;
 
 
 	protected override void Awake()
@@ -25,18 +27,19 @@ public class FleeingState_AI1 : AIState
 		fleeFromPlayer = GetComponent<FleeFromPlayer>();
 		health = GetComponent<DamageableObject>();
 
-		searchingForHealerState = GetComponent<SearchingForHealerState_AI1>();
-		sacrificeState = GetComponent<SacrificeState_A1>();
+		healingState = GetComponent<HealingState_A2>();
+		searchingAllyState = GetComponent<SearchingAllyState_A2>();
+		sacrificeState = GetComponent<SacrificeState_A2>();
 
 		base.Awake();
 	}
 
 	public override AIState CheckConditions()
 	{
-		if(CanSeePoint(player.position + playerHeight * Vector3.up, nodeDist))
+		if (CanSeePoint(player.position + playerHeight * Vector3.up, nodeDist))
 		{
 			lastTimePlayerWasSeen = Time.time;
-			if (Time.time > timeSinceCriticalHealth + firstSecrificeAttemptDelay && 
+			if (Time.time > timeFleeStarted + firstSecrificeAttemptDelay &&
 				Time.time > timeSinceLastAttemptedSacrifice + sacrificeAttemptTimeInterval &&
 				health.CurrentHealthPercent < maxHealthPercentAllowingSacrifice)
 			{
@@ -48,24 +51,28 @@ public class FleeingState_AI1 : AIState
 				}
 			}
 		}
-		if(Time.time >= lastTimePlayerWasSeen + stopFleeingDelay)
+		if (Time.time >= lastTimePlayerWasSeen + stopFleeingDelay)
 		{
-			return searchingForHealerState;
+			if(health.CurrentHealthPercent > healthPercentRequiringHealing)
+			{
+				float probDist = Mathf.Pow(health.CurrentHealthPercent, 2);
+				if (Random.value < probDist)
+				{
+					return searchingAllyState;
+				}
+			}
+			return healingState;
 		}
-
 		return null;
 	}
 
 	protected override void StateDidBecomeActive(AIState prevState)
 	{
-		if(fleeFromPlayer != null)
+		if (fleeFromPlayer != null)
 		{
 			fleeFromPlayer.enabled = true;
 		}
-		if (prevState != null && prevState.StateName == "Attack")
-		{
-			timeSinceCriticalHealth = Time.time;
-		}
+		timeFleeStarted = Time.time;
 	}
 
 	protected override void StateDidBecomeInactive(AIState nextState)

@@ -4,17 +4,12 @@ using UnityEngine;
 
 public class SearchingForHealerState_AI1 : AIState
 {
-	[SerializeField] float timeToTriggerSacrifice = 60.0f;
-	float lastHealedTime = 0;
-	int healthWhenStartingSearch = 0;
-
 	RandomMovement randomMovement;
 	DamageableObject health;
 
 	// Next possible states
 	HealingState_A1 healingState;
 	FleeingState_AI1 fleeingState;
-	SacrificeState_A1 sacrificeState;
 
 	protected override void Awake()
 	{
@@ -23,7 +18,6 @@ public class SearchingForHealerState_AI1 : AIState
 
 		healingState = GetComponent<HealingState_A1>();
 		fleeingState = GetComponent<FleeingState_AI1>();
-		sacrificeState = GetComponent<SacrificeState_A1>();
 
 		base.Awake();
 	}
@@ -32,46 +26,32 @@ public class SearchingForHealerState_AI1 : AIState
 	{
 		if(CanSeePoint(player.position + Vector3.up * playerHeight, nodeDist))
 		{
-			if(Time.time > lastHealedTime + timeToTriggerSacrifice)
-			{
-				float probDistr = 1 - Mathf.Sqrt(health.HealthLeftPercent);
-				if(Random.value < probDistr)
-				{
-					return sacrificeState;
-				}
-				else
-				{
-					return fleeingState;
-				}
-			}
-
 			return fleeingState;
 		}
 		foreach(Transform t in EnemiesManager.Instance.GetEnemiesByFSM("Healer"))
 		{
 			if (CanSeePoint(t.position + Vector3.up * t.GetComponent<CharacterController>().height, nodeDist))
 			{
-				healthWhenStartingSearch = 0;
-				return healingState;
+				FiniteStateMachine fsm = t.GetComponent<FiniteStateMachine>();
+				if(((HealingAllyState_A2)fsm.GetStateByName("HealAlly")).RequestHealing(health))
+				{
+					healingState.TargetedHealer = t;
+					return healingState;
+				}
 			}
 		}
 		return null;
 	}
 
-	protected override void StateDidBecomeActive()
+	protected override void StateDidBecomeActive(AIState prevState)
 	{
 		if(randomMovement != null)
 		{
 			randomMovement.enabled = true;
-			if(health.CurrentHealth > healthWhenStartingSearch)
-			{
-				lastHealedTime = Time.time;
-				healthWhenStartingSearch = health.CurrentHealth;
-			}
 		}
 	}
 
-	protected override void StateDidBecomeInactive()
+	protected override void StateDidBecomeInactive(AIState nextState)
 	{
 		if (randomMovement != null)
 		{

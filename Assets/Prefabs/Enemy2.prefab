@@ -548,10 +548,16 @@ GameObject:
   - component: {fileID: 6301205029521460528}
   - component: {fileID: -8144083204128009146}
   - component: {fileID: -6839550932337926152}
-  - component: {fileID: 4313375508245304243}
   - component: {fileID: 4706921203720749412}
   - component: {fileID: 2340131592860084584}
   - component: {fileID: -312587720707762169}
+  - component: {fileID: -5609424984368568872}
+  - component: {fileID: -5362593607233514072}
+  - component: {fileID: 5189847392878606228}
+  - component: {fileID: -2283646199577077165}
+  - component: {fileID: 4642054123989501251}
+  - component: {fileID: -4767003321135652996}
+  - component: {fileID: -4705823257806729287}
   m_Layer: 7
   m_Name: Enemy2
   m_TagString: Player
@@ -621,7 +627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44f973707aace8d42a75f8ce9325d977, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 6
+  movementSpeed: 4
   maxRotationSpeed: 100
   gravity: -20
   groundCheckRadius: 0.4
@@ -657,20 +663,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
---- !u!114 &4313375508245304243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8550924921819389752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f6e4613d485d14439149026d269bcae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterType: Healer
-  entryState: SearchAlly
 --- !u!114 &4706921203720749412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -695,7 +687,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd1ec0c4c84ab24c9efc4e3c6dee874, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stoppingDistanceFromPlayer: 10
   layersBlockingView:
     serializedVersion: 2
     m_Bits: 200
@@ -711,6 +702,115 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d12dbeea9fcb8ed4ab54285fc2494b8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-5609424984368568872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f6e4613d485d14439149026d269bcae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterType: Healer
+  entryState: SearchAlly
+--- !u!114 &-5362593607233514072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93c1cd8c5d51660438bc7c37f1462b55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: Attack
+  stoppingDistFromPlayer: 10
+  timeBeforePlayerIsLost: 3
+  lifeLeftPercentBeforeFleeing: 0.5
+--- !u!114 &5189847392878606228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 873b999d548b1fc459950809f4b3cbaa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: Flee
+  stopFleeingDelay: 3
+  firstSecrificeAttemptDelay: 60
+  sacrificeAttemptTimeInterval: 10
+  maxHealthPercentAllowingSacrifice: 0.2
+  healthPercentRequiringHealing: 0.7
+--- !u!114 &-2283646199577077165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecd37f34742e9414ca60b9c2bfee9d8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: HealAlly
+  healingRadius: 5
+  healingSpeed: 2
+  minHealthToHealAlly: 0.3
+--- !u!114 &4642054123989501251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8a45fde900a136409fe4b330b7ea737, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: HealSelf
+  minHealthPercentToRecover: 0.8
+  stopHealingAtMinHealthProbability: 0.5
+  tryStopHealingTimeInterval: 5
+  healingSpeed: 2
+--- !u!114 &-4767003321135652996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a23a7262eb859944690b432f0dc0f42c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: SearchAlly
+  minHealthPercentToAttack: 0.5
+  attackProbabilityAtFullHealth: 0.5
+--- !u!114 &-4705823257806729287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bec27a6e7e5a0e45a26716347b7ccc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: Sacrifice
 --- !u!1001 &9011724360913682012
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -748,7 +848,7 @@ PrefabInstance:
         type: 3}
       propertyPath: fsm
       value: 
-      objectReference: {fileID: 4313375508245304243}
+      objectReference: {fileID: -5609424984368568872}
     - target: {fileID: 2096430356165564249, guid: 5b269f03782d5904592cbbe7337962d1,
         type: 3}
       propertyPath: health
