@@ -2,6 +2,7 @@ using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -9,6 +10,7 @@ public class GameManager : MonoBehaviour
 	public GameObject playerPrefab;
 	public CinemachineVirtualCamera cinemachine;
 	public Camera mainCamera;
+	public UpdatePlayerHP healthUI;
 
 	GameObject player;
 	public GameObject Player { get { return player; } }
@@ -45,6 +47,9 @@ public class GameManager : MonoBehaviour
 		Vector3 playerPos = MapGenerator.Instance.GetCoordinateOfNode(1, 1);
 		player = Instantiate(playerPrefab, playerPos, Quaternion.identity);
 		cinemachine.Follow = player.transform.Find("CameraFollow");
+
+		// Pass player reference to scoreboard
+		healthUI.SetPlayer(player.GetComponent<DamageableObject>());
 
 		// Spawn Items
 		AssetsGeneratorManager.Instance.GenerateAssets(player.GetComponent<PathfinderAgent>());

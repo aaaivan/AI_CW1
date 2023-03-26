@@ -46,9 +46,9 @@ public class EnemiesManager : MonoBehaviour
 	public void SpawnEnemies()
 	{
 		MapGenerator terrain = MapGenerator.Instance;
+		Vector2 seed = new Vector2(terrain.MapInnerRect.width / 2, terrain.MapInnerRect.yMax);
 		List<Vector2> points = PoissonDiscSampling.GenerateDistribution(terrain.MapInnerRect.size,
-			minDstanceBwteenEnemies, iterationsBeforeRejection,
-			new Vector2(terrain.MapInnerRect.width/2, terrain.MapInnerRect.yMax));
+			minDstanceBwteenEnemies, iterationsBeforeRejection, seed);
 
 		int totalEnemies = 0;
 		List<int> enemiesCounts = new List<int>(numberOfEachEnemyType);
@@ -73,8 +73,8 @@ public class EnemiesManager : MonoBehaviour
 				{
 					totalEnemies--;
 					enemiesCounts[i]--;
-					GameObject go = Instantiate(enemyPrefabs[i], pos.Value, Quaternion.identity);
-					go.transform.position = go.GetComponent<PathfinderAgent>().ClosestAccessibleLocation(go.transform.position);
+					GameObject go = Instantiate(enemyPrefabs[i], new Vector3(seed.x, 3, seed.y), Quaternion.identity);
+					go.transform.position = go.GetComponent<PathfinderAgent>().ClosestAccessibleLocation(pos.Value);
 
 					string enemyType = go.GetComponent<FiniteStateMachine>().CharacterType;
 					if(!enemies.ContainsKey(enemyType))

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,5 +23,31 @@ public class Shooting : MonoBehaviour
 				Physics.IgnoreCollision(c, bulletColl, true);
 			}
 		}
+	}
+
+	public void MeleeAttack(Vector3 center, float radius, bool damagePlayer, bool damageEnemies)
+	{
+		int damage = 5; // TODO probability for damage
+		Collider[] coliders = Physics.OverlapSphere(center, radius, LayerMask.GetMask(new string[] { "Character" }), QueryTriggerInteraction.Ignore);
+		HashSet<DamageableObject> targets = new HashSet<DamageableObject>();
+		foreach(var col in coliders)
+		{
+			GameObject go = col.gameObject;
+			if(damagePlayer && go.tag == "Player"
+			|| damageEnemies && go.tag!= "Player")
+			{
+				DamageableObject damageableObject = go.GetComponent<DamageableObject>();
+				if (go != null)
+				{
+					targets.Add(damageableObject);
+
+				}
+			}
+		}
+		foreach(var t in targets)
+		{
+			t.TakeDamage(damage);
+		}
+
 	}
 }

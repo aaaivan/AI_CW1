@@ -32,7 +32,7 @@ Transform:
   m_Children:
   - {fileID: 3520519211205107237}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!135 &8783467387007263176
 SphereCollider:
@@ -45,8 +45,8 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.36195868
-  m_Center: {x: 0, y: 0.39764148, z: 0}
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!114 &1665665582461053984
 MonoBehaviour:
   m_ObjectHideFlags: 0
