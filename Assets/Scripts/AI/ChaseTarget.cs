@@ -64,14 +64,6 @@ public class ChaseTarget : MonoBehaviour
 		{
 			SubmitNewPathRequest();
 		}
-
-		if(shootWhileChasing)
-		{
-			Vector3 shootDir = chaseTarget.transform.position
-				+ Vector3.up * chaseTargetHeight/ 2
-				- bulletOrigin.position;
-			shootingController.Shoot(shootDir.normalized);
-		}
 	}
 
 	void SubmitNewPathRequest()
@@ -105,6 +97,10 @@ public class ChaseTarget : MonoBehaviour
 			BlendToNewPath(path);
 			StopAllCoroutines();
 			StartCoroutine(MovementCoroutine());
+			if (shootWhileChasing)
+			{
+				StartCoroutine(ShootCoroutine());
+			}
 		}
 		else
 		{
@@ -196,6 +192,27 @@ public class ChaseTarget : MonoBehaviour
 		currentPath = null;
 	}
 
+	IEnumerator ShootCoroutine()
+	{
+		while (true)
+		{
+			Vector3 shootDir = chaseTarget.transform.position
+				+ Vector3.up * chaseTargetHeight / 2
+				- bulletOrigin.position;
+			shootDir.Normalize();
+
+			if (Physics.Raycast(bulletOrigin.position, shootDir, out RaycastHit hit, 999f, layersBlockingView, QueryTriggerInteraction.Ignore))
+			{
+				if (hit.collider.gameObject == chaseTarget.gameObject)
+				{
+					shootingController.Shoot(shootDir);
+				}
+			}
+
+			yield return new WaitForSeconds(shootingController.ShootingCooldownTime);
+		}
+	}
+
 	private void OnDisable()
 	{
 		StopAllCoroutines();
@@ -206,6 +223,10 @@ public class ChaseTarget : MonoBehaviour
 	private void OnEnable()
 	{
 		StopAllCoroutines();
+		if(shootWhileChasing)
+		{
+			StartCoroutine(ShootCoroutine());
+		}
 		currentPath = null;
 		waitingForPath = false;
 	}

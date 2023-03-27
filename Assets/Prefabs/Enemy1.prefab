@@ -5524,6 +5524,9 @@ MonoBehaviour:
   layersBlockingView:
     serializedVersion: 2
     m_Bits: 200
+  layersBlockingBullets:
+    serializedVersion: 2
+    m_Bits: 73
 --- !u!114 &4752098500354992478
 MonoBehaviour:
   m_ObjectHideFlags: 0

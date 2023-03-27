@@ -12,6 +12,8 @@ public class Shooting : MonoBehaviour
 	IMeleeDamageCalculator meleeDamage;
 	IBulletDamageCalculator bulletDamage;
 
+	public float ShootingCooldownTime { get { return shootingCooldownTime; } }
+
 	private void Awake()
 	{
 		meleeDamage = GetComponent<IMeleeDamageCalculator>();
