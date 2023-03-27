@@ -7,7 +7,9 @@ public class AttackingState_A2 : AIState
 	[SerializeField] float stoppingDistFromPlayer = 10.0f;
 	[SerializeField] float timeBeforePlayerIsLost = 3.0f;
 	[SerializeField] float lifeLeftPercentBeforeFleeing = 0.5f;
+	[SerializeField] float attemptFleeTimeInterval = 10.0f;
 	float playerLastSeenTime;
+	float lastFleeAttemptTime;
 	bool superHealingIsHappening = false;
 
 	ChaseTarget chasePlayer;
@@ -50,6 +52,18 @@ public class AttackingState_A2 : AIState
 		{
 			return fleeingState;
 		}
+		else if(Time.time > lastFleeAttemptTime + attemptFleeTimeInterval)
+		{
+			lastFleeAttemptTime = Time.time;
+			float probDistr = health.CurrentHealthPercent - lifeLeftPercentBeforeFleeing;
+			probDistr /= (1 - lifeLeftPercentBeforeFleeing);
+			probDistr = 1 - probDistr;
+			probDistr = Mathf.Sqrt(Mathf.Clamp01(probDistr));
+			if (Random.value < probDistr)
+			{
+				return fleeingState;
+			}
+		}
 
 		if (CanSeePoint(player.position + playerHeight * Vector3.up, nodeDist))
 		{
@@ -71,6 +85,7 @@ public class AttackingState_A2 : AIState
 
 	protected override void StateDidBecomeActive(AIState prevState)
 	{
+		lastFleeAttemptTime = Time.time;
 		superHealingIsHappening = false;
 		SacrificeState_A2.SuperHealing += PursueSuperHealing;
 		if (chasePlayer != null)

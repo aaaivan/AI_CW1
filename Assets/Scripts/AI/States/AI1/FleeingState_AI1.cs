@@ -43,7 +43,7 @@ public class FleeingState_AI1 : AIState
 		if (CanSeePoint(player.position + playerHeight * Vector3.up, nodeDist))
 		{
 			lastTimePlayerWasSeen = Time.time;
-			if (Time.time > timeSinceCriticalHealth + firstSecrificeAttemptDelay && 
+			if (!IsLastEnemyOfItsType() && Time.time > timeSinceCriticalHealth + firstSecrificeAttemptDelay && 
 				Time.time > timeSinceLastAttemptedSacrifice + sacrificeAttemptTimeInterval &&
 				health.CurrentHealthPercent < maxHealthPercentAllowingSacrifice)
 			{
@@ -61,6 +61,11 @@ public class FleeingState_AI1 : AIState
 		}
 
 		return null;
+	}
+
+	bool IsLastEnemyOfItsType()
+	{
+		return EnemiesManager.Instance.GetEnemiesByFSM("Chaser").Count < 2;
 	}
 
 	private void PursueSuperHealing(Transform healer)

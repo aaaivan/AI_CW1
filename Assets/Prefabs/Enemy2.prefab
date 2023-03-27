@@ -5623,6 +5623,7 @@ MonoBehaviour:
   stoppingDistFromPlayer: 10
   timeBeforePlayerIsLost: 3
   lifeLeftPercentBeforeFleeing: 0.5
+  attemptFleeTimeInterval: 10
 --- !u!114 &5189847392878606228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5637,8 +5638,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stateName: Flee
   stopFleeingDelay: 3
-  firstSecrificeAttemptDelay: 1
-  sacrificeAttemptTimeInterval: 1
+  firstSecrificeAttemptDelay: 30
+  sacrificeAttemptTimeInterval: 10
   maxHealthPercentAllowingSacrifice: 0.2
   healthPercentRequiringHealing: 0.7
 --- !u!114 &-2283646199577077165
