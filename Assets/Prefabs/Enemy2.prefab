@@ -5607,6 +5607,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterType: Healer
   entryState: SearchAlly
+  sightDistance: 30
 --- !u!114 &-5362593607233514072
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5562,6 +5562,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterType: Chaser
   entryState: SearchPlayer
+  sightDistance: 50
 --- !u!114 &-8270662557005053369
 MonoBehaviour:
   m_ObjectHideFlags: 0

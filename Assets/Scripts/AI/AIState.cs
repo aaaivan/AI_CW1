@@ -8,7 +8,6 @@ public class AIState : MonoBehaviour
 	[SerializeField] protected string stateName;
 
 	protected LayerMask layersBlockingView;
-	protected float sightDistance = 60;
 
 	protected Transform bulletOrigin;
 	protected Transform player;
@@ -70,7 +69,7 @@ public class AIState : MonoBehaviour
 		Vector3 bulletToPointDirection = point - bulletOrigin.position;
 
 		// player is too far
-		if (Vector3.Distance(transform.position, point) > sightDistance)
+		if (Vector3.Distance(transform.position, point) > fsm.SightDistance)
 			return false;
 
 		// view blocked by terrain

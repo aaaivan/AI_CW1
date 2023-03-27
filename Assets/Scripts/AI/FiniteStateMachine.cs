@@ -6,6 +6,8 @@ public class FiniteStateMachine : MonoBehaviour
 {
 	[SerializeField] string characterType;
 	[SerializeField] string entryState;
+	[SerializeField] float sightDistance = 60;
+
 
 	int id;
 	Dictionary<string, AIState> aiStates = new Dictionary<string, AIState>();
@@ -16,6 +18,8 @@ public class FiniteStateMachine : MonoBehaviour
 	public int ID { get { return id; } }
 	public string CharacterType { get { return characterType; } }
 	public string CurrentState { get { return activeState == null ? "" : activeState.StateName; } }
+	public float SightDistance { get { return sightDistance; } }
+
 
 	private void Awake()
 	{
