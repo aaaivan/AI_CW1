@@ -9,6 +9,15 @@ public class Shooting : MonoBehaviour
 
 	float lastShootTime = 0;
 
+	IMeleeDamageCalculator meleeDamage;
+	IBulletDamageCalculator bulletDamage;
+
+	private void Awake()
+	{
+		meleeDamage = GetComponent<IMeleeDamageCalculator>();
+		bulletDamage = GetComponent<IBulletDamageCalculator>();
+	}
+
 	public void Shoot(Vector3 shootDirection)
 	{
 		if (Time.time < lastShootTime + shootingCooldownTime) return;
@@ -23,11 +32,19 @@ public class Shooting : MonoBehaviour
 				Physics.IgnoreCollision(c, bulletColl, true);
 			}
 		}
+
+		int damage = bulletDamage.GetBulletDamage();
+		bullet.GetComponent<DamagingObject>().Damage = damage;
 	}
 
 	public void MeleeAttack(Vector3 center, float radius, bool damagePlayer, bool damageEnemies)
 	{
-		int damage = 5; // TODO probability for damage
+		if(meleeDamage == null)
+		{
+			return;
+		}
+
+		int damage = meleeDamage.GetMeleeDamage();
 		Collider[] coliders = Physics.OverlapSphere(center, radius, LayerMask.GetMask(new string[] { "Character" }), QueryTriggerInteraction.Ignore);
 		HashSet<DamageableObject> targets = new HashSet<DamageableObject>();
 		foreach(var col in coliders)

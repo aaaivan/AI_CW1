@@ -7,6 +7,8 @@ public class DamageableObject : MonoBehaviour
 	[SerializeField] int maxHealth;
 	int currentHealth;
 
+	IAttackMitigationCalculator attackMitigation;
+
 	public int CurrentHealth { get { return currentHealth; } }
 	public int MaxHealth { get { return maxHealth; } }
 	public float CurrentHealthPercent { get { return (float)currentHealth / maxHealth; } }
@@ -14,6 +16,7 @@ public class DamageableObject : MonoBehaviour
 	private void Awake()
 	{
 		currentHealth = maxHealth;
+		attackMitigation = GetComponent<IAttackMitigationCalculator>();
 	}
 
 	public void TakeDamage(DamagingObject obj)
@@ -23,6 +26,8 @@ public class DamageableObject : MonoBehaviour
 
 	public void TakeDamage(int damage)
 	{
+		int defence = attackMitigation.GetDefenceValue(damage);
+		damage = Mathf.Clamp(damage - defence, 0, int.MaxValue);
 		currentHealth -= damage;
 		if (currentHealth <= 0)
 		{
