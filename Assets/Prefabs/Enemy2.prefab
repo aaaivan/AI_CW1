@@ -5495,7 +5495,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 5.5
-  maxRotationSpeed: 100
+  maxRotationSpeed: 300
   gravity: -20
   groundCheckRadius: 0.4
   groundMask:
@@ -5621,7 +5621,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stateName: Attack
-  stoppingDistFromPlayer: 10
   timeBeforePlayerIsLost: 3
   lifeLeftPercentBeforeFleeing: 0.5
   attemptFleeTimeInterval: 10

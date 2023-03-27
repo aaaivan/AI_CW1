@@ -5450,7 +5450,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 5.8
-  maxRotationSpeed: 100
+  maxRotationSpeed: 300
   gravity: -20
   groundCheckRadius: 0.4
   groundMask:
@@ -5576,7 +5576,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stateName: Attack
-  stoppingDistanceFromPlayer: 10
   timeBeforePlayerIsLost: 3
   lifeLeftPercentBeforeFleeing: 0.3
   attemptFleeTimeInterval: 10
@@ -5652,7 +5651,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stateName: Sacrifice
-  stoppingDistanceFromPlayer: 2
   explosionRadius: 5
   maxTimeBeforeExploding: 5
 --- !u!114 &-3235941483434999440

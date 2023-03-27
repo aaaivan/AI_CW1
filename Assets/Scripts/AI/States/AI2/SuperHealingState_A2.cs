@@ -6,6 +6,7 @@ public class SuperHealingState_A2 : AIState
 {
 	ChaseTarget followHealer;
 	Transform targetedHealer;
+	CharacterController characterController;
 
 	// next state
 	HealingState_A2 healingState;
@@ -15,6 +16,7 @@ public class SuperHealingState_A2 : AIState
 	protected override void Awake()
 	{
 		followHealer = GetComponent<ChaseTarget>();
+		characterController = GetComponent<CharacterController>();
 
 		healingState = GetComponent<HealingState_A2>();
 
@@ -36,8 +38,11 @@ public class SuperHealingState_A2 : AIState
 		{
 			if (targetedHealer != null)
 			{
-				followHealer.Init(targetedHealer, targetedHealer.GetComponent<CharacterController>().height,
-					false, targetedHealer.GetComponent<SacrificeState_A2>().HealingRadius / 2);
+				float healingRadius = targetedHealer.GetComponent<SacrificeState_A2>().HealingRadius;
+				float targetHealerHeight = targetedHealer.GetComponent<CharacterController>().height;
+				float targetHealerRadius = targetedHealer.GetComponent<CharacterController>().radius;
+				followHealer.Init(targetedHealer, targetHealerHeight, false,
+					targetHealerRadius + characterController.radius, healingRadius - 2 * characterController.radius, true);
 				followHealer.enabled = true;
 			}
 		}

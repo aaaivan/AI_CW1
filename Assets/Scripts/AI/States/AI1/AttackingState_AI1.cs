@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class AttackingState_AI1 : AIState
 {
-	[SerializeField] float stoppingDistanceFromPlayer = 10.0f;
 	[SerializeField] float timeBeforePlayerIsLost = 3.0f;
 	[SerializeField] float lifeLeftPercentBeforeFleeing = 0.3f;
 	[SerializeField] float attemptFleeTimeInterval = 10.0f;
 	float playerLastSeenTime;
 	float lastFleeAttemptTime;
 	bool superHealingIsHappening = false;
+	float minStoppingDistFromPlayer = 6.0f;
+	float maxStoppingDistFromPlayer = 10.0f;
 
 	ChaseTarget chasePlayer;
 	DamageableObject health;
@@ -83,7 +84,7 @@ public class AttackingState_AI1 : AIState
 		SacrificeState_A2.SuperHealing += PursueSuperHealing;
 		if (chasePlayer != null)
 		{
-			chasePlayer.Init(player, playerHeight, true, stoppingDistanceFromPlayer);
+			chasePlayer.Init(player, playerHeight, true, minStoppingDistFromPlayer, maxStoppingDistFromPlayer, true);
 			chasePlayer.enabled = true;
 		}
 	}

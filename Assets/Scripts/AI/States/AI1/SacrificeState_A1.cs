@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class SacrificeState_A1 : AIState
 {
-	[SerializeField] float stoppingDistanceFromPlayer = 2.0f;
 	[SerializeField] float explosionRadius = 5.0f;
 	[SerializeField] float maxTimeBeforeExploding = 5.0f;
 	float countdownStartTime = 0;
+	float stoppingDistanceFromPlayer = 1.0f;
 
 	ChaseTarget chasePlayer;
 	DamageableObject health;
@@ -37,7 +37,7 @@ public class SacrificeState_A1 : AIState
 		countdownStartTime = Time.time;
 		if (chasePlayer != null)
 		{
-			chasePlayer.Init(player, playerHeight, false, stoppingDistanceFromPlayer);
+			chasePlayer.Init(player, playerHeight, false, stoppingDistanceFromPlayer, 2 * stoppingDistanceFromPlayer, true);
 			chasePlayer.enabled = true;
 			explosionVFX.gameObject.SetActive(true);
 		}

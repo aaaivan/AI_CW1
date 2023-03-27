@@ -37,10 +37,10 @@ public class CharacterMovement : MonoBehaviour
 		}
 	}
 
-	public void MoveTowards(Vector3 targetPoint)
+	public void MoveTowards(Vector3 targetPoint, float speedMultiplier = 1.0f)
 	{
 		Vector3 pos = transform.position;
-		MoveAndRotate((targetPoint - transform.position).normalized);
+		MoveAndRotate((targetPoint - transform.position).normalized * speedMultiplier);
 		if(Mathf.Sign(transform.position.x - targetPoint.x) != Mathf.Sign(pos.x - targetPoint.x))
 		{
 			transform.position = new Vector3(targetPoint.x, transform.position.y, transform.position.z);
@@ -73,6 +73,16 @@ public class CharacterMovement : MonoBehaviour
 	{
 		Vector3 direction = point - transform.position;
 		SetLookDirection(direction);
+	}
+
+	public void RotateTowardsUnclamped(Vector3 point, float angularVelocity)
+	{
+		Vector3 direction = point - transform.position;
+		Vector3 fwd = new Vector3(transform.forward.x, 0, transform.forward.z);
+		Vector3 targetLookDir = new Vector3(direction.x, 0, direction.z);
+		float angle = Vector3.SignedAngle(fwd, targetLookDir, Vector3.up);
+		angle = Mathf.Clamp(angle, -angularVelocity * Time.deltaTime, angularVelocity * Time.deltaTime);
+		transform.Rotate(Vector3.up, angle);
 	}
 
 	public void SetLookDirection(Vector3 direction)

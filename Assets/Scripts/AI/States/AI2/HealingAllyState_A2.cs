@@ -126,7 +126,8 @@ public class HealingAllyState_A2 : AIState
 			alliesToHeal.Add(ally);
 
 			float height = ally.GetComponent<CharacterController>().height;
-			followAlly.Init(ally.transform, height, false, healingRadius - characterController.radius * 2);
+			float stoppingDist = healingRadius - characterController.radius * 2;
+			followAlly.Init(ally.transform, height, false, stoppingDist, stoppingDist, false);
 		}
 	}
 
@@ -140,7 +141,9 @@ public class HealingAllyState_A2 : AIState
 			it.MoveNext();
 			Transform newTarget = it.Current.transform;
 			float height = newTarget.GetComponent<CharacterController>().height;
-			followAlly.Init(newTarget.transform, height, false, healingRadius - characterController.radius * 2);
+
+			float stoppingDist = healingRadius - characterController.radius * 2;
+			followAlly.Init(newTarget.transform, height, false, stoppingDist, stoppingDist, false);
 		}
 	}
 

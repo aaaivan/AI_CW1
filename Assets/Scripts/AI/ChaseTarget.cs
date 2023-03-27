@@ -9,10 +9,12 @@ public class ChaseTarget : MonoBehaviour
 	List<Vector3> currentPath;
 	int currentWaypointIndex;
 	bool waitingForPath = false;
-	const float pathUpdateTimeInterval = 0.5f;
+	const float pathUpdateTimeInterval = 1f;
 	float lastPathUpdateTime = 0f;
 	float stoppingDistanceFromWaypoint;
-	float stoppingDistanceFromTarget = 10;
+	float minStoppingDistanceFromTarget;
+	float maxStoppingDistanceFromTarget;
+	bool keepMovingWhenTargetReached;
 	bool shootWhileChasing = false;
 
 	CharacterMovement characterMovement;
@@ -39,12 +41,14 @@ public class ChaseTarget : MonoBehaviour
 		stoppingDistanceFromWaypoint = GetComponent<CharacterController>().radius;
 	}
 
-	public void Init(Transform _chaseTarget, float _chaseTargetHeight, bool _shoot, float _stoppingDistanceFromTarget)
+	public void Init(Transform _chaseTarget, float _chaseTargetHeight, bool _shoot, float _minStoppingDist, float _maxStoppingDist, bool _keepMovingWhenTargetReached)
 	{
 		chaseTarget = _chaseTarget;
 		chaseTargetHeight = _chaseTargetHeight;
 		shootWhileChasing = _shoot;
-		stoppingDistanceFromTarget = _stoppingDistanceFromTarget;
+		minStoppingDistanceFromTarget = _minStoppingDist;
+		maxStoppingDistanceFromTarget = Mathf.Clamp(_maxStoppingDist, minStoppingDistanceFromTarget, int.MaxValue);
+		keepMovingWhenTargetReached = _keepMovingWhenTargetReached;
 	}
 
 	private void Update()
@@ -74,7 +78,23 @@ public class ChaseTarget : MonoBehaviour
 	{
 		lastPathUpdateTime = Time.time;
 		waitingForPath = true;
-		PathRequestManager.Instance.RequestPath(transform.position, pathfinderAgent.ClosestAccessibleLocation(chaseTarget.transform.position), OnNewPathReceived, pathfinderAgent, true);
+		PathRequestManager.Instance.RequestPath(transform.position, pathfinderAgent.ClosestAccessibleLocation(GetRandomLocation()), OnNewPathReceived, pathfinderAgent, true);
+	}
+
+	Vector3 GetRandomLocation()
+	{
+		if(Vector3.Distance(chaseTarget.position, transform.position) > maxStoppingDistanceFromTarget)
+		{
+			return chaseTarget.position;
+		}
+
+		float distance = minStoppingDistanceFromTarget + (maxStoppingDistanceFromTarget - minStoppingDistanceFromTarget) * Random.value;
+		float angle = 60 * (Random.value - 0.5f);
+		Vector3 direction = transform.position - chaseTarget.position;
+		direction.Normalize();
+		direction = Quaternion.Euler(0, angle, 0) * direction;
+
+		return chaseTarget.position + direction * distance;
 	}
 
 	void OnNewPathReceived(List<Vector3> path)
@@ -133,11 +153,12 @@ public class ChaseTarget : MonoBehaviour
 			if (chaseTarget == null)
 				break;
 
-			float scaledStoppingDist = stoppingDistanceFromTarget * pathfinderAgent.NodeDist;
-			bool canMove = Vector3.Distance(transform.position, chaseTarget.transform.position) > scaledStoppingDist;
-			if(!canMove)
+			float distance = Vector3.Distance(transform.position, chaseTarget.transform.position);
+			bool isInStoppingArea = distance > minStoppingDistanceFromTarget && distance < maxStoppingDistanceFromTarget;
+			bool shouldMove = !isInStoppingArea || keepMovingWhenTargetReached;
+			if (!shouldMove)
 			{
-				// if we are closer than the stopping distance but the player
+				// if we should not move but the player
 				// is hidden behind the terrain chase it anyway
 				RaycastHit hit;
 				Vector3 rayDirection = chaseTarget.position - bulletOrigin.position;
@@ -145,15 +166,23 @@ public class ChaseTarget : MonoBehaviour
 				{
 					if(hit.collider.gameObject.tag != "Player")
 					{
-						canMove = true;
+						shouldMove = true;
 					}
 				}
 			}
-			if(canMove)
+			if(shouldMove)
 			{
-				characterMovement.MoveTowards(currentPath[currentWaypointIndex]);
+				characterMovement.MoveTowards(currentPath[currentWaypointIndex], isInStoppingArea ? 0.5f : 1f);
 			}
-			characterMovement.RotateTowards(chaseTarget.transform.position);
+			if(isInStoppingArea)
+			{
+				characterMovement.RotateTowardsUnclamped(chaseTarget.transform.position, 1000);
+			}
+			else
+			{
+				characterMovement.RotateTowards(chaseTarget.transform.position);
+			}
+
 			yield return null;
 			if (Vector3.Distance(transform.position, currentPath[currentWaypointIndex]) < stoppingDistanceFromWaypoint)
 			{

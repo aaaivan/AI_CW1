@@ -103,9 +103,13 @@ public class HealingState_A1 : AIState
 		{
 			if(targetedHealer != null)
 			{
-				followHealer.Init(targetedHealer, targetedHealer.GetComponent<CharacterController>().height,
-					false, targetedHealer.GetComponent<HealingAllyState_A2>().HealingRadius - characterController.radius * 2);
+				float healingRadius = targetedHealer.GetComponent<HealingAllyState_A2>().HealingRadius;
+				float targetHealerHeight = targetedHealer.GetComponent<CharacterController>().height;
+				float targetHealerRadius = targetedHealer.GetComponent<CharacterController>().radius;
+				followHealer.Init(targetedHealer, targetHealerHeight, false,
+					targetHealerRadius + characterController.radius, healingRadius - 2 * characterController.radius, true);
 				followHealer.enabled = true;
+
 				targetedHealer.GetComponent<HealingAllyState_A2>().StartHealingAlly(health);
 			}
 		}
