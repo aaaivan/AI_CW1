@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
 	public Camera mainCamera;
 	public DisplayPlayerHP healthUI;
 	public DisplayPlayerScore playerScoreUI;
+	public RectTransform gameOver;
+	public DisplayPlayerScore endgamePlayerScoreUI;
 
 	GameObject player;
 	public GameObject Player { get { return player; } }
@@ -45,13 +47,17 @@ public class GameManager : MonoBehaviour
         MapGenerator.Instance.DrawMapAtPosition(MapGenerator.Instance.transform.position);
 
 		// Spawn Player
-		Vector3 playerPos = MapGenerator.Instance.GetCoordinateOfNode(1, 1);
+		Rect terrain = MapGenerator.Instance.MapInnerRect;
+		Vector3 playerPos = MapGenerator.Instance.GetPointAtCoordinates(new Vector2(
+			terrain.x + terrain.width/2,
+			terrain.y)).Value;
 		player = Instantiate(playerPrefab, playerPos, Quaternion.identity);
 		cinemachine.Follow = player.transform.Find("CameraFollow");
 
 		// Pass player reference to scoreboard
 		healthUI.SetPlayer(player.GetComponent<DamageableObject>());
 		playerScoreUI.SetPlayerScore(player.GetComponent<PlayerScore>());
+		endgamePlayerScoreUI.SetPlayerScore(player.GetComponent<PlayerScore>());
 
 		// Spawn Items
 		AssetsGeneratorManager.Instance.GenerateAssets(player.GetComponent<PathfinderAgent>());

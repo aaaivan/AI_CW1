@@ -14,6 +14,19 @@ public class EnemiesManager : MonoBehaviour
 	static EnemiesManager instance;
 	public static EnemiesManager Instance { get { return instance; } }
 
+	public int EnemiesCount
+	{
+		get
+		{
+			int result = 0;
+			foreach(var enemyType in enemies.Values)
+			{
+				result += enemyType.Count;
+			}
+			return result;
+		}
+	}
+
 	private void Awake()
 	{
 		if(instance == null)
@@ -46,7 +59,7 @@ public class EnemiesManager : MonoBehaviour
 	public void SpawnEnemies()
 	{
 		MapGenerator terrain = MapGenerator.Instance;
-		Vector2 seed = new Vector2(terrain.MapInnerRect.width / 2, terrain.MapInnerRect.yMax);
+		Vector2 seed = new Vector2(terrain.MapInnerRect.width / 2, terrain.MapInnerRect.height);
 		List<Vector2> points = PoissonDiscSampling.GenerateDistribution(terrain.MapInnerRect.size,
 			minDstanceBwteenEnemies, iterationsBeforeRejection, seed);
 
@@ -73,7 +86,7 @@ public class EnemiesManager : MonoBehaviour
 				{
 					totalEnemies--;
 					enemiesCounts[i]--;
-					GameObject go = Instantiate(enemyPrefabs[i], new Vector3(seed.x, 3, seed.y), Quaternion.identity);
+					GameObject go = Instantiate(enemyPrefabs[i], GameManager.Instance.Player.transform.position, Quaternion.identity);
 					go.transform.position = go.GetComponent<PathfinderAgent>().ClosestAccessibleLocation(pos.Value);
 
 					string enemyType = go.GetComponent<FiniteStateMachine>().CharacterType;
