@@ -8,6 +8,11 @@ public class AttackMitigationCalculator_AI2 : MonoBehaviour, IAttackMitigationCa
 	float perfectShieldingBonus = 0.1f;
 	float perfectShieldingProbability = 0.1f;
 
+	public void ActivateShieldPowerup(float powerupDuration)
+	{
+		return;
+	}
+
 	public int GetDefenceValue(int attack)
 	{
 		float defenceMultiplier;

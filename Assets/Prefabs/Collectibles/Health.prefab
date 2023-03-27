@@ -93,7 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 494178070645826966}
   - component: {fileID: 8750272151273665660}
-  - component: {fileID: 6483759302221274200}
+  - component: {fileID: -2934484814765236027}
   m_Layer: 8
   m_Name: Health
   m_TagString: Untagged
@@ -130,7 +130,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &6483759302221274200
+--- !u!114 &-2934484814765236027
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,9 +139,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 5020384161720080342}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e7467af90f45404bbb23319a0af6586, type: 3}
+  m_Script: {fileID: 11500000, guid: cb6be9192c167c946b02e30a755fa7a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: 
-  itemType: 0
-  spin: 0

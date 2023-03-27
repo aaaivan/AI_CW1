@@ -34,7 +34,7 @@ public class CollectableItem : MonoBehaviour
 	{
 		if(other.gameObject == GameManager.Instance.Player)
 		{
-			OnObjectCollected();
+			OnObjectCollected(other.transform);
 		}
 	}
 
@@ -51,7 +51,7 @@ public class CollectableItem : MonoBehaviour
 		}
 	}
 
-	protected virtual void OnObjectCollected()
+	protected virtual void OnObjectCollected(Transform collctedBy)
 	{
 		Destroy(gameObject);
 	}

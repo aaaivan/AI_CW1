@@ -9,6 +9,11 @@ public class BulletDamageCalculator_AI1 : MonoBehaviour, IBulletDamageCalculator
 	int criticalHitDamage = 25;
 	float criticalHitProbability = 0.05f;
 
+	public void ActivateDamagePowerup(float powerupDuration)
+	{
+		return;
+	}
+
 	// damage profile skwed to the right with critical hit
 	public int GetBulletDamage()
 	{

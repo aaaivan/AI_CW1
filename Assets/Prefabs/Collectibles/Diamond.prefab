@@ -93,7 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4051201799460240879}
   - component: {fileID: 5460873364551571530}
-  - component: {fileID: 6368951665651060435}
+  - component: {fileID: -602515673568992999}
   m_Layer: 8
   m_Name: Diamond
   m_TagString: Untagged
@@ -130,7 +130,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &6368951665651060435
+--- !u!114 &-602515673568992999
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -139,9 +139,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 6858223668699294091}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e7467af90f45404bbb23319a0af6586, type: 3}
+  m_Script: {fileID: 11500000, guid: ac28b9b6d3eb381449a415aa4ebc3758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: 
-  itemType: 0
-  spin: 0

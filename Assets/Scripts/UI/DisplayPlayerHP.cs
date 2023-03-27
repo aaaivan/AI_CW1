@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class UpdatePlayerHP : MonoBehaviour
+public class DisplayPlayerHP : MonoBehaviour
 {
 	TMP_Text text;
 	string textFormat = "HP: {0}";

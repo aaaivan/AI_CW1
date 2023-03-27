@@ -10,7 +10,8 @@ public class GameManager : MonoBehaviour
 	public GameObject playerPrefab;
 	public CinemachineVirtualCamera cinemachine;
 	public Camera mainCamera;
-	public UpdatePlayerHP healthUI;
+	public DisplayPlayerHP healthUI;
+	public DisplayPlayerScore playerScoreUI;
 
 	GameObject player;
 	public GameObject Player { get { return player; } }
@@ -50,6 +51,7 @@ public class GameManager : MonoBehaviour
 
 		// Pass player reference to scoreboard
 		healthUI.SetPlayer(player.GetComponent<DamageableObject>());
+		playerScoreUI.SetPlayerScore(player.GetComponent<PlayerScore>());
 
 		// Spawn Items
 		AssetsGeneratorManager.Instance.GenerateAssets(player.GetComponent<PathfinderAgent>());

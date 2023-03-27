@@ -4,5 +4,6 @@ using UnityEngine;
 
 public interface IAttackMitigationCalculator
 {
+	void ActivateShieldPowerup(float powerupDuration);
 	public int GetDefenceValue(int attack);
 }
