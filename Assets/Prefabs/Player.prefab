@@ -454,6 +454,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathfinderData: {fileID: 11400000, guid: 49c9e47539c7b004fb71ed77b9f28e94, type: 2}
   drawMapNodes: 0
+  radialMovementPenalty: 10
 --- !u!143 &6515227195488673547
 CharacterController:
   m_ObjectHideFlags: 0
@@ -538,7 +539,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc0197c31fccb1e4e85e32b1137a6c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 1000
+  maxHealth: 100000
 --- !u!114 &-3325592615209309857
 MonoBehaviour:
   m_ObjectHideFlags: 0

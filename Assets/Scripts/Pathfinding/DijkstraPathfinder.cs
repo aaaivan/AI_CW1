@@ -13,7 +13,7 @@ public static class DijkstraPathfinder
 		openList.Add(startNode);
 
 		bool success = false;
-		if(startNode.walkable && targetNode.walkable)
+		if(startNode.accessible && targetNode.accessible)
 		{
 			while (openList.Count > 0)
 			{
@@ -32,9 +32,9 @@ public static class DijkstraPathfinder
 					// Update the distances of the neighbours
 					foreach (DijkstraNode node in currentNode.neighbours)
 					{
-						if (!node.walkable || closedList.Contains(node)) continue;
+						if (!node.accessible || closedList.Contains(node)) continue;
 
-						int newCost = currentNode.distance + PathfinderUtils.GetDistance(currentNode, node);
+						int newCost = currentNode.distance + PathfinderUtils.GetDistance(currentNode, node) + node.movementPenalty;
 						if (newCost < node.distance || !openList.Contains(node))
 						{
 							node.distance = newCost;

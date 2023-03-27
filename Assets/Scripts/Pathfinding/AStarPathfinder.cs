@@ -12,7 +12,7 @@ public static class AStarPathfinder
 		openList.Add(startNode);
 		bool success = false;
 
-		if(startNode.walkable &&  targetNode.walkable)
+		if(startNode.accessible &&  targetNode.accessible)
 		{
 			while (openList.Count > 0)
 			{
@@ -31,9 +31,9 @@ public static class AStarPathfinder
 					// Update the hCost and gCost of the neighbours
 					foreach (AStarNode node in currentNode.neighbours)
 					{
-						if (!node.walkable || closedList.Contains(node)) continue;
+						if (!node.accessible || closedList.Contains(node)) continue;
 
-						int newCost = currentNode.gCost + PathfinderUtils.GetDistance(currentNode, node);
+						int newCost = currentNode.gCost + PathfinderUtils.GetDistance(currentNode, node) + node.movementPenalty;
 						if (newCost < node.gCost || !openList.Contains(node))
 						{
 							node.gCost = newCost;

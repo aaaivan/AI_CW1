@@ -9,9 +9,9 @@ public class DijkstraAgent : PathfinderAgent
 		return new DijkstraNode[width, height];
 	}
 
-	protected override PathfinderNode NewNode(int x, int y, bool walkable, Vector3 position, int id)
+	protected override PathfinderNode NewNode(int x, int y, bool walkable, Vector3 position, int id, int movementPenalty)
 	{
-		return new DijkstraNode(x, y, walkable, position, id);
+		return new DijkstraNode(x, y, walkable, position, id, movementPenalty);
 	}
 
 	public override List<Vector3> FindPathToLocation(Vector3 destination, bool simplify)

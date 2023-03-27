@@ -6,6 +6,7 @@ public class PathfinderAgent : MonoBehaviour
 {
 	public PathfinderData pathfinderData;
 	public bool drawMapNodes;
+	[SerializeField] int radialMovementPenalty = 5;
 
 	PathfinderNode[,] gridNodes;
 	int width;
@@ -20,9 +21,9 @@ public class PathfinderAgent : MonoBehaviour
 		return new PathfinderNode[width, height];
 	}
 
-	protected virtual PathfinderNode NewNode(int x, int y, bool walkable, Vector3 position, int id)
+	protected virtual PathfinderNode NewNode(int x, int y, bool walkable, Vector3 position, int id, int movementPenalty)
 	{
-		return new PathfinderNode(x, y, walkable, position, id);
+		return new PathfinderNode(x, y, walkable, position, id, movementPenalty);
 	}
 
 	public virtual List<Vector3> FindPathToLocation(Vector3 destination, bool simplify)
@@ -60,7 +61,9 @@ public class PathfinderAgent : MonoBehaviour
 				{
 					walkable = false;
 				}
-				gridNodes[x, y] = NewNode(x, y, walkable, pos, y * width + x);
+				float normalizedDistFromCenter = Mathf.Max(Mathf.Abs(1 - x * 2f / (width - 1)), Mathf.Abs(1 - y * 2f / (height - 1)));
+				gridNodes[x, y] = NewNode(x, y, walkable, pos, y * width + x,
+					Mathf.RoundToInt(normalizedDistFromCenter * radialMovementPenalty));
 			}
 		}
 		for (int y = 0; y < height; y++)

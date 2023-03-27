@@ -8,8 +8,8 @@ public class AStarNode : PathfinderNode, IHeapItem<AStarNode>
 	public int gCost = 0;
 	int heapIndex;
 
-	public AStarNode(int x, int y, bool walkable, Vector3 position, int id) :
-		base(x, y, walkable, position, id)
+	public AStarNode(int x, int y, bool walkable, Vector3 position, int id, int movementPenalty) :
+		base(x, y, walkable, position, id, movementPenalty)
 	{ }
 
 	public int HeapIndex

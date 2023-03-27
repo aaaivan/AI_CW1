@@ -10,9 +10,9 @@ public class AStarAgent : PathfinderAgent
 		return new AStarNode[width, height];
 	}
 
-	protected override PathfinderNode NewNode(int x, int y, bool walkable, Vector3 position, int id)
+	protected override PathfinderNode NewNode(int x, int y, bool walkable, Vector3 position, int id, int movementPenalty)
 	{
-		return new AStarNode(x, y, walkable, position, id);
+		return new AStarNode(x, y, walkable, position, id, movementPenalty);
 	}
 
 	public override List<Vector3> FindPathToLocation(Vector3 destination, bool simplify)

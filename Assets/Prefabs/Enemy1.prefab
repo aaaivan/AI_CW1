@@ -5418,6 +5418,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathfinderData: {fileID: 11400000, guid: f06a1acd5ce90cd43bf637ed888cff60, type: 2}
   drawMapNodes: 0
+  radialMovementPenalty: 10
 --- !u!143 &6515227195488673547
 CharacterController:
   m_ObjectHideFlags: 0

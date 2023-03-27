@@ -7,8 +7,8 @@ public class DijkstraNode : PathfinderNode, IHeapItem<DijkstraNode>
 	public int distance;
 	int heapIndex;
 
-	public DijkstraNode(int x, int y, bool walkable, Vector3 position, int id) :
-		base(x, y, walkable, position, id)
+	public DijkstraNode(int x, int y, bool walkable, Vector3 position, int id, int movementPenalty) :
+		base(x, y, walkable, position, id, movementPenalty)
 	{ }
 
 	public int HeapIndex
