@@ -21,18 +21,10 @@ public class DijkstraAgent : PathfinderAgent
 		return DijkstraPathfinder.FindPath(from, to, TotalNodes, simplify);
 	}
 
-	public override void FindPathAsync(Vector3 start, Vector3 destination, bool simplify)
+	public override List<Vector3> FindPath(Vector3 start, Vector3 destination, bool simplify)
 	{
 		DijkstraNode from = (DijkstraNode)NodeFromWorldPos(start);
 		DijkstraNode to = (DijkstraNode)NodeFromWorldPos(destination);
-		StartCoroutine(FindPathCoroutine(from, to, simplify));
-	}
-
-	IEnumerator FindPathCoroutine(DijkstraNode from, DijkstraNode to, bool simplify)
-	{
-		List<Vector3> path = DijkstraPathfinder.FindPath(from, to, TotalNodes, simplify);
-		yield return null;
-
-		PathRequestManager.Instance.FinishedProcessingPath(path);
+		return DijkstraPathfinder.FindPath(from, to, TotalNodes, simplify);
 	}
 }

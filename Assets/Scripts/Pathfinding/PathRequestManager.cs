@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class PathRequestManager : MonoBehaviour
 {
 	Queue<PathRequest> pathRequestsQueue = new Queue<PathRequest>();
 	PathRequest currentPathRequets;
-	bool isProcessing;
 
 	static PathRequestManager instance;
 	public static PathRequestManager Instance { get { return instance; } }
@@ -32,6 +32,11 @@ public class PathRequestManager : MonoBehaviour
 		}
 	}
 
+	private void Update()
+	{
+		TryProcessNext();
+	}
+
 	public void RequestPath(Vector3 pathStart, Vector3 pathEnd, Action<List<Vector3>> callback, PathfinderAgent agent, bool simplifyPath)
 	{
 		// if the agent is already in the queue,
@@ -53,26 +58,21 @@ public class PathRequestManager : MonoBehaviour
 		{
 			PathRequest pathRequest = new PathRequest(pathStart, pathEnd, callback, agent, simplifyPath);
 			pathRequestsQueue.Enqueue(pathRequest);
-			TryProcessNext();
 		}
 	}
 
 	void TryProcessNext()
 	{
-		if(!isProcessing && pathRequestsQueue.Count > 0)
+		if(pathRequestsQueue.Count > 0)
 		{
 			currentPathRequets = pathRequestsQueue.Dequeue();
-			isProcessing = true;
 
-			currentPathRequets.agent.FindPathAsync(currentPathRequets.pathStart, currentPathRequets.pathEnd, currentPathRequets.simplifyPath);
+			if(currentPathRequets.agent != null)
+			{
+				List<Vector3> path = currentPathRequets.agent.FindPath(currentPathRequets.pathStart, currentPathRequets.pathEnd, currentPathRequets.simplifyPath);
+				currentPathRequets.callback(path);
+			}
 		}
-	}
-
-	public void FinishedProcessingPath(List<Vector3> path)
-	{
-		currentPathRequets.callback(path);
-		isProcessing = false;
-		TryProcessNext();
 	}
 
 	class PathRequest

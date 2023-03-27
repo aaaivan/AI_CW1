@@ -171,12 +171,14 @@ public class ChaseTarget : MonoBehaviour
 	{
 		StopAllCoroutines();
 		currentPath = null;
+		waitingForPath = false;
 	}
 
 	private void OnEnable()
 	{
 		StopAllCoroutines();
 		currentPath = null;
+		waitingForPath = false;
 	}
 
 	private void OnDrawGizmosSelected()

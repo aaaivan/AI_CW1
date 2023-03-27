@@ -22,18 +22,10 @@ public class AStarAgent : PathfinderAgent
 		return AStarPathfinder.FindPath(from, to, TotalNodes, simplify);
 	}
 
-	public override void FindPathAsync(Vector3 start, Vector3 destination, bool simplify)
+	public override List<Vector3> FindPath(Vector3 start, Vector3 destination, bool simplify)
 	{
 		AStarNode from = (AStarNode)NodeFromWorldPos(start);
 		AStarNode to = (AStarNode)NodeFromWorldPos(destination);
-		StartCoroutine(FindPathCoroutine(from, to, simplify));
-	}
-
-	IEnumerator FindPathCoroutine(AStarNode from, AStarNode to, bool simplify)
-	{
-		List<Vector3> path = AStarPathfinder.FindPath(from, to, TotalNodes, simplify);
-		yield return null;
-
-		PathRequestManager.Instance.FinishedProcessingPath(path);
+		return AStarPathfinder.FindPath(from, to, TotalNodes, simplify);
 	}
 }

@@ -30,8 +30,9 @@ public class PathfinderAgent : MonoBehaviour
 		return new List<Vector3>();
 	}
 
-	public virtual void FindPathAsync(Vector3 start, Vector3 destination, bool simplify)
+	public virtual List<Vector3> FindPath(Vector3 start, Vector3 destination, bool simplify)
 	{
+		return new List<Vector3>();
 	}
 
 	private void Awake()

@@ -198,6 +198,7 @@ public class RandomMovement : MonoBehaviour
 		StopAllCoroutines();
 		currentPath = null;
 		nextPath = null;
+		waitingForPath = false;
 	}
 
 	private void OnEnable()
@@ -205,6 +206,7 @@ public class RandomMovement : MonoBehaviour
 		StopAllCoroutines();
 		currentPath = null;
 		nextPath = null;
+		waitingForPath = false;
 	}
 
 	private void OnDrawGizmosSelected()

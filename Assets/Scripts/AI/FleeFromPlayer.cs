@@ -202,12 +202,14 @@ public class FleeFromPlayer : MonoBehaviour
 	{
 		StopAllCoroutines();
 		currentPath = null;
+		waitingForPath = false;
 	}
 
 	private void OnEnable()
 	{
 		StopAllCoroutines();
 		currentPath = null;
+		waitingForPath = false;
 	}
 
 	private void OnDrawGizmosSelected()
