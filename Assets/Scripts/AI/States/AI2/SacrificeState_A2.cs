@@ -10,6 +10,7 @@ public class SacrificeState_A2 : AIState
 	[SerializeField] float healingPercentage = 0.4f;
 	float countdownStartTime = 0;
 
+	MoveToLocation moveToLocation;
 	DamageableObject health;
 	Transform particleVFX;
 	Transform shield;
@@ -21,6 +22,7 @@ public class SacrificeState_A2 : AIState
 
 	protected override void Awake()
 	{
+		moveToLocation = GetComponent<MoveToLocation>();
 		health = GetComponent<DamageableObject>();
 		particleVFX = transform.Find("Particles");
 		shield = transform.Find("Shield");
@@ -52,6 +54,13 @@ public class SacrificeState_A2 : AIState
 		countdownStartTime = Time.time;
 		particleVFX.gameObject.SetActive(true);
 		shield.gameObject.SetActive(true);
+		if(moveToLocation != null)
+		{
+			moveToLocation.enabled = true;
+			// move to a location that is accessible to every character (i.e. not on mountains)
+			PathfinderAgent playerPathfinder = player.GetComponent<PathfinderAgent>();
+			moveToLocation.MoveTo(playerPathfinder.ClosestAccessibleLocation(transform.position));
+		}
 		if (SuperHealing != null)
 		{
 			SuperHealing.Invoke(transform);
