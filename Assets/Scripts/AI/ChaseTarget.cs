@@ -16,6 +16,7 @@ public class ChaseTarget : MonoBehaviour
 	float maxStoppingDistanceFromTarget;
 	bool keepMovingWhenTargetReached;
 	bool shootWhileChasing = false;
+	float maxErrorOnShootingAngle = 3f;
 
 	CharacterMovement characterMovement;
 	Shooting shootingController;
@@ -205,6 +206,10 @@ public class ChaseTarget : MonoBehaviour
 			{
 				if (hit.collider.gameObject == chaseTarget.gameObject)
 				{
+					// add perturbation to the shooting direction so that the AI is not infallible
+					float yAngleErr = maxErrorOnShootingAngle * (Random.value * 2 - 1);
+					float xAngleErr = maxErrorOnShootingAngle * (Random.value * 2 - 1);
+					shootDir = Quaternion.Euler(xAngleErr, yAngleErr, 0) * shootDir;
 					shootingController.Shoot(shootDir);
 				}
 			}
