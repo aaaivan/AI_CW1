@@ -5407,6 +5407,7 @@ GameObject:
   - component: {fileID: 6301205029521460528}
   - component: {fileID: -8144083204128009146}
   - component: {fileID: -6839550932337926152}
+  - component: {fileID: 3224878268104663236}
   - component: {fileID: 4706921203720749412}
   - component: {fileID: 2340131592860084584}
   - component: {fileID: -312587720707762169}
@@ -5525,7 +5526,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc0197c31fccb1e4e85e32b1137a6c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 10
+--- !u!114 &3224878268104663236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6a576043e4f7c3438fc697fafd08c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4706921203720749412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5621,8 +5634,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stateName: Flee
   stopFleeingDelay: 3
-  firstSecrificeAttemptDelay: 60
-  sacrificeAttemptTimeInterval: 10
+  firstSecrificeAttemptDelay: 1
+  sacrificeAttemptTimeInterval: 1
   maxHealthPercentAllowingSacrifice: 0.2
   healthPercentRequiringHealing: 0.7
 --- !u!114 &-2283646199577077165

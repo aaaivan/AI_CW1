@@ -102,4 +102,12 @@ public class EnemiesManager : MonoBehaviour
 	{
 		return enemies;
 	}
+
+	public void RemoveEnemy(string enemyType, Transform transform)
+	{
+		if (enemies.ContainsKey(enemyType))
+		{
+			enemies[enemyType].Remove(transform);
+		}
+	}
 }

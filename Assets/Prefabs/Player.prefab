@@ -412,6 +412,7 @@ GameObject:
   - component: {fileID: 6301205029521460528}
   - component: {fileID: -8144083204128009146}
   - component: {fileID: -8106307847296906934}
+  - component: {fileID: -3325592615209309857}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -488,7 +489,6 @@ MonoBehaviour:
   aimLayerMask:
     serializedVersion: 2
     m_Bits: 201
-  debugTransform: {fileID: 0}
 --- !u!114 &6301205029521460528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -537,3 +537,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 999999
+--- !u!114 &-3325592615209309857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa37e25f48ac3440ac157b1aa8cbe0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

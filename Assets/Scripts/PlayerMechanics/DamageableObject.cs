@@ -18,11 +18,7 @@ public class DamageableObject : MonoBehaviour
 
 	public void TakeDamage(DamagingObject obj)
 	{
-		currentHealth -= obj.Damage;
-		if(currentHealth <= 0)
-		{
-			Destroy(gameObject);
-		}
+		TakeDamage(obj.Damage);
 	}
 
 	public void TakeDamage(int damage)
@@ -30,7 +26,7 @@ public class DamageableObject : MonoBehaviour
 		currentHealth -= damage;
 		if (currentHealth <= 0)
 		{
-			Destroy(gameObject);
+			GetComponent<IObjectCleanUp>()?.CleanUpObject();
 		}
 	}
 
