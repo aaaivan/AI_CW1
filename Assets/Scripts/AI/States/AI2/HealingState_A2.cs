@@ -12,9 +12,12 @@ public class HealingState_A2 : AIState
 	float lastStopHealingAtemptTime = 0;
 
 	DamageableObject health;
+	bool superHealingIsHappening = false;
 
+	// Next possible states
 	FleeingState_A2 fleeingState;
 	SearchingAllyState_A2 searchingAllyState;
+	SuperHealingState_A2 superHealingState;
 
 	protected override void Awake()
 	{
@@ -22,6 +25,7 @@ public class HealingState_A2 : AIState
 
 		fleeingState = GetComponent<FleeingState_A2>();
 		searchingAllyState = GetComponent<SearchingAllyState_A2>();
+		superHealingState = GetComponent<SuperHealingState_A2>();
 
 		base.Awake();
 	}
@@ -39,6 +43,11 @@ public class HealingState_A2 : AIState
 
 	public override AIState CheckConditions()
 	{
+		if (superHealingIsHappening)
+		{
+			return superHealingState;
+		}
+
 		if (CanSeePoint(player.position + playerHeight * Vector3.up, nodeDist))
 		{
 			return fleeingState;
@@ -59,14 +68,22 @@ public class HealingState_A2 : AIState
 		return null;
 	}
 
+	private void PursueSuperHealing(Transform healer)
+	{
+		superHealingIsHappening = true;
+		superHealingState.TargetedHealer = healer;
+	}
 	protected override void StateDidBecomeActive(AIState prevState)
 	{
+		superHealingIsHappening = false;
+		SacrificeState_A2.SuperHealing += PursueSuperHealing;
 		healthAccumulator = 0;
 		return;
 	}
 
 	protected override void StateDidBecomeInactive(AIState nextState)
 	{
+		SacrificeState_A2.SuperHealing -= PursueSuperHealing;
 		return;
 	}
 }

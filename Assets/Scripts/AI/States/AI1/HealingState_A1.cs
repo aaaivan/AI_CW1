@@ -9,6 +9,7 @@ public class HealingState_A1 : AIState
 	[SerializeField] float tryStopHealingTimeInterval = 5.0f;
 	float lastStopHealingAttemptTime = 0;
 	float healthPercentRequiringHealing;
+	bool superHealingIsHappening = false;
 
 	ChaseTarget followHealer;
 	Transform targetedHealer;
@@ -20,6 +21,7 @@ public class HealingState_A1 : AIState
 	AttackingState_AI1 attackingState;
 	FleeingState_AI1 fleeingState;
 	SearchingForHealerState_AI1 searchingForHealerState;
+	SuperHealingState_A1 superHealingState;
 
 	public Transform TargetedHealer { set { targetedHealer = value; } }
 
@@ -33,6 +35,7 @@ public class HealingState_A1 : AIState
 		attackingState = GetComponent<AttackingState_AI1>();
 		fleeingState = GetComponent<FleeingState_AI1>();
 		searchingForHealerState = GetComponent<SearchingForHealerState_AI1>();
+		superHealingState = GetComponent<SuperHealingState_A1>();
 
 		base.Awake();
 	}
@@ -44,7 +47,12 @@ public class HealingState_A1 : AIState
 
 	public override AIState CheckConditions()
 	{
-		if(targetedHealer == null)
+		if (superHealingIsHappening)
+		{
+			return superHealingState;
+		}
+
+		if (targetedHealer == null)
 		{
 			return searchingForHealerState;
 		}
@@ -81,8 +89,16 @@ public class HealingState_A1 : AIState
 		return null;
 	}
 
+	private void PursueSuperHealing(Transform healer)
+	{
+		superHealingIsHappening = true;
+		superHealingState.TargetedHealer = healer;
+	}
+
 	protected override void StateDidBecomeActive(AIState prevState)
 	{
+		superHealingIsHappening = false;
+		SacrificeState_A2.SuperHealing += PursueSuperHealing;
 		if (followHealer != null)
 		{
 			if(targetedHealer != null)
@@ -97,7 +113,8 @@ public class HealingState_A1 : AIState
 
 	protected override void StateDidBecomeInactive(AIState nextState)
 	{
-		if(targetedHealer != null)
+		SacrificeState_A2.SuperHealing -= PursueSuperHealing;
+		if (targetedHealer != null)
 		{
 			targetedHealer.GetComponent<HealingAllyState_A2>().StopHealingAlly(health);
 			targetedHealer = null;

@@ -11,6 +11,7 @@ public class FleeingState_AI1 : AIState
 	float lastTimePlayerWasSeen = 0;
 	float timeSinceCriticalHealth = 0;
 	float timeSinceLastAttemptedSacrifice = 0;
+	bool superHealingIsHappening = false;
 
 	FleeFromPlayer fleeFromPlayer;
 	DamageableObject health;
@@ -18,7 +19,7 @@ public class FleeingState_AI1 : AIState
 	// Next possible states
 	SearchingForHealerState_AI1 searchingForHealerState;
 	SacrificeState_A1 sacrificeState;
-
+	SuperHealingState_A1 superHealingState;
 
 	protected override void Awake()
 	{
@@ -27,13 +28,19 @@ public class FleeingState_AI1 : AIState
 
 		searchingForHealerState = GetComponent<SearchingForHealerState_AI1>();
 		sacrificeState = GetComponent<SacrificeState_A1>();
+		superHealingState = GetComponent<SuperHealingState_A1>();
 
 		base.Awake();
 	}
 
 	public override AIState CheckConditions()
 	{
-		if(CanSeePoint(player.position + playerHeight * Vector3.up, nodeDist))
+		if (superHealingIsHappening)
+		{
+			return superHealingState;
+		}
+
+		if (CanSeePoint(player.position + playerHeight * Vector3.up, nodeDist))
 		{
 			lastTimePlayerWasSeen = Time.time;
 			if (Time.time > timeSinceCriticalHealth + firstSecrificeAttemptDelay && 
@@ -56,9 +63,17 @@ public class FleeingState_AI1 : AIState
 		return null;
 	}
 
+	private void PursueSuperHealing(Transform healer)
+	{
+		superHealingIsHappening = true;
+		superHealingState.TargetedHealer = healer;
+	}
+
 	protected override void StateDidBecomeActive(AIState prevState)
 	{
-		if(fleeFromPlayer != null)
+		superHealingIsHappening = false;
+		SacrificeState_A2.SuperHealing += PursueSuperHealing;
+		if (fleeFromPlayer != null)
 		{
 			fleeFromPlayer.enabled = true;
 		}
@@ -70,6 +85,7 @@ public class FleeingState_AI1 : AIState
 
 	protected override void StateDidBecomeInactive(AIState nextState)
 	{
+		SacrificeState_A2.SuperHealing -= PursueSuperHealing;
 		if (fleeFromPlayer != null)
 		{
 			fleeFromPlayer.enabled = false;

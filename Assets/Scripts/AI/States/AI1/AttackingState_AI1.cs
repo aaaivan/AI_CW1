@@ -8,9 +8,11 @@ public class AttackingState_AI1 : AIState
 	[SerializeField] float timeBeforePlayerIsLost = 3.0f;
 	[SerializeField] float lifeLeftPercentBeforeFleeing = 0.3f;
 	float playerLastSeenTime;
+	bool superHealingIsHappening = false;
 
 	ChaseTarget chasePlayer;
 	DamageableObject damageableObject;
+	SuperHealingState_A1 superHealingState;
 
 	// Next possible states
 	SearchingForPlayerState_AI1 searchingForPlayerState;
@@ -25,13 +27,19 @@ public class AttackingState_AI1 : AIState
 
 		searchingForPlayerState = GetComponent<SearchingForPlayerState_AI1>();
 		fleeingState = GetComponent<FleeingState_AI1>();
+		superHealingState = GetComponent<SuperHealingState_A1>();
 
 		base.Awake();
 	}
 
 	public override AIState CheckConditions()
 	{
-		if(damageableObject.CurrentHealthPercent < lifeLeftPercentBeforeFleeing)
+		if (superHealingIsHappening)
+		{
+			return superHealingState;
+		}
+
+		if (damageableObject.CurrentHealthPercent < lifeLeftPercentBeforeFleeing)
 		{
 			return fleeingState;
 		}
@@ -48,8 +56,16 @@ public class AttackingState_AI1 : AIState
 		return null;
 	}
 
+	private void PursueSuperHealing(Transform healer)
+	{
+		superHealingIsHappening = true;
+		superHealingState.TargetedHealer = healer;
+	}
+
 	protected override void StateDidBecomeActive(AIState prevState)
 	{
+		superHealingIsHappening = false;
+		SacrificeState_A2.SuperHealing += PursueSuperHealing;
 		if (chasePlayer != null)
 		{
 			chasePlayer.Init(player, playerHeight, true, stoppingDistanceFromPlayer);
@@ -59,6 +75,7 @@ public class AttackingState_AI1 : AIState
 
 	protected override void StateDidBecomeInactive(AIState nextState)
 	{
+		SacrificeState_A2.SuperHealing -= PursueSuperHealing;
 		if (chasePlayer != null)
 		{
 			chasePlayer.enabled = false;

@@ -5372,6 +5372,7 @@ GameObject:
   - component: {fileID: 4981238378089119748}
   - component: {fileID: 7605214820844391515}
   - component: {fileID: -8504345920165812714}
+  - component: {fileID: -3235941483434999440}
   m_Layer: 7
   m_Name: Enemy1
   m_TagString: Player
@@ -5621,7 +5622,20 @@ MonoBehaviour:
   stateName: Sacrifice
   stoppingDistanceFromPlayer: 2
   explosionRadius: 5
-  maxTimeBeforeExploding: 10
+  maxTimeBeforeExploding: 5
+--- !u!114 &-3235941483434999440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8550924921819389752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 965bb535fe41b854bb74f5bb380c966b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateName: SuperHeal
 --- !u!1001 &6569586436726623674
 PrefabInstance:
   m_ObjectHideFlags: 0

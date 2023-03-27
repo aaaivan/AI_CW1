@@ -97,4 +97,9 @@ public class EnemiesManager : MonoBehaviour
 
 		return new List<Transform>();
 	}
+
+	public Dictionary<string, List<Transform>> GetEnemies()
+	{
+		return enemies;
+	}
 }

@@ -6,10 +6,13 @@ public class SearchingForHealerState_AI1 : AIState
 {
 	RandomMovement randomMovement;
 	DamageableObject health;
+	bool superHealingIsHappening = false;
+
 
 	// Next possible states
 	HealingState_A1 healingState;
 	FleeingState_AI1 fleeingState;
+	SuperHealingState_A1 superHealingState;
 
 	protected override void Awake()
 	{
@@ -18,13 +21,19 @@ public class SearchingForHealerState_AI1 : AIState
 
 		healingState = GetComponent<HealingState_A1>();
 		fleeingState = GetComponent<FleeingState_AI1>();
+		superHealingState = GetComponent<SuperHealingState_A1>();
 
 		base.Awake();
 	}
 
 	public override AIState CheckConditions()
 	{
-		if(CanSeePoint(player.position + Vector3.up * playerHeight, nodeDist))
+		if (superHealingIsHappening)
+		{
+			return superHealingState;
+		}
+
+		if (CanSeePoint(player.position + Vector3.up * playerHeight, nodeDist))
 		{
 			return fleeingState;
 		}
@@ -43,9 +52,17 @@ public class SearchingForHealerState_AI1 : AIState
 		return null;
 	}
 
+	private void PursueSuperHealing(Transform healer)
+	{
+		superHealingIsHappening = true;
+		superHealingState.TargetedHealer = healer;
+	}
+
 	protected override void StateDidBecomeActive(AIState prevState)
 	{
-		if(randomMovement != null)
+		superHealingIsHappening = false;
+		SacrificeState_A2.SuperHealing += PursueSuperHealing;
+		if (randomMovement != null)
 		{
 			randomMovement.enabled = true;
 		}
@@ -53,6 +70,7 @@ public class SearchingForHealerState_AI1 : AIState
 
 	protected override void StateDidBecomeInactive(AIState nextState)
 	{
+		SacrificeState_A2.SuperHealing -= PursueSuperHealing;
 		if (randomMovement != null)
 		{
 			randomMovement.enabled = false;

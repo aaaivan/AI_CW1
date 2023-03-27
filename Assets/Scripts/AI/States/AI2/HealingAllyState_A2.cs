@@ -8,6 +8,7 @@ public class HealingAllyState_A2 : AIState
 	[SerializeField] float healingSpeed = 2.0f;
 	[SerializeField] float minHealthToHealAlly = 0.3f;
 	float healthAccumulator = 0f;
+	bool superHealingIsHappening = false;
 
 	ChaseTarget followAlly;
 	DamageableObject health;
@@ -18,6 +19,7 @@ public class HealingAllyState_A2 : AIState
 	// Next possible states
 	FleeingState_A2 fleeingState;
 	SearchingAllyState_A2 searchingAllyState;
+	SuperHealingState_A2 superHealingState;
 
 	public float HealingRadius { get { return healingRadius; } }
 
@@ -29,6 +31,7 @@ public class HealingAllyState_A2 : AIState
 
 		fleeingState = GetComponent<FleeingState_A2>();
 		searchingAllyState = GetComponent<SearchingAllyState_A2>();
+		superHealingState = GetComponent<SuperHealingState_A2>();
 
 		base.Awake();
 	}
@@ -53,7 +56,12 @@ public class HealingAllyState_A2 : AIState
 
 	public override AIState CheckConditions()
 	{
-		if(health.CurrentHealthPercent < minHealthToHealAlly)
+		if (superHealingIsHappening)
+		{
+			return superHealingState;
+		}
+
+		if (health.CurrentHealthPercent < minHealthToHealAlly)
 		{
 			return fleeingState;
 		}
@@ -64,8 +72,16 @@ public class HealingAllyState_A2 : AIState
 		return null;
 	}
 
+	private void PursueSuperHealing(Transform healer)
+	{
+		superHealingIsHappening = true;
+		superHealingState.TargetedHealer = healer;
+	}
+
 	protected override void StateDidBecomeActive(AIState prevState)
 	{
+		superHealingIsHappening = false;
+		SacrificeState_A2.SuperHealing += PursueSuperHealing;
 		healthAccumulator = 0;
 		if (followAlly != null && alliesToHeal.Count > 0)
 		{
@@ -75,6 +91,7 @@ public class HealingAllyState_A2 : AIState
 
 	protected override void StateDidBecomeInactive(AIState nextState)
 	{
+		SacrificeState_A2.SuperHealing -= PursueSuperHealing;
 		alliesToHeal.Clear();
 		alliesWhoSentHealRequest.Clear();
 		if (followAlly != null)

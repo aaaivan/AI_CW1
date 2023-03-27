@@ -6,7 +6,7 @@ public class SacrificeState_A1 : AIState
 {
 	[SerializeField] float stoppingDistanceFromPlayer = 2.0f;
 	[SerializeField] float explosionRadius = 5.0f;
-	[SerializeField] float maxTimeBeforeExploding = 10.0f;
+	[SerializeField] float maxTimeBeforeExploding = 5.0f;
 	float countdownStartTime = 0;
 
 	ChaseTarget chasePlayer;

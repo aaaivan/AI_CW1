@@ -19,6 +19,9 @@ public class PlayerControls : MonoBehaviour
 
 	private void Awake()
 	{
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
+
 		cameraLocation = transform.Find("CameraFollow");
 		projectileSpawnLocation = transform.Find("BulletSpawnPos");
 		movement = GetComponent<CharacterMovement>();
