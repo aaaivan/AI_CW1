@@ -87,6 +87,7 @@ public class AttackingState_A2 : AIState
 	protected override void StateDidBecomeActive(AIState prevState)
 	{
 		lastFleeAttemptTime = Time.time;
+		playerLastSeenTime = Time.time;
 		superHealingIsHappening = false;
 		SacrificeState_A2.SuperHealing += PursueSuperHealing;
 		if (chasePlayer != null)

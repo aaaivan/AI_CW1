@@ -15,11 +15,11 @@ public class AttackingState_AI1 : AIState
 
 	ChaseTarget chasePlayer;
 	DamageableObject health;
-	SuperHealingState_A1 superHealingState;
 
 	// Next possible states
 	SearchingForPlayerState_AI1 searchingForPlayerState;
 	FleeingState_AI1 fleeingState;
+	SuperHealingState_A1 superHealingState;
 
 	public float LifeLeftPercentBeforeFleeing { get { return lifeLeftPercentBeforeFleeing; } }
 
@@ -80,6 +80,7 @@ public class AttackingState_AI1 : AIState
 	protected override void StateDidBecomeActive(AIState prevState)
 	{
 		lastFleeAttemptTime = Time.time;
+		playerLastSeenTime = Time.time;
 		superHealingIsHappening = false;
 		SacrificeState_A2.SuperHealing += PursueSuperHealing;
 		if (chasePlayer != null)

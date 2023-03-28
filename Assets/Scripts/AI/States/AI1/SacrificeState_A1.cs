@@ -27,7 +27,7 @@ public class SacrificeState_A1 : AIState
 		if(Time.time > countdownStartTime + maxTimeBeforeExploding
 			|| Vector3.Distance(transform.position, player.transform.position) <= stoppingDistanceFromPlayer)
 		{
-			GetComponent<Shooting>().MeleeAttack(transform.position, explosionRadius, true, false);
+			GetComponent<MeleeAttack>().Attack(transform.position, explosionRadius, true, false);
 			health.TakeDamage(health.CurrentHealth);
 		}
 	}

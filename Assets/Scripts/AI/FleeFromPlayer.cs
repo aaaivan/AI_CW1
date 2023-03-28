@@ -31,6 +31,9 @@ public class FleeFromPlayer : MonoBehaviour
 
 	void SubmitNewPathRequest()
 	{
+		if (player == null)
+			return;
+
 		waitingForPath = true;
 
 		Vector3 fleeDirection = transform.position - player.transform.position;

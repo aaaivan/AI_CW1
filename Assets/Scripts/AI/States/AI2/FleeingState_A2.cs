@@ -87,6 +87,7 @@ public class FleeingState_A2 : AIState
 	protected override void StateDidBecomeActive(AIState prevState)
 	{
 		superHealingIsHappening = false;
+		lastTimePlayerWasSeen = Time.time;
 		SacrificeState_A2.SuperHealing += PursueSuperHealing;
 		if (fleeFromPlayer != null)
 		{

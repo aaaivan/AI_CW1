@@ -9,7 +9,7 @@ public class AIState : MonoBehaviour
 
 	protected LayerMask layersBlockingView;
 
-	protected Transform bulletOrigin;
+	protected Transform eyes;
 	protected Transform player;
 	protected float playerHeight;
 	protected bool isActive;
@@ -20,7 +20,7 @@ public class AIState : MonoBehaviour
 	protected virtual void Awake()
 	{
 		layersBlockingView = LayerMask.GetMask(new string[] { "Default", "Terrain", "Unwalkable" });
-		bulletOrigin = transform.Find("BulletSpawnPos");
+		eyes = transform.Find("Eyes");
 		player = GameManager.Instance.Player.transform;
 		playerHeight = player.GetComponent<CharacterController>().height;
 		nodeDist = MapGenerator.Instance.terrainData.uniformScale;
@@ -66,14 +66,14 @@ public class AIState : MonoBehaviour
 
 	protected bool CanSeePoint(Vector3 point, float radius)
 	{
-		Vector3 bulletToPointDirection = point - bulletOrigin.position;
+		Vector3 bulletToPointDirection = point - eyes.position;
 
 		// player is too far
 		if (Vector3.Distance(transform.position, point) > fsm.SightDistance)
 			return false;
 
 		// view blocked by terrain
-		if (Physics.Raycast(bulletOrigin.position, bulletToPointDirection.normalized,
+		if (Physics.Raycast(eyes.position, bulletToPointDirection.normalized,
 			bulletToPointDirection.magnitude - radius, layersBlockingView, QueryTriggerInteraction.Ignore))
 		{
 			return false;

@@ -197,6 +197,9 @@ public class ChaseTarget : MonoBehaviour
 	{
 		while (true)
 		{
+			if (chaseTarget == null)
+				break;
+
 			Vector3 shootDir = chaseTarget.transform.position
 				+ Vector3.up * chaseTargetHeight / 2
 				- bulletOrigin.position;

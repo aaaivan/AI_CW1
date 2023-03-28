@@ -107,10 +107,8 @@ public class HealingState_A1 : AIState
 				float targetHealerHeight = targetedHealer.GetComponent<CharacterController>().height;
 				float targetHealerRadius = targetedHealer.GetComponent<CharacterController>().radius;
 				followHealer.Init(targetedHealer, targetHealerHeight, false,
-					targetHealerRadius + characterController.radius, healingRadius - 2 * characterController.radius, true);
+					targetHealerRadius + characterController.radius, healingRadius - 2 * characterController.radius, false);
 				followHealer.enabled = true;
-
-				targetedHealer.GetComponent<HealingAllyState_A2>().StartHealingAlly(health);
 			}
 		}
 	}
@@ -120,7 +118,6 @@ public class HealingState_A1 : AIState
 		SacrificeState_A2.SuperHealing -= PursueSuperHealing;
 		if (targetedHealer != null)
 		{
-			targetedHealer.GetComponent<HealingAllyState_A2>().StopHealingAlly(health);
 			targetedHealer = null;
 		}
 		if (followHealer != null)

@@ -7,7 +7,7 @@ public class MeleeDamageCalculator_A1 : MonoBehaviour, IMeleeDamageCalculator
 	int numberOfTosses = 3;
 	int maxValueOfEachToss = 5;
 	int numberOfHits = 2;
-	int damageBonus = 10;
+	int damageBonus = 9;
 	int criticalHitDamage = 25;
 	float criticalHitProbability = 0.5f;
 	public int GetMeleeDamage()

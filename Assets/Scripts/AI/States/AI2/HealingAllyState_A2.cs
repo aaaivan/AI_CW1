@@ -7,14 +7,14 @@ public class HealingAllyState_A2 : AIState
 	[SerializeField] float healingRadius = 5.0f;
 	[SerializeField] float healingSpeed = 2.0f;
 	[SerializeField] float minHealthToHealAlly = 0.3f;
+	[SerializeField] float minHealthToStopHealingSelfToHealAlly = 0.5f;
 	float healthAccumulator = 0f;
 	bool superHealingIsHappening = false;
 
 	ChaseTarget followAlly;
 	DamageableObject health;
 	CharacterController characterController;
-	HashSet<DamageableObject> alliesToHeal = new HashSet<DamageableObject>();
-	HashSet<DamageableObject> alliesWhoSentHealRequest = new HashSet<DamageableObject>();
+	List<DamageableObject> alliesToHeal = new List<DamageableObject>();
 
 	// Next possible states
 	FleeingState_A2 fleeingState;
@@ -38,7 +38,32 @@ public class HealingAllyState_A2 : AIState
 
 	private void Update()
 	{
-		alliesWhoSentHealRequest.Clear();
+		bool newFollowTarget = followAlly.Target == null;
+		for(int i = alliesToHeal.Count - 1; i >= 0; --i)
+		{
+			DamageableObject ally = alliesToHeal[i];
+			if(ally == null)
+			{
+				alliesToHeal.RemoveAt(i);
+			}
+			else if(ally.GetComponent<FiniteStateMachine>().CurrentState != "Heal")
+			{
+				alliesToHeal.RemoveAt(i);
+				if(followAlly.Target == ally)
+				{
+					newFollowTarget = true;
+				}
+			}
+		}
+
+		if(newFollowTarget && alliesToHeal.Count > 0)
+		{
+			Transform newTarget = alliesToHeal[0].transform;
+			float height = newTarget.GetComponent<CharacterController>().height;
+			float stoppingDist = healingRadius - characterController.radius * 2;
+			followAlly.Init(newTarget.transform, height, false, 0, stoppingDist, false);
+		}
+
 		healthAccumulator += Time.deltaTime * healingSpeed;
 		int healAmount = Mathf.FloorToInt(healthAccumulator);
 		if(healAmount > 0)
@@ -86,6 +111,13 @@ public class HealingAllyState_A2 : AIState
 		if (followAlly != null && alliesToHeal.Count > 0)
 		{
 			followAlly.enabled = true;
+			if (alliesToHeal.Count > 0)
+			{
+				Transform newTarget = alliesToHeal[0].transform;
+				float height = newTarget.GetComponent<CharacterController>().height;
+				float stoppingDist = healingRadius - characterController.radius * 2;
+				followAlly.Init(newTarget.transform, height, false, 0, stoppingDist, false);
+			}
 		}
 	}
 
@@ -93,7 +125,6 @@ public class HealingAllyState_A2 : AIState
 	{
 		SacrificeState_A2.SuperHealing -= PursueSuperHealing;
 		alliesToHeal.Clear();
-		alliesWhoSentHealRequest.Clear();
 		if (followAlly != null)
 		{
 			followAlly.enabled = false;
@@ -105,46 +136,28 @@ public class HealingAllyState_A2 : AIState
 		if (fsm.CurrentState == "SearchAlly" ||
 			fsm.CurrentState == this.stateName)
 		{
-			alliesWhoSentHealRequest.Add(requestedBy);
+			alliesToHeal.Add(requestedBy);
 			return true;
 		}
 		else if (fsm.CurrentState == "Attack")
 		{
 			if(Random.value < health.CurrentHealthPercent)
 			{
-				alliesWhoSentHealRequest.Add(requestedBy);
+				alliesToHeal.Add(requestedBy);
 				return true;
 			}
 		}
+		else if (fsm.CurrentState == "HealSelf")
+		{
+			float probDist = Mathf.InverseLerp(0, 1 - minHealthToStopHealingSelfToHealAlly, Mathf.Clamp01(health.CurrentHealth - minHealthToStopHealingSelfToHealAlly));
+			if (Random.value < probDist)
+			{
+				alliesToHeal.Add(requestedBy);
+				return true;
+			}
+		}
+
 		return false;
-	}
-
-	public void StartHealingAlly(DamageableObject ally)
-	{
-		if(alliesWhoSentHealRequest.Remove(ally))
-		{
-			alliesToHeal.Add(ally);
-
-			float height = ally.GetComponent<CharacterController>().height;
-			float stoppingDist = healingRadius - characterController.radius * 2;
-			followAlly.Init(ally.transform, height, false, stoppingDist, stoppingDist, false);
-		}
-	}
-
-	public void StopHealingAlly(DamageableObject ally)
-	{
-		alliesToHeal.Remove(ally);
-		alliesWhoSentHealRequest.Remove(ally);
-		if(followAlly.Target == ally && alliesToHeal.Count > 0)
-		{
-			var it = alliesToHeal.GetEnumerator();
-			it.MoveNext();
-			Transform newTarget = it.Current.transform;
-			float height = newTarget.GetComponent<CharacterController>().height;
-
-			float stoppingDist = healingRadius - characterController.radius * 2;
-			followAlly.Init(newTarget.transform, height, false, stoppingDist, stoppingDist, false);
-		}
 	}
 
 	public bool IsHealingAlly(DamageableObject ally)

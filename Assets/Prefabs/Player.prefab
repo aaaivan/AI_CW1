@@ -488,7 +488,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mouseSensitivityX: 4
   mouseSensitivityY: 5
-  cameraClampAngleBtm: 30
+  cameraClampAngleBtm: 70
   cameraClampAngleTop: 70
   aimLayerMask:
     serializedVersion: 2

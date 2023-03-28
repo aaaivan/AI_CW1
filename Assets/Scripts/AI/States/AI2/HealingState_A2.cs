@@ -18,6 +18,7 @@ public class HealingState_A2 : AIState
 	FleeingState_A2 fleeingState;
 	SearchingAllyState_A2 searchingAllyState;
 	SuperHealingState_A2 superHealingState;
+	HealingAllyState_A2 healingAlly;
 
 	protected override void Awake()
 	{
@@ -26,6 +27,7 @@ public class HealingState_A2 : AIState
 		fleeingState = GetComponent<FleeingState_A2>();
 		searchingAllyState = GetComponent<SearchingAllyState_A2>();
 		superHealingState = GetComponent<SuperHealingState_A2>();
+		healingAlly = GetComponent<HealingAllyState_A2>();
 
 		base.Awake();
 	}
@@ -46,6 +48,11 @@ public class HealingState_A2 : AIState
 		if (superHealingIsHappening)
 		{
 			return superHealingState;
+		}
+
+		if (healingAlly.WantsToHealAllies())
+		{
+			return healingAlly;
 		}
 
 		if (CanSeePoint(player.position + playerHeight * Vector3.up, nodeDist))

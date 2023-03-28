@@ -31,6 +31,7 @@ public class DamageableObject : MonoBehaviour
 		currentHealth -= damage;
 		if (currentHealth <= 0)
 		{
+			currentHealth = 0;
 			GetComponent<IObjectCleanUp>()?.CleanUpObject();
 		}
 	}
