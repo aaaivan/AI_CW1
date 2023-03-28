@@ -125,7 +125,7 @@ public class SearchPlayerState_AI3 : AIState
 	{
 		if (fsm.CurrentState == "SearchAlly" ||
 			fsm.CurrentState == this.stateName &&
-			alliesBeingLed.Count < maxFormationSize)
+			alliesBeingLed.Count < maxFormationSize - 1)
 		{
 			alliesBeingLed.Add(ally);
 			return true;

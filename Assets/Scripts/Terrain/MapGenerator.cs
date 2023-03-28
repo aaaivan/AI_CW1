@@ -56,6 +56,7 @@ public class MapGenerator : MonoBehaviour
 	}
 
 	#region MAP_GENERATION
+	// generates the terrain centered at the specified position
 	public void DrawMapAtPosition(Vector3 pos)
 	{
 		GenerateMapData();
@@ -73,6 +74,7 @@ public class MapGenerator : MonoBehaviour
 		MapDisplay.DrawMesh(meshData, meshFilter, meshCollider);
 	}
 
+	// generate a 2d height map using Perlin noise and th emodifiers specified in the terrain data
 	void GenerateMapData()
 	{
 		terrainData.GenerateNoiseMap();
@@ -143,6 +145,7 @@ public class MapGenerator : MonoBehaviour
 		return points[index];
 	}
 
+	// get the 3d coordinate of a point on the map given its 2d coordinates relative to the map
 	public Vector3? GetPointAtCoordinates(Vector2 coordinate2D)
 	{
 		RaycastHit raycastHit;

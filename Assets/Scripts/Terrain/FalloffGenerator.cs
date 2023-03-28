@@ -4,6 +4,8 @@ using UnityEngine;
 
 public static class FalloffGenerator
 {
+	// generates a 2D array of values between 0 and 1. The values approach 0 closer to the edges of the array,
+	// and 1 towards the middle of the array
 	public static float[,] GenerateFalloutMap(int size, float falloffSlope, float falloffDistance)
 	{
 		float[,] map = new float[size, size];

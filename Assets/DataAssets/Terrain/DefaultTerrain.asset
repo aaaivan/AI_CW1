@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3690eae8dbb1555419ecf74433724a1d, type: 3}
   m_Name: DefaultTerrain
   m_EditorClassIdentifier: 
-  mapSize: 255
-  noiseScale: 60
+  mapSize: 100
+  noiseScale: 20
   octaves: 3
-  persistance: 0.25
-  lacunarity: 2
-  seed: 0
+  persistance: 0.2
+  lacunarity: 3
+  seed: 3
   offset: {x: 16.76, y: 0}
-  mapScale: 1
-  noiseHeightMultiplier: 500
-  useCurveMultiplier: 1
+  uniformScale: 1
+  noiseHeightMultiplier: 25
+  useCurveMultiplier: 0
   meshHeightCurveMultiplier:
     serializedVersion: 2
     m_Curve:
@@ -35,6 +35,24 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
+      time: 0.10858303
+      value: 0.1422048
+      inSlope: 0.21084525
+      outSlope: 0.21084525
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.6935586
+      value: 0.40621012
+      inSlope: 1.4995943
+      outSlope: 1.4995943
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
       time: 1
       value: 1
       inSlope: 0
@@ -46,6 +64,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  useFalloffMap: 1
-  falloffSlope: 1
-  falloffDistance: 10
+  useFalloffMap: 0
+  falloffSlope: 2
+  falloffDistance: 3

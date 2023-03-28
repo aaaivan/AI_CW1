@@ -6,6 +6,7 @@ using UnityEngine;
 
 public static class MeshGenerator
 {
+	// generate a collection of points, tris and uvs straing form a height map
     public static MeshData GenerateTerrainMesh(float[,] heightMap, float scaleFactor, Vector3 worldPosition)
 	{
 		int width = heightMap.GetLength(0);
