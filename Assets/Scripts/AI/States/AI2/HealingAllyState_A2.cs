@@ -134,27 +134,17 @@ public class HealingAllyState_A2 : AIState
 	public bool RequestHealing(DamageableObject requestedBy)
 	{
 		if (fsm.CurrentState == "SearchAlly" ||
+			fsm.CurrentState == "Attack" ||
 			fsm.CurrentState == this.stateName)
 		{
 			alliesToHeal.Add(requestedBy);
 			return true;
 		}
-		else if (fsm.CurrentState == "Attack")
+		else if (fsm.CurrentState == "HealSelf" &&
+			health.CurrentHealthPercent > minHealthToStopHealingSelfToHealAlly)
 		{
-			if(Random.value < health.CurrentHealthPercent)
-			{
-				alliesToHeal.Add(requestedBy);
-				return true;
-			}
-		}
-		else if (fsm.CurrentState == "HealSelf")
-		{
-			float probDist = Mathf.InverseLerp(0, 1 - minHealthToStopHealingSelfToHealAlly, Mathf.Clamp01(health.CurrentHealth - minHealthToStopHealingSelfToHealAlly));
-			if (Random.value < probDist)
-			{
-				alliesToHeal.Add(requestedBy);
-				return true;
-			}
+			alliesToHeal.Add(requestedBy);
+			return true;
 		}
 
 		return false;

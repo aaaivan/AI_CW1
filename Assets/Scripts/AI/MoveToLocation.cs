@@ -76,7 +76,7 @@ public class MoveToLocation : MonoBehaviour
 
 	private void OnDrawGizmosSelected()
 	{
-		if (path != null)
+		if (path != null && Application.isPlaying)
 		{
 			Gizmos.color = Color.blue;
 			Gizmos.DrawLine(transform.position, path[currentWaypointIndex]);

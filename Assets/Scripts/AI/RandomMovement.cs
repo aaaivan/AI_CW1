@@ -211,7 +211,7 @@ public class RandomMovement : MonoBehaviour
 
 	private void OnDrawGizmosSelected()
 	{
-		if (currentPath != null)
+		if (currentPath != null && Application.isPlaying)
 		{
 			Gizmos.color = Color.blue;
 			Gizmos.DrawLine(transform.position, currentPath[currentWaypointIndex]);
