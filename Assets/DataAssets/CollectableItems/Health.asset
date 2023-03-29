@@ -17,5 +17,5 @@ MonoBehaviour:
     type: 3}
   canGoOnAcessibleNodes: 1
   canGoOnUnacessibleNodes: 0
-  proximityProbabilityDamping: 14
+  proximityPenalty: 14
   spins: 1

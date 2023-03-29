@@ -9,7 +9,7 @@ public class CollectableItemData : ScriptableObject
 	public GameObject itemPrefab;
 	public bool canGoOnAcessibleNodes;
 	public bool canGoOnUnacessibleNodes;
-	public float proximityProbabilityDamping;
+	public float proximityPenalty;
 
 	public bool spins;
 
@@ -36,9 +36,9 @@ public class CollectableItemData : ScriptableObject
 
 	private void OnValidate()
 	{
-		if(proximityProbabilityDamping < 0)
+		if(proximityPenalty < 0)
 		{
-			proximityProbabilityDamping = 0;
+			proximityPenalty = 0;
 		}
 	}
 }

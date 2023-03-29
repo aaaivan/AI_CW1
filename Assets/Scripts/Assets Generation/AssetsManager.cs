@@ -92,8 +92,9 @@ public class AssetsManager : MonoBehaviour
 		string message = "\nTotal counts: ";
 		for (int itemType = 0; itemType < itemCountsPerType.Length; itemType++)
 		{
+			string itemName = CollectableItemData.ItemNameFromEnum((CollectableItemType)itemType);
 			int count = itemCountsPerType[itemType];
-			string s = string.Format("{0} ({1}) - ", CollectableItemData.ItemNameFromEnum((CollectableItemType)itemType), count.ToString());
+			string s = string.Format("{0} ({1}) - ", itemName, count.ToString());
 			message += s;
 		}
 		for (int centroid = 0; centroid < itemCountsInClusters.GetLength(0); centroid++)
@@ -101,8 +102,9 @@ public class AssetsManager : MonoBehaviour
 			message += "\nCluster " + centroid.ToString() + ": ";
 			for(int itemType = 0;  itemType < itemCountsInClusters.GetLength(1); itemType++)
 			{
+				string itemName = CollectableItemData.ItemNameFromEnum((CollectableItemType)itemType);
 				int count = itemCountsInClusters[centroid, itemType];
-				string s = string.Format("{0} ({1}) - ", CollectableItemData.ItemNameFromEnum((CollectableItemType)itemType), count.ToString());
+				string s = string.Format("{0} ({1}) - ", itemName, count.ToString());
 				message += s;
 			}
 		}

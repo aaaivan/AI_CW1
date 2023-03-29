@@ -22,7 +22,7 @@ public class AssetFactory : MonoBehaviour
 			(!node.accessible && !itemData.canGoOnUnacessibleNodes)) { return 0; }
 
 		float probabilityDampingFactor = 1f;
-		if(itemData.proximityProbabilityDamping > 0)
+		if(itemData.proximityPenalty > 0)
 		{
 			foreach (var i in AssetsManager.Instance.itemsByType[itemData.type])
 			{
@@ -32,7 +32,7 @@ public class AssetFactory : MonoBehaviour
 					probabilityDampingFactor = 0;
 					break;
 				}
-				float repulsionFactor = itemData.proximityProbabilityDamping + 1;
+				float repulsionFactor = itemData.proximityPenalty + 1;
 				float damping = Mathf.Clamp01(Mathf.InverseLerp(0, AssetsGeneratorManager.Instance.minDistanceBetweenItems * repulsionFactor, distance));
 				probabilityDampingFactor *= damping;
 			}

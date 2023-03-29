@@ -795,7 +795,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403829132}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -206.63545, y: -140.27867, z: -63.250916}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -872,7 +872,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 528237501}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.1923394, y: 41.017685, z: -43.050453}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -891,7 +891,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddbc7b65fb8d7bb4a8b087506e4b0f5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfCentroids: 2
+  numberOfCentroids: 4
   drawClusters: 0
   highlightItem: 6
   collectableItems: []
@@ -2089,7 +2089,7 @@ MonoBehaviour:
   - {fileID: 8550924921819389752, guid: 98eef730564f6134088be5e17f692d8b, type: 3}
   - {fileID: 8550924921819389752, guid: f3fb8c7392065b74f8a549b7f6ba31d3, type: 3}
   - {fileID: 8550924921819389752, guid: 2656e0445b3d8ca47b7eb0010a934589, type: 3}
-  numberOfEachEnemyType: 00000000000000000a000000
+  numberOfEachEnemyType: 000000000000000000000000
   minDstanceBwteenEnemies: 10
 --- !u!4 &1337758771
 Transform:
@@ -2099,7 +2099,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1337758769}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.7083416, y: 16.536276, z: -35.534977}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
