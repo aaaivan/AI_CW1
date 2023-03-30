@@ -2089,8 +2089,8 @@ MonoBehaviour:
   - {fileID: 8550924921819389752, guid: 98eef730564f6134088be5e17f692d8b, type: 3}
   - {fileID: 8550924921819389752, guid: f3fb8c7392065b74f8a549b7f6ba31d3, type: 3}
   - {fileID: 8550924921819389752, guid: 2656e0445b3d8ca47b7eb0010a934589, type: 3}
-  numberOfEachEnemyType: 000000000000000000000000
-  minDstanceBwteenEnemies: 10
+  numberOfEachEnemyType: 020000000200000006000000
+  minDstanceBwteenEnemies: 5
 --- !u!4 &1337758771
 Transform:
   m_ObjectHideFlags: 0
