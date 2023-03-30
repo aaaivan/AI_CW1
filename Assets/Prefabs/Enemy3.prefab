@@ -772,7 +772,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stateName: SearchPlayer
   maxFormationSize: 5
-  minFormationSize: 4
+  minFormationSize: 3
 --- !u!114 &-7157511467355863673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -801,7 +801,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stateName: Flee
-  stopFleeingDelay: 5
+  stopFleeingDelay: 3
 --- !u!114 &6600340412715235392
 MonoBehaviour:
   m_ObjectHideFlags: 0
